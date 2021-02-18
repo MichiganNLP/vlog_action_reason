@@ -246,7 +246,7 @@ def check_if_key_duplicate():
 
 def main():
     # concept_net()
-    cluster_concept_net(list_verbs=["clean", "drink", "read", "write"])
+    # cluster_concept_net(list_verbs=["clean", "drink", "read", "write"])
 
     verbs = [["read this", "clean this", "drink this"], ["making bed", "cleaning sink", "reading book", "drinking tea"],
              ["is the best way to", "so that is why"], ["clean ", "cleaning", "cleaned"],
