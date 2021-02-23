@@ -1,3 +1,5 @@
 pyspellchecker==0.5.6
 sentence-transformers==0.4.1.2
 youtube-transcript-api==0.3.1
+simpletransformers==0.60.4
+transformers==4.2.2

@@ -161,8 +161,8 @@ def calculate_metrics(list_GT_text_label, list_predicted_output):
 def main():
     list_verbs, list_GT_text_label, conceptnet_labels = read_annotations(file_output="dict_web_annotations_for_agreement.json")
 
-    similarity_CN_transcript(list_GT_text_label, conceptnet_labels, is_SRL=False)
-    # NLI(list_GT_text_label, conceptnet_labels)
+    # similarity_CN_transcript(list_GT_text_label, conceptnet_labels, is_SRL=False)
+    NLI(list_GT_text_label, conceptnet_labels)
     # Roberta_multilabel(list_GT_text_label, conceptnet_labels)
 
 
