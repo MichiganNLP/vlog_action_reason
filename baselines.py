@@ -76,7 +76,7 @@ def Roberta_multilabel(list_GT_text_label, conceptnet_labels):
     transformers_logger = logging.getLogger("transformers")
     transformers_logger.setLevel(logging.WARNING)
 
-    one_hot_list_text_label = label_to_onehot(list_GT_text_label)
+    one_hot_list_text_label = label_to_onehot(list_GT_text_label, conceptnet_labels)
 
     # Preparing train data
     end = len(one_hot_list_text_label) // 10
@@ -135,11 +135,11 @@ def label_to_onehot(list_GT_text_label, conceptnet_labels):
     one_hot_list_text_label.append([text, one_hot])
   return one_hot_list_text_label
 
-def calculate_metrics(list_GT_text_label, list_predicted_output):
+def calculate_metrics(list_GT_text_label, list_predicted_output, conceptnet_labels):
     from sklearn.metrics import label_ranking_average_precision_score, hamming_loss, accuracy_score, jaccard_score
 
-    one_hot_list_text_label_GT = label_to_onehot(list_GT_text_label)
-    one_hot_list_text_label_P = label_to_onehot(list_predicted_output)
+    one_hot_list_text_label_GT = label_to_onehot(list_GT_text_label, conceptnet_labels)
+    one_hot_list_text_label_P = label_to_onehot(list_predicted_output, conceptnet_labels)
 
     list_gt_labels = []
     list_p_labels = []
