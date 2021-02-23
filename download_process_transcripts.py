@@ -85,9 +85,9 @@ def sentence_split(channel_id):
             c = c.replace("'ll", " will")
             c = c.replace("'m", " am")
             c = c.replace("n't", " not")
-            c = c.replace(" just ", "")
-            c = c.replace(" only ", "")
-            c = c.replace(" really ", "")
+            c = c.replace(" just ", " ")
+            c = c.replace(" only ", " ")
+            c = c.replace(" really ", " ")
             c = c.replace("go ahead and", "")
             c = c.replace("went ahead and", "")
             c = c.replace("make sure to", "")
@@ -98,11 +98,11 @@ def sentence_split(channel_id):
             c = c.replace("[ __ ]", "")
             c = c.replace("[INAUDIBLE]", "")
             c = c.replace("[BLEEP]", "")
-            c = c.replace(" im ", "")
-            c = c.replace(" gonna ", "going")  # be careful with spaces!!!
-            c = c.replace("gon na", "going")
-            c = c.replace("ca not", "cannot")
-            c = c.replace("wo not", "would not")
+            c = c.replace(" im ", " ")
+            # c = c.replace(" gonna ", " going ")  # be careful with spaces!!!
+            # c = c.replace("gon na", "going")
+            # c = c.replace("ca not", "cannot")
+            # c = c.replace("wo not", "would not")
             c = c.replace("4am", "4 am")
             c = c.replace(" so I ", " so that is why ")
             c = c.replace(" so they ", " so that is why ")
@@ -141,8 +141,7 @@ def sentence_split(channel_id):
             time_sentence = []
             original = sentence
             while index_transcript < len(new):
-                # if index_transcript == 1249:
-                #     print(index_transcript)
+
                 [c, s, e] = new[index_transcript]
                 if ok:
                     c = new_c
@@ -162,6 +161,10 @@ def sentence_split(channel_id):
                     new_c = c[c.find(sentence) + len(sentence) + 1:]
                     ok = 1
                     break
+                else:
+                    print("sentence: ", sentence)
+                    print("c: ", c)
+
 
             dict_channel_sentences[video].append([original, time_sentence[0], time_sentence[-1]])
 
@@ -172,18 +175,17 @@ def sentence_split(channel_id):
 def save_all_sentences():
     all_dict = {}
     path_to_json = 'data/sentences_transcripts/'
-    json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
-    # json_files = ["UCM3P_G21gOSVdepXrEFojIg.json"]
+    # json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
+    json_files = ["UCM3P_G21gOSVdepXrEFojIg.json"]
     for index, js in enumerate(json_files):
         with open(os.path.join(path_to_json, js)) as json_file:
             json_text = json.load(json_file)
         for key in json_text.keys():
             all_dict[key] = json_text[key]
 
-    with open('data/all_sentence_transcripts.json', 'w+') as fp:
+    # with open('data/all_sentence_transcripts.json', 'w+') as fp:
+    with open('data/all_sentence_transcripts_rachel.json', 'w+') as fp:
         json.dump(all_dict, fp)
-    # with open('data/all_sentence_transcripts_rachel.json', 'w+') as fp:
-    #     json.dump(all_dict, fp)
 
 
 def main():
@@ -194,8 +196,8 @@ def main():
         # save_all_video_urls_in_channel(channel_id)
         # list_urls = read_list_urls(channel_id)
         # save_raw_transcripts(list_urls, channel_id)
-        # sentence_split(channel_id)
-    # save_all_sentences()
+        sentence_split(channel_id)
+    save_all_sentences()
 
 
 

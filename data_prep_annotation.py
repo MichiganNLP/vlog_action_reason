@@ -102,13 +102,13 @@ def save_sentences_per_verb(list_verbs):
                 for key in [""]:
                     # composed_verb = " ".join((verb.split()[0] + " " + key + " " + verb.split()[1]).split())
                     composed_verb = verb
-                    if verb == "writing":
-                        verb = "write"
-                    elif verb == " read ":
-                        verb = "read"
-                    else:
-                        if verb[-3:] == "ing":
-                            verb = verb[:-3]
+                    # if verb == "writing":
+                    #     verb = "write"
+                    # elif verb == " read ":
+                    #     verb = "read"
+                    # else:
+                    #     if verb[-3:] == "ing":
+                    #         verb = verb[:-3]
                     if composed_verb in sentence:
                         if verb not in dict_sentences_per_verb.keys():
                             dict_sentences_per_verb[verb] = []
@@ -129,13 +129,13 @@ def save_sentences_per_verb(list_verbs):
     pp.pprint(dict_sentences_per_verb)
 
     for verb in list_verbs:
-        if verb == "writing":
-            verb = "write"
-        elif verb == " read ":
-            verb = "read"
-        else:
-            if verb[-3:] == "ing":
-                verb = verb[:-3]
+        # if verb == "writing":
+        #     verb = "write"
+        # elif verb == " read ":
+        #     verb = "read"
+        # else:
+        #     if verb[-3:] == "ing":
+        #         verb = verb[:-3]
         print(verb + " " + str(len(dict_sentences_per_verb[verb])))
 
     # with open('data/dict_sentences_per_verb.json', 'w+') as fp:
@@ -251,7 +251,7 @@ def main():
     verbs = [["read this", "clean this", "drink this"], ["making bed", "cleaning sink", "reading book", "drinking tea"],
              ["is the best way to", "so that is why"], ["clean ", "cleaning", "cleaned"],
              [" read ", "reading", "drink", "drinking", "write", "writing"]]
-    # save_sentences_per_verb(verbs[-1])
+    save_sentences_per_verb(verbs[-2])
     # regular_expr([" clean", " read"]) # not using this for now
 
     # change_json_for_web_annotations()
