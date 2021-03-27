@@ -1,0 +1,605 @@
+{
+  "celebrate": [
+    "mark happy occasion",
+    "acknowledge accomplishment", 
+    "have good time",
+    "have fun",
+    "share happiness"
+  ],
+  "clean": [
+    "remove dirt",
+    "do not like dirtiness",
+    "declutter",
+    "company was coming"
+  ],
+  
+  "cook": [
+    "make meal",
+    "hungry"
+  ],
+  
+  "dance": [
+    "have fun",
+    "bring pleasure to guests", 
+    "celebrate",
+    "socialize",
+    "get off couch",
+    "express yourself",
+    "are a dancer",
+    "to exercise",
+    "like dancing",
+    "to learn"
+  ],
+  "dream": [
+    "plan for future",
+    "imagine different possibilities",
+    "distract brain",
+    "feel relaxed",
+    "were asleep"
+  ],
+  "drink": [
+    "were thirsty",
+    "avoid becoming dehydrated",
+    "refreshing",
+    "would want to forget",
+    "drink tasted good",
+    "get drunk",
+    "celebrating"
+  ],
+  "drive": [
+    "get someplace",
+    "use gas",
+    "relax",
+    "do chores"
+  ],
+  "eat": [
+    "tastes good",
+    "were hungry",
+    "had craving",
+    "be healthy"
+  ],
+  "entertain": [
+    "fun activity",
+    "enjoy company",
+    "like",
+    "visiting",
+    "please",
+    "bored"
+  ],
+  "exercise": [
+    "stay fit",
+    "keeps healthy",
+    "become muscular",
+    "get in shape",
+    "build stamina",
+    "loose weight",
+    "is fun",
+    "increase energy level"
+  ],
+
+  "fiddle": [
+    "uncomfortable",
+    "like music",
+    "were bored"
+  ],
+  "fish": [
+    "eat fish",
+    "need food",
+    "found relaxing",
+    "have fun",
+    "enjoy",
+    "it is job"
+  ],
+  "forgive": [
+    "0: ['was accident', 'hurt']",
+    "10: ['compassionate']",
+    "1: ['apologized for undesirable action', 'apologized', 'i hurt feelingi', 'were truly sorry']",
+    "2: ['move on', 'from']",
+    "3: ['nice', 'feel better', 'peace', \"it's right thing to do\"]",
+    "4: ['maintain relationship', 'love']",
+    "5: ['forgiveness also']",
+    "6: ['human']",
+    "7: ['christian']",
+    "8: ['put stress behind']",
+    "9: ['hooch']"
+  ],
+
+  "groom": [
+    "0: ['look good', 'get clean', 'look better', 'acceptance', 'improve appearance', 'feels good', 'look good in picture', 'look nice']",
+    "1: ['need wife']",
+    "2: ['impress others']",
+    "3: ['horse to look good']"
+  ],
+  "hammer": [
+    "build",
+    "demo"
+  ],
+  "help": [
+    "0: ['maximise own utility', 'of service to']",
+    "1: [\"couldn't do for themselves\"]",
+    "2: ['help in return', 'helping nice', 'helping people makes one feel good', 'makes feel good inside', 'make happy', 'generous person', 'nice', 'were able to help']",
+    "3: ['become friend']",
+    "4: ['accomplish mutual goal']",
+    "5: ['what goes around comes around']",
+    "6: ['have compassion for', 'express altruism']",
+    "7: ['feel part of humanity']"
+  ],
+  "hike": [
+    "0: ['get somewhere', 'fresh air']",
+    "1: ['exercise', 'exercise with dog', 'form of exercise', 'like to exercise outdoors', 'exercise', 'exercise dog']",
+    "2: ['get outdoors away from civilization', 'go out']",
+    "3: ['suffer']",
+    "4: ['sore feet']",
+    "5: ['climb hill']",
+    "6: ['enjoy nature', 'see beautiful things', 'close to nature', 'of scenery', 'love nature', 'view of nature']",
+    "7: ['fun']",
+    "8: ['walk']"
+  ],
+  "hug": [
+    "0: ['sad']",
+    "1: ['love']"
+  ],
+  "jog": [
+    "0: ['get in shape', 'exercise', 'need exercise', 'move more quickly', 'get fitter', 'increase stamina']",
+    "1: ['stay healthy', 'like relaxed feeling afterwards', 'good health', 'knees were feeling much better', 'maintain health', 'keeps fit']",
+    "2: ['too fat']",
+    "3: ['lose weight', 'less weight', 'loose weight', 'need to lose weight', 'lose weight']"
+  ],
+  "judge": [
+    "0: ['determine guilt or innocence', 'convict of crime']",
+    "10: ['form opinion']",
+    "11: ['close case']",
+    "12: ['classify']",
+    "1: ['rubbed wrong', 'did wrong', \"they're poor\"]",
+    "2: ['evaluate', 'evaluate skills']",
+    "3: ['feel superior', 'feel above']",
+    "4: ['responsible for behavior', 'assess behavior']",
+    "5: ['dismiss']",
+    "6: ['justice', 'supreme court justice']",
+    "7: ['worry']",
+    "8: ['impose will']",
+    "9: [\"don't know\", 'do not know']"
+  ],
+  "jump": [
+    "0: ['get over obstacle']",
+    "1: ['scared']"
+  ],
+  "kill": [
+    "0: ['mean', 'evil', 'were evil', 'sate anger', 'of hatred']",
+    "10: ['stay alive']",
+    "11: ['insane']",
+    "12: ['voices tell to']",
+    "13: ['must to save mother']",
+    "14: ['revenge', 'get revenge', 'attacked', 'trying to kill']",
+    "15: ['of misguided religious principals']",
+    "16: ['angry']",
+    "1: ['out of life', 'dead', 'killed love', 'see dead', 'killed wife', 'die', 'get rid of', 'avenge loved ones death']",
+    "2: ['defend yourself', 'have no other choice', 'were in danger']",
+    "3: ['fool']",
+    "4: ['non violent world', 'killing can stop bad things']",
+    "5: ['being raped', 'rid planet of rapists']",
+    "6: ['need to eat', 'lunch', 'of need to eat', \"i'm hungry\"]",
+    "7: ['keep silent']",
+    "8: ['soldier']",
+    "9: ['money', 'there money']"
+  ],
+  "kiss": [
+    "0: ['express love', 'show love', 'show affection', 'pleasure', 'kissing sometimes leads to sex', 'love another person', 'feel good', 'have pleasure', 'demonstrate love', 'find sexually attractive', 'express affection', 'express love for', 'show loved']",
+    "1: ['manipulate']",
+    "2: ['touch intimately', 'get involved with', 'get very close to']",
+    "3: ['say goodbye']",
+    "4: ['powerful emotions present']",
+    "5: ['companion']",
+    "6: ['paid']",
+    "7: ['intimate']",
+    "8: ['like']",
+    "9: ['let know care']"
+  ],
+  "knit": [
+    "0: ['pass time', 'relaxing']",
+    "10: ['sweater']",
+    "11: ['control result']",
+    "1: ['make sweater', 'knitted sweater', 'enjoy making clothes', 'make with wool', 'enjoy knitting']",
+    "2: ['clothes', 'make handmade clothing', 'piece of clothing', 'making baby clothes', 'clothing']",
+    "3: ['favourite past time']",
+    "4: ['create bedding']",
+    "5: ['mittens']",
+    "6: ['want hat']",
+    "7: ['have nothing to do']",
+    "8: ['combining two things together']",
+    "9: ['like doing']"
+  ],
+  "know": [
+    "0: ['had learnt']",
+    "1: ['were there']"
+  ],
+  "laugh": [
+    "0: ['happy', 'heard good joke', 'funny', 'told funny joke', 'told joke']",
+    "1: ['caught drift']"
+  ],
+  "learn": [
+    "0: ['have more knowledge', 'know more information', 'know', 'smart', 'become educated', 'need to know things', 'afterwards know much more', 'acquire knowledge and skill', 'become knowledgeable', 'intelligent', 'know things', 'knowledge', 'knowledgeable', 'improve knowledge', 'educated']",
+    "10: ['going to tested']",
+    "11: ['advertisement said so']",
+    "12: ['failure painful']",
+    "13: ['recorded lecture', 'course was recommended']",
+    "14: ['have tools']",
+    "15: ['brain stores experiences']",
+    "1: ['curious', 'stupid', \"there things don't know\"]",
+    "2: ['can overcome suffering', 'helps to cope', 'helps to cope with technology', 'have help']",
+    "3: ['life like', 'empowering', 'broaden life']",
+    "4: ['book guaranteed', 'have library card']",
+    "5: ['improve yourself', 'smarter']",
+    "6: ['avoid repeating mistakes', 'listened carefully', 'took good notes']",
+    "7: ['fun']",
+    "8: ['have desire']",
+    "9: ['have human brain']"
+  ],
+  "lie": [
+    "0: ['hide truth', 'not ethical', 'not tell truth', 'do not know truth', 'avoid telling truth', 'do not have good morals']",
+    "10: [\"don't\", 'not to punished', 'would avoid hassle', 'avoid making unhappy']",
+    "1: ['cheat', 'get', 'deceive']",
+    "2: ['self destruct', 'get out of doing wrong', 'get away with']",
+    "3: ['trying to impress', 'get favorable response']",
+    "4: ['protect', 'need to protect yourself', 'protect some feelings', 'cover for mistake', 'save yourself']",
+    "5: ['wish to mislead interrogator']",
+    "6: ['trick into doing']",
+    "7: ['trick dad']",
+    "8: ['give false impression', 'give certain impression']",
+    "9: ['ashamed of']"
+  ],
+  "listen": [
+    "0: [\"there's to hear\", 'hear', 'there to hear', 'you want to listen', 'understand what being said', 'hear what saying', \"hear what's being said\", 'like what hear']",
+    "1: ['learn', 'might learn', 'could learn new']",
+    "2: ['obey judge']",
+    "3: ['communication important']",
+    "4: ['discern source of sound']",
+    "5: ['were interested']"
+  ],
+  "live": [
+    "0: ['had yet to die', 'death leads to unknown']",
+    "1: ['love', 'like']",
+    "2: ['finish', 'death end', 'dying painful']",
+    "3: ['cna', 'can']",
+    "4: ['do not want to die', \"weren't ready to die\", \"don't want to die\"]",
+    "5: ['beats alternative', 'better than alternative']",
+    "6: ['existence can lead to pleasure', 'have fun']",
+    "7: ['grow expand and continue']",
+    "8: ['experience life', 'have to live for']",
+    "9: ['have been born', 'were born']"
+  ],
+  "memorize": [
+    "0: ['know later', \"retain what you've learned\", 'know']",
+    "1: ['need to retain fact', 'wanted to remember fact', 'need to remember', 'cannot easily remember mundane facts']",
+    "2: ['able to repeat information']",
+    "3: ['studying for exam']"
+  ],
+  "paint": [
+    "0: ['create art', 'create', 'express yourself artistically', 'feel creative', 'make picture', 'express creativity', 'create visually']",
+    "1: ['cover with color', 'change colors in home']",
+    "2: ['nicely painted house', 'painting can make famous', 'home to look nice', 'look nice', 'enjoy', 'beautiful', 'enjoyed to paint', 'clean walls']",
+    "3: ['wall dingy']",
+    "4: ['covers up blood']",
+    "5: ['in jail']",
+    "6: ['accomplish']"
+  ],
+  "perform": [
+    "0: ['demonstrate skill', 'enjoy doing', 'rewards']",
+    "1: ['fame']",
+    "2: ['applause']",
+    "3: ['actor']",
+    "4: ['recognition']",
+    "5: ['get paid']",
+    "6: ['share expression with audience']"
+  ],
+  "play": [
+    "0: ['have fun', 'fun', 'enjoy yourself', 'play', 'wants to play with', 'win game', 'playing fun', 'makes feel happy']",
+    "1: ['bored']",
+    "2: ['to']",
+    "3: ['relax']",
+    "4: ['entertain yourself']"
+  ],
+  "pray": [
+    "0: [\"you're scared\", 'need help', 'need emotional strength']",
+    "1: ['talk to god', 'believe in deity', 'help from god', 'speak to god', 'praise god', 'express thoughts to god']",
+    "2: ['stop being lonely', 'lonely']",
+    "3: ['help from supernatural source', 'pretend have supernatural help']",
+    "4: ['think about life issues']",
+    "5: ['forgiveness']",
+    "6: ['religious', 'were religious']",
+    "7: ['solace']",
+    "8: ['go to heaven']"
+  ],
+  "pretend": [
+    "0: ['trying to fool', 'fool', 'fool others']",
+    "1: ['makes others happy', 'people to think highly of']",
+    "2: ['playing', 'playful', 'fun']",
+    "3: ['truth can hurt']",
+    "4: ['deceive']",
+    "5: ['actor', 'were acting']",
+    "6: ['perform character in play']"
+  ],
+  "program": [
+    "0: ['give computer task', 'make program', 'computer to do', 'have things run automatically']",
+    "1: ['results', 'create result']",
+    "2: ['automatization']",
+    "3: ['make game']",
+    "4: ['specialized application', 'specialized software', 'new software']",
+    "5: ['solves problem']"
+  ],
+  "punch": [
+    "0: ['do not like', 'called filthy name', 'really hurt', 'lost control of temper', 'violent', \"you're mad as hell\", 'very angry', 'lost temper', \"don't like\", \"can't control temper\", 'insulted']",
+    "1: ['get even', 'attention']",
+    "2: ['got joke', 'would joke punch']",
+    "3: ['called slug bug first']",
+    "4: ['beat up', 'punched', 'get punched back']",
+    "5: ['offended sister']",
+    "6: ['angry']",
+    "7: ['lied']",
+    "8: ['hurt']"
+  ],
+  "read": [
+    "learn",
+    "appreciate great works of fiction",
+    "bored",
+    "appear cultured to opposite sex",
+    "entertained"
+  ],
+  "relax": [
+    "0: ['more at ease', \"don't need to work\"]",
+    "1: ['tense', 'healthy']",
+    "2: ['were getting blow job', 'have done good job']",
+    "3: ['of massage']",
+    "4: ['stressed', 'distress', 'de stress']",
+    "5: ['take energy', 'recover energy or reduce stress']",
+    "6: ['rest', 'take nap', 'go to sleep', 'feel rested']"
+  ],
+  "remember": [
+    "0: [\"there's to remember\", 'need to remember', 'not forget', 'did not forget']",
+    "10: ['use for own good']",
+    "11: ['forgetting inconvenient']",
+    "1: ['use information later', 'repeat later', 'use later', 'know later', 'recall information later']",
+    "2: ['of interest to', 'was interesting', 'needed information', 'stunning', 'was memorable']",
+    "3: ['relive', 'reuse']",
+    "4: ['will save life']",
+    "5: ['able to do again']",
+    "6: ['learn from']",
+    "7: ['made laugh']",
+    "8: ['impress date']",
+    "9: ['nostalgic experiences']"
+  ],
+  "rest": [
+    "0: ['perform well afterwards', 'continue job at peak performance', 'have been working hard', 'feel more energetic', 'need to', 'feel better']",
+    "1: ['tired', 'sleep', 'not tired', 'felt tired', 'no longer feel tired', \"you're feeling lazy\", 'were tired', 'get more sleep']",
+    "2: ['peace and quiet necessary sometimes', 'relief from pain']",
+    "3: ['weak']",
+    "4: ['regenerate', 'gain energy']",
+    "5: ['catch breath']"
+  ],
+  "run": [
+    "0: ['get somewhere quickly', 'get somewhere faster than walking', 'get somewhere fast', 'go faster', 'get into shape', 'need to travel fast', 'need exercise', 'become physically fit', 'wanted to get in shape', 'in hurry']",
+    "1: [\"you're in running race\", 'win race']",
+    "2: ['scared', 'afraid', 'were scared', 'frightened']",
+    "3: ['get away from', 'get away']",
+    "4: ['late']",
+    "5: ['were wound up']",
+    "6: ['might miss bus']",
+    "7: ['mean dog chasing']",
+    "8: ['would increase heart rate']"
+  ],
+  "sew": [
+    "0: ['enjoy making', 'enjoy', 'enjoy sewing']",
+    "1: ['can patch clothes', 'enjoy making own clothing', 'wanted to have unique clothes', 'clothes ripped', 'make clothes', 'repair clothing', 'fix hole in clothes', 'make own clothing', 'create cloth', 'repair torn piece of clothing', 'make to wear', 'make article of clothing', 'mend clothes']",
+    "2: ['has unraveled']",
+    "3: ['mend dress']",
+    "4: ['patch pants']",
+    "5: ['costume']",
+    "6: ['have hobby']",
+    "7: ['reattach button']",
+    "8: ['may soothing']"
+  ],
+  "shop": [
+    "0: ['need new things', 'more stuff', 'buy new things']",
+    "1: ['buy', 'find item', 'buy products', 'purchase']",
+    "2: ['necessary', 'need']",
+    "3: ['eat']",
+    "4: ['get things dont now have']",
+    "5: ['get back at husband']",
+    "6: ['buy new pants']",
+    "7: ['have no clothes']"
+  ],
+  "sing": [
+    "0: ['in choir', 'hear song']",
+    "1: ['happy', 'had good voice', 'making fun', 'enjoy', \"you're happy\"]",
+    "2: ['express yourself', 'express feelings']",
+    "3: ['singer']",
+    "4: ['annoy people around']",
+    "5: ['perform']"
+  ],
+  "skate": [
+    "0: ['glide across ice', 'there snow in ground']",
+    "10: ['like', 'like skating', 'like to']",
+    "11: ['cool']",
+    "12: ['show off']",
+    "1: ['move fast', 'get there faster than walking', 'do easy way', 'like to move fast', 'get by easy']",
+    "2: ['perform for others', 'engage in recreation']",
+    "3: ['exercise', 'keep fit']",
+    "4: ['joy', 'fun']",
+    "5: ['adrenaline rush']",
+    "6: ['hold partner', 'hold hand']",
+    "7: ['were tired of walking']",
+    "8: ['get laid']",
+    "9: ['move to music']"
+  ],
+  "ski": [
+    "0: ['have fun', 'excitement', 'challenging', 'exhilarating', 'go fast']",
+    "1: ['skiing fun', 'have fun in snow', 'there snow outside', 'out and about in snow', 'move quicker on snow']",
+    "2: ['take chances']",
+    "3: ['thrill']",
+    "4: ['like to']",
+    "5: ['exercise']",
+    "6: ['get wet']"
+  ],
+  "sleep": [
+    "0: ['get up early next day', 'have long day tomorrow']",
+    "1: ['live', 'entertainment']",
+    "2: ['sleepy', 'dream']",
+    "3: ['refreshed', 'need to restore energy']",
+    "4: ['rest', 'tired', 'get rest', 'exhausted', \"you're tired\", 'feel tired', 'organism need rest', 'rest body', 'tired and need rest', 'you are tired', 'well rested', 'need to rest', 'rest and ready for tomorrow']",
+    "5: ['working very hard makes tires']",
+    "6: ['body requires']",
+    "7: ['recreation']"
+  ],
+  "smoke": [
+    "0: ['can get stoned', 'addicted']",
+    "1: ['get high', 'look cool', 'can get high']",
+    "2: ['unwind after meal', 'satisfy craving']",
+    "3: ['addicted to nicotine', 'cigarette', 'absorb nicotine']",
+    "4: ['die early of cancer']",
+    "5: ['kill yourself', 'die']",
+    "6: ['relaxes']",
+    "7: [\"you're stupid\", 'stupid']"
+  ],
+  "spit": [
+    "0: ['get out of mouth', 'get rid of watermelon seeds', 'get rid of gum']",
+    "1: ['look nasty', 'show contempt', 'hate']",
+    "2: ['empty mouth of saliva', 'less saliva in mouth', 'rid mouth of excess saliva', 'remove saliva from mouth', 'dry mouth', 'have excess saliva']",
+    "3: ['drank poison']",
+    "4: ['bug flew into mouth', 'insect flew in mouth']",
+    "5: ['need to']",
+    "6: ['mad']"
+  ],
+  "splurge": [
+    "0: ['on binge', 'was party']",
+    "10: ['doing so poorly']",
+    "11: ['purse was full of cash', 'pocket was full of cash', 'had money on']",
+    "12: ['weekend', 'workday over']",
+    "13: ['will start diet soon']",
+    "14: ['burned hole']",
+    "15: ['rationalized']",
+    "16: ['of situation']",
+    "17: ['owe to yourself']",
+    "18: ['last opportunity']",
+    "19: ['picnic']",
+    "1: ['were on vacation', 'occasion special']",
+    "20: ['others were']",
+    "21: ['gift important']",
+    "22: ['banquet']",
+    "23: ['mood struck']",
+    "24: ['need']",
+    "25: ['love ice cream', 'love cake']",
+    "26: ['do all time']",
+    "27: ['tempted']",
+    "28: ['price going up']",
+    "2: ['got caught up', 'got caught up in', 'joined crowd']",
+    "3: [\"you've been good\", \"couldn't wait\", 'doing so well', 'rare opportunity', 'great chance', 'really wanted', 'had nice invitation', 'just plain want', 'good offer']",
+    "4: ['need little fun', 'only little exception', 'weak', \"little bit won't hurt\", 'just once', 'just little bit']",
+    "5: [\"opportunity won't come again\", 'no one will know', \"don't do very often\"]",
+    "6: [\"can't fight\", \"calories won't count time\"]",
+    "7: ['got carried away', 'bored', 'just let go']",
+    "8: ['on sale']",
+    "9: ['today sunday', 'today friday', 'today saturday', 'today birthday']"
+  ],
+  "study": [
+    "0: ['pass test', 'good grade', 'get good grades', 'succeed in classes']",
+    "1: ['learn', 'learn things', 'educated', 'gain knowledge', 'knowledge power']",
+    "2: ['do well', 'know about']",
+    "3: ['interested']",
+    "4: ['tired of being dumb']",
+    "5: ['concentrate']",
+    "6: ['learn about colonization of africa']",
+    "7: ['make parents happy']"
+  ],
+  "surf": [
+    "0: ['engage in water sports', 'have fun on water', 'like surfing', 'feeling of riding on water', 'enjoy riding waves', 'love water']",
+    "1: ['fun', 'get thrill', 'enjoy yourself', 'enjoy speed', 'have fun']",
+    "2: ['impress girls']",
+    "3: ['need information']",
+    "4: [\"it's way of escaping\"]",
+    "5: ['perform feats look impossible']",
+    "6: ['know']",
+    "7: ['internet vast']"
+  ],
+  "surprise": [
+    "0: ['wanted to make smile', 'make happy', 'make feel happy', 'delighted', 'were very brave']",
+    "1: [\"it's birthday\", 'was birthday']",
+    "2: ['reaction']",
+    "3: ['catch off guard']",
+    "4: ['give present']",
+    "5: ['like']",
+    "6: ['scare']"
+  ],
+  "talk": [
+    "0: ['say', 'have to say', 'express yourself']",
+    "10: ['explain']",
+    "1: ['convey beliefs to others', 'share feelings']",
+    "2: ['give information', 'communicate message to', 'communicate ideas', 'need to communicate idea', 'share information']",
+    "3: ['like to']",
+    "4: ['communicate', 'connect with', 'communicate with others']",
+    "5: ['teach']",
+    "6: ['am bored in party']",
+    "7: ['tell to go home']",
+    "8: ['listen']",
+    "9: ['get reduced sentence']"
+  ],
+  "think": [
+    "0: ['have to make decision', 'act wisely', 'make decision', 'make wise choices', 'figure out', 'come up with idea']",
+    "1: ['thinking being alive', 'remember']",
+    "2: ['do right', 'answer questions', 'solve problem', 'answer']",
+    "3: ['minimize mistakes']",
+    "4: ['rational']",
+    "5: ['progress']",
+    "6: ['put all together', 'you are']"
+  ],
+  "tickle": [
+    "0: ['make laugh', 'laugh', 'makes people feel good', 'else to laugh', 'hear laugh', 'makes laugh', 'makes people laugh']",
+    "1: ['induce certain reaction']",
+    "2: ['kinky sex', 'sex']",
+    "3: ['flirt']",
+    "4: ['tease']",
+    "5: ['silly']",
+    "6: ['involves touching another person']"
+  ],
+  "travel": [
+    "0: ['see new places', 'experience different culture', 'see different things', 'visit new countries', 'curious', 'fun and adventure', 'see new']",
+    "1: ['visit friend', 'visit parents']",
+    "2: [\"you're curious about other places\", 'see other countries']",
+    "3: ['broadening']",
+    "4: ['see world']",
+    "5: [\"wan't to have new experiences\"]"
+  ],
+  "type": [
+    "0: ['write letter', 'need to write letter', 'faster than writing', 'have bad handwriting', 'write']",
+    "1: ['message to legible', 'ensure writing legible']",
+    "2: ['produce document']",
+    "3: ['communicate']",
+    "4: ['enter information on computer']",
+    "5: ['write friend']",
+    "6: ['freedom']"
+  ],
+  "vomit": [
+    "0: ['ill', 'sick', 'sickness']",
+    "1: ['drank poison']"
+  ],
+  "walk": [
+    "0: ['enjoy countryside', 'enjoyable', 'healthy habit', 'want to relax', 'weather nice']",
+    "1: ['have no car', 'do not have car', \"don't want to drive\"]",
+    "2: ['change locations', 'get somewhere', 'move to another location', 'go somewhere', 'need to somewhere', 'need to get somewhere']",
+    "3: ['exercise', 'exercise dog']",
+    "4: ['want to stretch legs', 'have legs']",
+    "5: ['car has broken down']"
+  ],
+  "work": [
+    "feel productive",
+    "complete job",
+    "have to",
+    "need money"
+  ],
+  "write": [
+    "have story to tell",
+    "remember",
+    "famous",
+    "create novel",
+    "express yourself"
+  ]
+}

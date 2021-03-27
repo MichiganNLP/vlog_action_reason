@@ -1,2 +1,3 @@
 data/videos
 .idea
+ __pycache__

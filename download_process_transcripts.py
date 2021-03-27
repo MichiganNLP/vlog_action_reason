@@ -82,6 +82,7 @@ def sentence_split(channel_id):
         for c, s, e in zip(content, start, end):
             c = c.replace("'s", " is")
             c = c.replace("'re", " are")
+            c = c.replace("'ve", " have")
             c = c.replace("'ll", " will")
             c = c.replace("'m", " am")
             c = c.replace("n't", " not")
@@ -121,6 +122,7 @@ def sentence_split(channel_id):
             if c.strip() and re.sub('\W+',' ', c.strip()).strip():
                 new.append([re.sub('\W+',' ', c.strip()).strip(), s, e])
         big_sentence.strip()
+        # transform into sentences
         doc = nlp(big_sentence)
         sentences = [sent.string.strip() for sent in doc.sents]
         sentences = [re.sub('\W+',' ', sent) for sent in sentences]
@@ -134,7 +136,7 @@ def sentence_split(channel_id):
         #     [c, s, e] = x
         #     print(c, s, e)
         # break
-
+        #
         ok = 0
         index_transcript = 0
         for sentence in sentences:
@@ -164,9 +166,12 @@ def sentence_split(channel_id):
                 else:
                     print("sentence: ", sentence)
                     print("c: ", c)
+                    index_transcript += 1
+                    ok = 0
+                    break
 
-
-            dict_channel_sentences[video].append([original, time_sentence[0], time_sentence[-1]])
+            if time_sentence:
+                dict_channel_sentences[video].append([original, time_sentence[0], time_sentence[-1]])
 
     with open('data/sentences_transcripts/' + channel_id + '.json', 'w+') as fp:
         json.dump(dict_channel_sentences, fp)
@@ -175,23 +180,25 @@ def sentence_split(channel_id):
 def save_all_sentences():
     all_dict = {}
     path_to_json = 'data/sentences_transcripts/'
-    # json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
-    json_files = ["UCM3P_G21gOSVdepXrEFojIg.json"]
+    json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
+    # json_files = ["UCM3P_G21gOSVdepXrEFojIg.json"]
     for index, js in enumerate(json_files):
         with open(os.path.join(path_to_json, js)) as json_file:
             json_text = json.load(json_file)
         for key in json_text.keys():
             all_dict[key] = json_text[key]
 
-    # with open('data/all_sentence_transcripts.json', 'w+') as fp:
-    with open('data/all_sentence_transcripts_rachel.json', 'w+') as fp:
+    with open('data/all_sentence_transcripts.json', 'w+') as fp:
+    # with open('data/all_sentence_transcripts_rachel.json', 'w+') as fp:
         json.dump(all_dict, fp)
 
 
 def main():
-    # for channel_id in ['UCT9y7nOBdqfWuaZJ_x9mPkA', 'UCM3P_G21gOSVdepXrEFojIg', 'UC-8yLb1K-DEC6dCYlLOJfiQ', 'UCDy89wegrl-5Qv0ZkTtlnPg',
-    #                    'UCK2d_KfjVPwh9gqoczQ9sSw', 'UCVKFs0cesQUEGtn8gQmhbHw', 'UCMfXv2enRXepxG92VoxfrEg', 'UCbQj1aJiioDM8g0tmGmtC_w', 'UCJCgaQzY5z5sA-xwkwibygw']:
-    for channel_id in ['UCM3P_G21gOSVdepXrEFojIg']:
+    list_channels = ['UCT9y7nOBdqfWuaZJ_x9mPkA', 'UCM3P_G21gOSVdepXrEFojIg', 'UC-8yLb1K-DEC6dCYlLOJfiQ', 'UCDy89wegrl-5Qv0ZkTtlnPg',
+                       'UCK2d_KfjVPwh9gqoczQ9sSw', 'UCVKFs0cesQUEGtn8gQmhbHw', 'UCMfXv2enRXepxG92VoxfrEg', 'UCbQj1aJiioDM8g0tmGmtC_w',
+                       'UCJCgaQzY5z5sA-xwkwibygw']
+    for channel_id in list_channels:
+    # for channel_id in ['UCK2d_KfjVPwh9gqoczQ9sSw']:
         print(channel_id)
         # save_all_video_urls_in_channel(channel_id)
         # list_urls = read_list_urls(channel_id)

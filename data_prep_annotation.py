@@ -1,31 +1,69 @@
-import datetime
+import itertools
 import json
 import re
-import requests
-import tqdm
-import pprint
 import time
-from sklearn.cluster import AgglomerativeClustering
+from collections import Counter
+import pandas as pd
+import datetime
 import numpy as np
-from spellchecker import SpellChecker
-spell = SpellChecker()
+import requests
+import spacy
+import tqdm
+from nltk.collections import OrderedDict
 from sentence_transformers import SentenceTransformer
+from sklearn.cluster import AgglomerativeClustering
+from spellchecker import SpellChecker
+
+nlp = spacy.load('en_core_web_sm')
+
+spell = SpellChecker()
+
 
 def concept_net():
     dict_concept_net = {}
-    # for verb in ["clean", "read", "eat", "drink", "write"]:
-    for verb in ["clean", "read", "eat", "drink", "write", "work", "study", "browse", "make", "run", "walk", "wash",
-                 "listen", "sing", "relax", "sleep", "meditate"]:
-        dict_concept_net[verb] = []
-        obj = requests.get(
-            'http://api.conceptnet.io/query?start=/c/en/' + verb + '&rel=/r/MotivatedByGoal&limit=100').json()
-        print(verb + ": " + str(len(obj['edges'])))
-        for edge in obj['edges']:
-            motivation = edge['@id'][:-2].split('c/en/')[-1]
-            dict_concept_net[verb].append(motivation)
+    # got verbs with high concreteness
+    list_verbs = ["accept", "anticipate", "arrive", "admire", 'bake', 'bathe', 'boil', 'brush', 'call', 'clap', 'clean',
+                  'climb', 'collect', 'comb', 'commute',
+                  'cook', 'cover', 'curl', 'cut', 'dance', 'drink', 'drive', 'dust', 'eat', 'exercise', 'feed', 'fold',
+                  'flush',
+                  'freeze', 'fry', "groom", 'harvest', 'heat', 'jog', 'jump', 'kiss', 'knit', 'knock', 'listen', 'make',
+                  'massage', 'meditate', 'mop', 'mow', 'organize', 'paint', 'pay', 'pet', 'plan', 'plant', 'plow',
+                  'pour', 'practice', 'quilt', 'read', 'relax', 'rest', 'rinse', 'rub', 'run', 'scratch', 'scream',
+                  'screw', 'see', 'shave', 'sing', 'sit', 'skate', 'sleep', 'slice', 'smell', 'smoke', 'soak', 'steer',
+                  'stitch', 'study', 'sweat', 'swim', 'swing', 'talk', 'taste', 'teach', 'text', 'throw', 'tie', 'toss',
+                  'type', 'walk', 'wash', 'water', 'wear', 'weave', 'weep', 'whisk', 'work', 'write', 'yawn']
+    # print(Counter(list_verbs))
+    # print(sorted(list_verbs))
+    # print(len(list_verbs))
+    with open('data/verbs-all.json') as json_file:
+        verbs = json.load(json_file)
+    list_verbs = []
+    for verb_l in verbs:
+        list_verbs.append(verb_l[0])
 
-    with open('data/dict_concept_net.json', 'w+') as fp:
+    list_no_CN_motivation = []
+    for verb in tqdm.tqdm(list_verbs[5000:]):  # 10000 verbs
+        # for verb in tqdm.tqdm(list_verbs):
+        try:
+            print(verb)
+            obj = requests.get(
+                'http://api.conceptnet.io/query?start=/c/en/' + verb + '&rel=/r/MotivatedByGoal&limit=100').json()
+            print(verb + ": " + str(len(obj['edges'])))
+            if len(obj['edges']) == 0:
+                list_no_CN_motivation.append(verb)
+                continue
+            dict_concept_net[verb] = []
+            for edge in obj['edges']:
+                motivation = edge['@id'][:-2].split('c/en/')[-1]
+                dict_concept_net[verb].append(motivation)
+        except Exception as e:
+            print("error .." + str(e))
+
+    with open('data/dict_concept_net3.json', 'w+') as fp:
         json.dump(dict_concept_net, fp)
+    # print(len(list_no_CN_motivation))
+    # print(len(list_verbs))
+    # print(len(list_verbs) - len(list_no_CN_motivation))
 
     #     if "MotivatedByGoal" in edge['@id']:
     #         print(edge['@id'])
@@ -36,111 +74,196 @@ def concept_net():
     #     if "Causes" in edge['@id']:
     #         print(edge['@id'])
 
-def cluster_concept_net(list_verbs):
-    with open('data/dict_concept_net.json') as json_file:
+
+def filter_concept_net():
+    # verbs with at least 3 causes - 92 verbs
+    with open('data/dict_concept_net2.json') as json_file:
         dict_concept_net = json.load(json_file)
+
+    filtered_dict = {}
+    for key in dict_concept_net.keys():
+        if len(dict_concept_net[key]) >= 2:
+            filtered_dict[key] = dict_concept_net[key]
+        else:
+            print(key, dict_concept_net[key])
+
+    print(len(filtered_dict))
+    with open('data/dict_concept_net_filtered.json', 'w+') as fp:
+        json.dump(filtered_dict, fp)
+
+
+def compare_CN_labels_with_transcripts(file_in):
+    with open(file_in) as json_file:
+        dict_concept_net = json.load(json_file)
+    vbs_few_reasons = dict_concept_net.keys()
+
+    with open('data/all_sentence_transcripts.json') as json_file:
+        data = json.load(json_file)
+
+    dict_vb_count = {}
+    for video in tqdm.tqdm(list(data.keys())):
+        for [sentence, time_s, time_e] in list(data[video]):
+            for vb in vbs_few_reasons:
+                if vb not in dict_vb_count.keys():
+                    dict_vb_count[vb] = []
+                if vb in sentence:
+                    dict_vb_count[vb].append(sentence)
+    ordered_d = OrderedDict(sorted(dict_vb_count.items(), key=lambda x: len(x[1])))
+    list_vbs_to_filter_out = []
+    list_all_vbs_count = []
+    for vb in ordered_d.keys():
+        if len(dict_vb_count[vb]) < 10:
+            list_vbs_to_filter_out.append(vb)
+        list_all_vbs_count.append(len(dict_vb_count[vb]))
+        # print(vb, str(len(dict_vb_count[vb])))
+    print("Total nb of verb appearances in vlogs: " + str(sum(list_all_vbs_count)))
+    print("Average nb of appearances per verb: " + str(sum(list_all_vbs_count) / len(list_all_vbs_count)))
+    print("Max nb of appearances per verb: " + str(max(list_all_vbs_count)))
+    print("Min nb of appearances per verb: " + str(min(list_all_vbs_count)))
+
+    return list_vbs_to_filter_out
+
+
+def cluster_concept_net(list_vbs_to_filter_out, file_in, file_out):
+    with open(file_in) as json_file:
+        dict_concept_net = json.load(json_file)
+    list_verbs = dict_concept_net.keys()
     dict_concept_net_clustered = {}
-    model = SentenceTransformer('stsb-roberta-base')  # models: https://www.sbert.net/docs/pretrained_models.html#semantic-textual-similarity
+    model = SentenceTransformer(
+        'stsb-roberta-base')  # models: https://www.sbert.net/docs/pretrained_models.html#semantic-textual-similarity
 
-    for verb in list_verbs:
-        dict_concept_net_clustered[verb] = []
-        conceptnet_labels = dict_concept_net[verb]
-        sentence_labels = []
-        for label in conceptnet_labels:
-            misspelled_words = spell.unknown(label.split("_")) # check and correct spelling
-            if misspelled_words:
-                for word in misspelled_words:
-                    correction = spell.correction(word)
-                    label = label.replace(word, correction)
-            sentence_labels.append(" ".join(label.split("_")))
-        sentence_embeddings = model.encode(sentence_labels)
-        # Perform clustering
-        # Normalize the embeddings to unit length
-        sentence_embeddings = sentence_embeddings / np.linalg.norm(sentence_embeddings, axis=1, keepdims=True)
+    print("There are initially " + str(len(list_verbs)) + " verbs")
+    print("We filter out " + str(len(list_vbs_to_filter_out)) + " verbs.")
+    for verb in tqdm.tqdm(list_verbs):
+        if verb not in list_vbs_to_filter_out:
+            dict_concept_net_clustered[verb] = []
+            conceptnet_labels = dict_concept_net[verb]
+            sentence_labels = []
+            for label in conceptnet_labels:
+                misspelled_words = spell.unknown(label.split("_"))  # check and correct spelling
+                if misspelled_words:
+                    for word in misspelled_words:
+                        correction = spell.correction(word)
+                        label = label.replace(word, correction)
+                sentence_labels.append(" ".join(label.split("_")))
+            sentence_embeddings = model.encode(sentence_labels)
+            # Perform clustering
+            # Normalize the embeddings to unit length
+            sentence_embeddings = sentence_embeddings / np.linalg.norm(sentence_embeddings, axis=1, keepdims=True)
 
-        # clustering_model = AgglomerativeClustering(n_clusters=None, distance_threshold=1.2) #, affinity='cosine', linkage='average', distance_threshold=0.4)
-        clustering_model = AgglomerativeClustering(n_clusters=None, affinity='cosine', linkage='average',
-                                                   distance_threshold=0.6)
+            # clustering_model = AgglomerativeClustering(n_clusters=None, distance_threshold=1.2) #, affinity='cosine', linkage='average', distance_threshold=0.4)
+            clustering_model = AgglomerativeClustering(n_clusters=None, affinity='cosine', linkage='average',
+                                                       distance_threshold=0.6)
 
-        clustering_model.fit(sentence_embeddings)
-        cluster_assignment = clustering_model.labels_
+            clustering_model.fit(sentence_embeddings)
+            cluster_assignment = clustering_model.labels_
 
-        clustered_sentences = {}
-        for sentence_id, cluster_id in enumerate(cluster_assignment):
-            if cluster_id not in clustered_sentences:
-                clustered_sentences[cluster_id] = []
+            clustered_sentences = {}
+            for sentence_id, cluster_id in enumerate(cluster_assignment):
+                if cluster_id not in clustered_sentences:
+                    clustered_sentences[cluster_id] = []
 
-            clustered_sentences[cluster_id].append(sentence_labels[sentence_id])
+                clustered_sentences[cluster_id].append(sentence_labels[sentence_id])
+            # for i, cluster in clustered_sentences.items():
+            #     print("Cluster ", i + 1)
+            #     print(cluster)
+            #     print("")
+            for i, cluster in clustered_sentences.items():
+                dict_concept_net_clustered[verb].append(str(i) + ": " + str(cluster).replace("\n", ""))
+            dict_concept_net_clustered[verb] = sorted(dict_concept_net_clustered[verb])
 
-        # for i, cluster in clustered_sentences.items():
-        #     print("Cluster ", i + 1)
-        #     print(cluster)
-        #     print("")
-        for i, cluster in clustered_sentences.items():
-            dict_concept_net_clustered[verb].append(str(i) + ": " + str(cluster).replace("\n", ""))
-        dict_concept_net_clustered[verb] = sorted(dict_concept_net_clustered[verb])
-    with open('data/dict_concept_net_clustered.json', 'w+') as fp:
+            if len(dict_concept_net_clustered[verb]) < 2:
+                print(verb)
+                del dict_concept_net_clustered[verb]
+
+    print("There are " + str(len(dict_concept_net_clustered.keys())) + " verbs after filtering for verbs that appear"
+                                                                       " < 10 times in all transcripts and have less"
+                                                                       " than 2 clusters")
+
+    with open(file_out, 'w+') as fp:
         json.dump(dict_concept_net_clustered, fp)
 
 
-def save_sentences_per_verb(list_verbs):
-    # with open('data/all_sentence_transcripts.json') as json_file:
-    with open('data/all_sentence_transcripts_rachel.json') as json_file:
+def stats_concept_net(file_in):
+    with open(file_in) as json_file:
+        dict_concept_net = json.load(json_file)
+
+    print("Number of verbs after filtering: " + str(len(dict_concept_net.keys())))
+    list_nbs_values_per_verb = []
+    for key in dict_concept_net.keys():
+        # if len(dict_concept_net[key]) == 29:
+        #     print(key)
+        list_nbs_values_per_verb.append(len(dict_concept_net[key]))
+    print("Number of reasons: " + str(sum(list_nbs_values_per_verb)))
+    print("Average nb of reasons per verb: " + str(sum(list_nbs_values_per_verb) / len(list_nbs_values_per_verb)))
+    print("Max nb of reasons per verb: " + str(max(list_nbs_values_per_verb)))
+    print("Min nb of reasons per verb: " + str(min(list_nbs_values_per_verb)))
+
+
+def save_sentences_per_verb(list_verbs, file_in, file_out):
+    with open(file_in) as json_file:
         data = json.load(json_file)
 
-    dict_sentences_per_verb = {}
-    for video in tqdm.tqdm(data.keys()):
-        sentences_time = data[video]
-        for index, s_t in enumerate(sentences_time):
-            sentence = s_t[0]
-            time_s = s_t[1]
-            time_e = s_t[2]
-            time_s = str(datetime.timedelta(seconds=time_s))
-            time_e = str(datetime.timedelta(seconds=time_e))
-            for verb in list_verbs:
-                # for key in ["", "my", "the", "a", "some"]:
-                for key in [""]:
-                    # composed_verb = " ".join((verb.split()[0] + " " + key + " " + verb.split()[1]).split())
-                    composed_verb = verb
-                    # if verb == "writing":
-                    #     verb = "write"
-                    # elif verb == " read ":
-                    #     verb = "read"
-                    # else:
-                    #     if verb[-3:] == "ing":
-                    #         verb = verb[:-3]
-                    if composed_verb in sentence:
-                        if verb not in dict_sentences_per_verb.keys():
-                            dict_sentences_per_verb[verb] = []
-                        if index - 1 >= 0:
-                            sentence_before = sentences_time[index - 1][0]
-                        else:
-                            sentence_before = ""
-                        if index + 1 < len(sentences_time):
-                            sentence_after = sentences_time[index + 1][0]
-                        else:
-                            sentence_after = ""
-                        # sentence_after2 = sentences_time[index + 2][0]
-                        sentence = " ".join((sentence_before + " " + sentence + " " + sentence_after).split())
-                        # sentence = " ".join((sentence_before + " " + sentence + " " + sentence_after + " " + sentence_after2).split())
-                        dict_sentences_per_verb[verb].append({"sentence": sentence, "time_s": time_s, "time_e": time_e, "video": video})
+    sentence_iter1, sentence_iter2 = itertools.tee(sentence
+                                                   for sentences_time in data.values()
+                                                   for sentence, _, _ in sentences_time)
+    total_sentences = sum(1 for _ in sentence_iter1)
 
-    pp = pprint.PrettyPrinter()
-    pp.pprint(dict_sentences_per_verb)
+    doc_iter = nlp.pipe(tqdm.tqdm(sentence_iter2, total=total_sentences), n_process=4)
+
+    # lemmatizer = nlp.vocab.morphology.lemmatizer
+    dict_sentences_per_verb = {}
+    for video, sentences_time in data.items():
+        video_docs = list(itertools.islice(doc_iter, len(sentences_time)))
+
+        for verb in list_verbs:
+            if verb not in dict_sentences_per_verb:
+                dict_sentences_per_verb[verb] = []
+            # verb_lemmatized = lemmatizer(verb.strip(), 'VERB')[0]
+            # verb_forms = get_word_forms(verb)['v']
+            # for verb_form in verb_forms:
+
+            for index, (sentence, time_s, time_e) in enumerate(sentences_time):
+                time_s = str(datetime.timedelta(seconds=time_s))
+                time_e = str(datetime.timedelta(seconds=time_e))
+                time_s_before, time_e_after = time_s, time_e
+                sentence_before, sentence_after = "", ""
+                doc = video_docs[index]
+                for token in doc:
+                    if token.lemma_ == verb and token.pos_ == "VERB":  # CHECK IF VERB
+                        # if verb_form in sentence.split():
+                        if index >= 2:
+                            sentence_before = sentences_time[index - 2][0] + " " + sentences_time[index - 1][0]
+                            time_s_before = str(datetime.timedelta(seconds=sentences_time[index - 2][1]))
+                        elif index >= 1:
+                            sentence_before = sentences_time[index - 1][0]
+                            time_s_before = str(datetime.timedelta(seconds=sentences_time[index - 1][1]))
+
+                        if index + 2 < len(sentences_time):
+                            sentence_after = sentences_time[index + 2][0] + " " + sentences_time[index + 1][0]
+                            time_e_after = str(datetime.timedelta(seconds=sentences_time[index + 2][2]))
+                        elif index + 1 < len(sentences_time):
+                            sentence_after = sentences_time[index + 1][0]
+                            time_e_after = str(datetime.timedelta(seconds=sentences_time[index + 1][2]))
+                        # sentence_after2 = sentences_time[index + 2][0]
+
+                        # sentence = " ".join((sentence_before + " " + sentence + " " + sentence_after).split())
+                        # dict_ = {"sentence": sentence, "time_s": time_s, "time_e": time_e, "video": video}
+                        # dict_ = {"sentence_before": sentence_before, "sentence": sentence, "sentence_after": sentence_after,
+                        #                              "time_s": time_s_before, "time_e": time_e_after, "video": video}
+                        dict_ = {"sentence_before": sentence_before, "sentence": sentence, "sentence_after": sentence_after,
+                                 "time_s": time_s_before, "time_e": time_e_after, "video": video, "verb_pos_sentence": token.idx}  # enlarge video context
+                        if dict_ not in dict_sentences_per_verb[verb]:
+                            dict_sentences_per_verb[verb].append(dict_)
+                        break
 
     for verb in list_verbs:
-        # if verb == "writing":
-        #     verb = "write"
-        # elif verb == " read ":
-        #     verb = "read"
-        # else:
-        #     if verb[-3:] == "ing":
-        #         verb = verb[:-3]
+        # verb_lemmatized = lemmatizer(verb.strip(), 'VERB')[0]
         print(verb + " " + str(len(dict_sentences_per_verb[verb])))
 
-    # with open('data/dict_sentences_per_verb.json', 'w+') as fp:
-    with open('data/dict_sentences_per_verb_rachel.json', 'w+') as fp:
+    with open(file_out, 'w+') as fp:
         json.dump(dict_sentences_per_verb, fp)
+
 
 def regular_expr(list_verbs):
     with open('data/all_sentence_transcripts.json') as json_file:
@@ -163,18 +286,24 @@ def regular_expr(list_verbs):
     with open('data/dict_regular.json', 'w+') as fp:
         json.dump(dict_regular, fp)
 
-def change_json_for_web_annotations():
-    with open('data/dict_sentences_per_verb_rachel.json') as json_file:
+
+def change_json_for_web_annotations(list_actions):
+    # with open('data/dict_sentences_per_verb_rachel.json') as json_file:
+    with open('data/dict_sentences_per_verb_reasons.json') as json_file:
         data = json.load(json_file)
 
-    with open('data/dict_concept_net.json') as json_file:
+    # with open('data/dict_concept_net.json') as json_file:
+    with open('data/dict_concept_net_clustered.json') as json_file:
         dict_concept_net = json.load(json_file)
 
     web = {}
+    nb_examples = 10
     # web["clean"] = {"sentences": [], "reasons": []}
-    for action in tqdm.tqdm(data.keys()):
+    if not list_actions:
+        list_actions = data.keys()
+    for action in tqdm.tqdm(list_actions):
         web[action] = {"sentences": [], "reasons": []}
-        for dict_ in data[action][:15]:
+        for dict_ in data[action][:nb_examples]:
             x = time.strptime(dict_["time_s"].split('.')[0], '%H:%M:%S')
             time_s = datetime.timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
             x = time.strptime(dict_["time_e"].split('.')[0], '%H:%M:%S')
@@ -189,8 +318,9 @@ def change_json_for_web_annotations():
             web[action]["sentences"].append(new_dict)
             web[action]["reasons"] = dict_concept_net[action]
 
-    with open('data/annotation_input/dict_web.json', 'w+') as fp:
+    with open('../video_annotations/data/reason/dict_web2.json', 'w+') as fp:
         json.dump(web, fp)
+
 
 def compare_annotations():
     with open('data/annotation_output/output_oana.json') as json_file:
@@ -222,6 +352,7 @@ def compare_annotations():
     with open('data/annotation_output/dict_web_annotations_for_agreement.json', 'w+') as fp:
         json.dump(output_compare, fp)
 
+
 def edit_annotations_for_ouput():
     with open('data/annotation_output/output_oana.json') as json_file:
         output_me = json.load(json_file)
@@ -238,26 +369,240 @@ def edit_annotations_for_ouput():
     with open('data/annotation_output/dict_web_annotations_oan.json', 'w+') as fp:
         json.dump(output, fp)
 
+
 def check_if_key_duplicate():
     with open('data/annotation_output/dict_web_annotations_for_agreement.json') as json_file:
         output = json.load(json_file)
     print(len(output.keys()))
     print(len(set(list(output.keys()))))
 
-def main():
-    # concept_net()
-    # cluster_concept_net(list_verbs=["clean", "drink", "read", "write"])
 
-    verbs = [["read this", "clean this", "drink this"], ["making bed", "cleaning sink", "reading book", "drinking tea"],
-             ["is the best way to", "so that is why"], ["clean ", "cleaning", "cleaned"],
-             [" read ", "reading", "drink", "drinking", "write", "writing"]]
-    save_sentences_per_verb(verbs[-2])
+def get_SRL_naive(sentence):
+    for keyword in ["because", " as ", "therefore", " so that ", "so that is why", " is why "]:
+        if keyword in sentence:
+            return 1
+    return 0
+
+
+def filter_out_sentence(file_in, list_verbs):
+    # filter out sentences that don't provide any info about the cause for an action
+    from allennlp.predictors.predictor import Predictor
+    from baselines import get_SRL
+    SRL_predictor = Predictor.from_path(
+        "https://storage.googleapis.com/allennlp-public-models/structured-prediction-srl-bert.2020.12.15.tar.gz")
+    lemmatizer = nlp.vocab.morphology.lemmatizer
+
+    with open(file_in) as json_file:
+        data = json.load(json_file)
+    print(len(data.keys()))
+
+    dict_sentences_per_verb_rachel_no_reasons = {}
+    dict_sentences_per_verb_rachel_reasons = {}
+    nb_reasons = 0
+    nb_no_reasons = 0
+    # for verb in data.keys():
+    for verb in list_verbs:
+        dict_sentences_per_verb_rachel_no_reasons[verb] = []
+        dict_sentences_per_verb_rachel_reasons[verb] = []
+        list_hyponyms = get_verb_hyponyms(verb)
+        for dict in tqdm.tqdm(
+                list(data[verb])[:1000]):  # TODO: can limit the number of transcripts per verb - eg. clean has a lot
+            # for dict in tqdm.tqdm(data[verb]):
+            sentence = dict["sentence"]
+            reasons = get_SRL(sentence, SRL_predictor, lemmatizer, list_hyponyms, verb)
+            # reasons = get_SRL_naive(sentence)
+            if reasons:
+                dict_sentences_per_verb_rachel_reasons[verb].append(dict)
+                nb_reasons += 1
+            else:
+                dict_sentences_per_verb_rachel_no_reasons[verb].append(dict)
+                nb_no_reasons += 1
+
+    with open('data/dict_sentences_per_verb_reasons.json', 'w+') as fp:
+        json.dump(dict_sentences_per_verb_rachel_reasons, fp)
+    with open('data/dict_sentences_per_verb_no_reasons.json', 'w+') as fp:
+        json.dump(dict_sentences_per_verb_rachel_no_reasons, fp)
+
+    print("len no reason: " + str(nb_no_reasons))
+    print("len reason: " + str(nb_reasons))  # 5%
+
+
+def filter_sentences_by_reason(file_in):
+    with open(file_in) as json_file:
+        data = json.load(json_file)
+
+    dict_sentences_per_verb_REASONS = {}
+    list_verbs = ["clean"]
+    list_reasons = ["dirt", "mess", "clutter", "productive", "disgusting", "awful", "guest"]
+    for verb in list_verbs:
+        dict_sentences_per_verb_REASONS[verb] = {}
+        for reason in list_reasons:
+            dict_sentences_per_verb_REASONS[verb][reason] = []
+            for dict in tqdm.tqdm(
+                    data[verb]):  # TODO: can limit the number of transcripts per verb - eg. clean has a lot
+                sentence_before = dict["sentence_before"]
+                sentence = dict["sentence"]
+                sentence_after = dict["sentence_after"]
+                big_sentence = sentence_before + " " + sentence + " " + sentence_after
+                for word in big_sentence.split():
+                    if reason in word:
+                        dict_sentences_per_verb_REASONS[verb][reason].append(dict)
+
+    with open('data/dict_sentences_per_verb_REASONS.json', 'w+') as fp:
+        json.dump(dict_sentences_per_verb_REASONS, fp)
+
+    for reason in dict_sentences_per_verb_REASONS["clean"].keys():
+        print(reason, str(len(dict_sentences_per_verb_REASONS["clean"][reason])))
+
+
+def filter_sentences_by_casual_markers(file_in, list_verbs):
+    with open(file_in) as json_file:
+        data = json.load(json_file)
+
+    threshold_distance = 20
+    dict_sentences_per_verb_MARKERS = {}
+    list_casual_markers = [" because ", " since ", " so that is why ", " thus ", " therefore "]
+    for verb in list_verbs:
+        dict_sentences_per_verb_MARKERS[verb] = []
+        for dict in tqdm.tqdm(data[verb]):
+            sentence_before = dict["sentence_before"]
+            sentence = dict["sentence"]
+            sentence_after = dict["sentence_after"]
+            big_sentence = sentence_before + " " + sentence + " " + sentence_after
+            pos_verb = dict["verb_pos_sentence"]
+            for marker in list_casual_markers:
+                if marker in sentence:
+                    pos_marker = sentence.find(marker)
+                    if abs(pos_marker - pos_verb) <= threshold_distance:
+                        dict_sentences_per_verb_MARKERS[verb].append(dict)
+                        break
+                if marker in big_sentence:
+                    pos_marker = big_sentence.find(marker)
+                    if abs(pos_marker - pos_verb) <= threshold_distance + 10:
+                        dict_sentences_per_verb_MARKERS[verb].append(dict)
+                        break
+
+    with open('data/dict_sentences_per_verb_MARKERS.json', 'w+') as fp:
+        json.dump(dict_sentences_per_verb_MARKERS, fp)
+
+    for verb in list_verbs:
+        print("--------- " + verb + " ---------------")
+        print(len(dict_sentences_per_verb_MARKERS[verb]))
+
+
+def get_verb_hyponyms(verb):
+    from nltk.corpus import wordnet
+    syns = wordnet.synsets(verb, pos='v')
+    list_hyponym_names = []
+    for syn in syns:
+        if syn.lemmas()[0].name() == verb:
+            list_hyponyms = syn.hyponyms()
+            for hyponym in list_hyponyms:
+                list_hyponym_names.append(hyponym.lemmas()[0].name().replace("_", " "))
+    # print(list_hyponym_names)
+    return list_hyponym_names
+
+
+def get_top_actions():
+    with open('data/all_sentence_transcripts_rachel.json') as json_file:
+        data = json.load(json_file)
+
+    actions = []
+    for video in tqdm.tqdm(list(data.keys())[:30]):
+        for [sentence, time_s, time_e] in list(data[video]):
+            tokens = nlp(sentence)
+            for t in tokens:
+                if t.pos_ == "VERB":
+                    actions.append(t.lemma_)
+
+    c = Counter(actions)
+    print(c.most_common())
+
+
+def select_actions_for_trial_annotation():
+    with open('data/dict_sentences_per_verb_reasons.json') as json_file:
+        data = json.load(json_file)
+
+    print(len(data["clean"]))
+    print(len(data["read"]))
+    print(len(data["write"]))
+    print(len(data["sleep"]))
+    print(len(data["eat"]))
+    print(len(data["travel"]))
+    print(len(data["shop"]))
+    print(len(data["sew"]))
+    print(len(data["run"]))
+    print(len(data["listen"]))
+
+def make_AMT_input(file_in1, file_in2, list_verbs):
+    list_videos = []
+    list_actions = []
+    list_reasons = []
+    with open(file_in1) as json_file:
+        dict_sentences_per_verb_MARKERS= json.load(json_file)
+
+    with open(file_in2) as json_file:
+        dict_concept_net = json.load(json_file)
+
+    nb_posts_per_verb = 5
+    root_video_name = "https://github.com/OanaIgnat/miniclips/blob/master/"
+    for verb in list_verbs:
+        reasons = str(dict_concept_net[verb])
+        for element in dict_sentences_per_verb_MARKERS[verb][:nb_posts_per_verb]:
+            x = time.strptime(element["time_s"].split('.')[0], '%H:%M:%S')
+            time_s = datetime.timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
+            time_start = str(datetime.timedelta(seconds=time_s))
+
+            x = time.strptime(element["time_e"].split('.')[0], '%H:%M:%S')
+            time_e = datetime.timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
+            time_end = str(datetime.timedelta(seconds=time_e))
+
+            video_name = root_video_name + element["video"] + '||' + time_start + '||' + time_end + '.mp4?raw=true'
+            list_videos.append(video_name)
+            list_actions.append(verb)
+            list_reasons.append(reasons)
+
+    df = pd.DataFrame({'video_url': list_videos, 'action': list_actions, 'reasons': list_reasons})
+    df.to_csv("data/AMT/trial1.csv", index=False)
+
+def main():
+    ######### CONCEPT NET
+    # concept_net()
+    # filter_concept_net()
+    # list_vbs_to_filter_out = compare_CN_labels_with_transcripts(file_in="data/dict_concept_net_filtered.json")
+    # cluster_concept_net(list_vbs_to_filter_out, file_in="data/dict_concept_net_filtered.json", file_out="data/dict_concept_net_clustered.json")
+    # stats_concept_net(file_in="data/dict_concept_net_clustered.json")
+    # compare_CN_labels_with_transcripts(file_in="data/dict_concept_net_clustered.json")
+    # select_actions_for_trial_annotation()
+
+    # get_verb_hyponyms(verb="clean")
+
+    # get_top_actions()
+    ########## TRANSCRIPTS
+    # with open("data/dict_concept_net_clustered.json") as json_file:
+    #     dict_concept_net_clustered = json.load(json_file)
+    # verbs = dict_concept_net_clustered.keys()
+    # print(len(verbs))
+    verbs = ["clean", "read", "write"]
+    # save_sentences_per_verb(list(verbs), file_in='data/all_sentence_transcripts.json',
+    #                         file_out='data/dict_sentences_per_verb3.json')
+
+    # TODO send file_in to LIT1000: scp data/dict_sentences_per_verb.json oignat@lit1000.eecs.umich.edu:/tmp/pycharm_project_296/data/
+
+    # filter_sentences_by_reason(file_in='data/dict_sentences_per_verb3.json')
+    # filter_sentences_by_casual_markers(file_in='data/dict_sentences_per_verb3.json', list_verbs=verbs)
+    # filter_out_sentence(file_in='data/dict_sentences_per_verb.json', list_verbs=["clean", "write"]) # run on lit1000, scp oignat@lit1000.eecs.umich.edu:/tmp/pycharm_project_296/data/dict_sentences_per_verb_reasons.json data/
     # regular_expr([" clean", " read"]) # not using this for now
 
-    # change_json_for_web_annotations()
+    ########## ANNOTATIONS
+    # change_json_for_web_annotations(list_actions=["clean", "read", "write", "sleep", "eat", "travel", "shop", "sew", "run", "listen"])
     # compare_annotations()
     # edit_annotations_for_ouput()
     # check_if_key_duplicate()
+
+    ## AMT
+    make_AMT_input(file_in1='data/dict_sentences_per_verb_MARKERS.json', file_in2='data/dict_concept_net_clustered_manual.json', list_verbs = verbs)
+
 
 if __name__ == '__main__':
     main()
