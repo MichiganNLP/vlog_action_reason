@@ -1,3 +1,5 @@
+from collections import Counter
+
 from simpletransformers.classification import MultiLabelClassificationModel
 import pandas as pd
 import logging  # if error - change runtime and try again
@@ -5,34 +7,42 @@ import json
 import tqdm
 import numpy as np
 import spacy
+import ast
 
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.preprocessing import MultiLabelBinarizer
 from data_prep_annotation import get_verb_hyponyms
 
 nlp = spacy.load('en_core_web_sm')
 
 
-def read_annotations(file_output):
-    with open('data/annotation_output/' + file_output) as json_file:
-        dict_web_annotations = json.load(json_file)
-    list_GT_text_label = []
-    list_verbs = []
-    for key in dict_web_annotations:
-        verb, video, text = key.split(", ")
-        list_verbs.append(verb)
-        list_labels = dict_web_annotations[key]["oana"]
-        list_GT_text_label.append([text, list_labels])
+def read_annotations(file_in, file_out):
+    with open(file_in) as json_file:
+        dict_AMT_annotations = json.load(json_file)
 
-    # TODO: dict_concept_net TO dict_concept_net_clustered
-    with open('data/dict_concept_net.json') as json_file:
-        # with open('data/dict_concept_net_clustered.json') as json_file:
-        dict_concept_net = json.load(json_file)
-    list_reasons = []
-    for verb in list(set(list_verbs)):
-        conceptnet_labels = dict_concept_net[verb]
-        for label in conceptnet_labels:
-            list_reasons.append(" ".join(label.split("_")))
+    dict_GT_text_label = {}
+    for key in dict_AMT_annotations.keys():
+        verb = ast.literal_eval(key)[1]
+        transcript = dict_AMT_annotations[key][0]
+        reasons = ast.literal_eval(dict_AMT_annotations[key][1])
+        list_all_answers = []
+        for ans in ast.literal_eval(dict_AMT_annotations[key][2][0]):
+            list_all_answers.append(ans)
+        for ans in ast.literal_eval(dict_AMT_annotations[key][2][1]):
+            list_all_answers.append(ans)
+        for ans in ast.literal_eval(dict_AMT_annotations[key][2][2]):
+            list_all_answers.append(ans)
+        # remove duplicates
+        # list_all_answers = list(set(list_all_answers)) # take union answers
+        list_all_answers = [k for k, v in Counter(list_all_answers).items() if v >= 2]  # take majority answers
+        if verb not in dict_GT_text_label.keys():
+            dict_GT_text_label[verb] = {"reasons": reasons, "answers": []}
+        dict_GT_text_label[verb]["answers"].append([transcript, list_all_answers])
 
-    return list_verbs, list_GT_text_label, list_reasons
+    with open(file_out, 'w+') as fp:
+        json.dump(dict_GT_text_label, fp)
+
+    return dict_GT_text_label
 
 
 def find_reason(description):
@@ -152,30 +162,133 @@ def Roberta_multilabel(list_GT_text_label, conceptnet_labels):
     print(result)
 
 
-def NLI(list_GT_text_label, conceptnet_labels):
-    from transformers import pipeline
-    classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+def NLI(file_in, file_out):
+    with open(file_in) as json_file:
+        dict_GT_text_label = json.load(json_file)
 
-    sequence_to_classify = [l[0] for l in list_GT_text_label][:10]
-    candidate_labels = conceptnet_labels
-    print(len(sequence_to_classify))
-    list_dicts = classifier(sequence_to_classify, candidate_labels, multi_class=True)
-    print(list_dicts)
+    from transformers import AutoModelForSequenceClassification, AutoTokenizer
+    nli_model = AutoModelForSequenceClassification.from_pretrained('joeddav/xlm-roberta-large-xnli')
+    tokenizer = AutoTokenizer.from_pretrained('joeddav/xlm-roberta-large-xnli')
 
     threshold = 0.5
-    list_predicted_output = []
-    for d in list_dicts:
-        scores = d["scores"]
-        labels = d["labels"]
-        text = d["sequence"]
-        list_labels = []
-        for s, l in zip(scores, labels):
-            if s > threshold:
-                list_labels.append(l)
-        list_predicted_output.append([text, list_labels])
-        print([text, list_labels])
-    return list_predicted_output
+    dict_results = {"gt": {}, "predicted": {}}
 
+    for verb in dict_GT_text_label:
+        candidate_labels = dict_GT_text_label[verb]["reasons"]
+        list_GT_text_label = dict_GT_text_label[verb]["answers"]
+
+        transcripts = [l[0] for l in list_GT_text_label]
+        for [transcript, annotated_labels] in list_GT_text_label:
+            if str((verb, transcript)) not in dict_results["gt"].keys():
+                dict_results["gt"][str((verb, transcript))] = []
+            dict_results["gt"][str((verb, transcript))].append(annotated_labels)
+
+        for premise in tqdm.tqdm(transcripts):
+            list_predicted_labels = []
+            for label in candidate_labels:
+                hypothesis = f'The reason for {verb} is {label}.'
+                # run through model pre-trained on MNLI
+                x = tokenizer.encode(premise, hypothesis, return_tensors='pt', truncation_strategy='only_first')
+                logits = nli_model(x)[0]
+                # we throw away "neutral" (dim 1) and take the probability of
+                # "entailment" (2) as the probability of the label being true
+                entail_contradiction_logits = logits[:, [0, 2]]
+                probs = entail_contradiction_logits.softmax(dim=1)
+
+                true_prob = probs[:, 1].item()
+                if true_prob > threshold:
+                    list_predicted_labels.append(label)
+            if str((verb, premise)) not in dict_results["predicted"].keys():
+                dict_results["predicted"][str((verb, premise))] = []
+            dict_results["predicted"][str((verb, premise))].append(list_predicted_labels)
+        print(verb)
+
+    with open(file_out, 'w+') as fp:
+        json.dump(dict_results, fp)
+
+    return dict_results
+
+
+def transform_one_hot(reasons_pred, all_reasons):
+    one_hot_label = []
+    for label in all_reasons:
+        if label in reasons_pred:
+            one_hot_label.append(1)
+        else:
+            one_hot_label.append(0)
+    return one_hot_label
+
+def transform_text_to_indices(reasons_pred, all_reasons):
+    index_label = []
+    for label in reasons_pred:
+        index = all_reasons.index(label.strip())
+        index_label.append(index)
+    return index_label
+
+def compute_accuracy(file_in):
+    with open(file_in) as json_file:
+        dict_results = json.load(json_file)
+
+    with open("data/AMT/output/dict_web_trial1.json") as json_file:
+        dict_web_trial1 = json.load(json_file)
+
+    list_predicted = []
+    list_gt = []
+    list_reasons = []
+    list_verbs = []
+    for key in dict_results["gt"]:
+        if key not in dict_results["predicted"]:
+            print("error in keys in dict_results!!!")
+        verb = ast.literal_eval(key)[0]
+        list_predicted.append(dict_results["predicted"][key][0])
+        list_gt.append(dict_results["gt"][key][0])
+        list_reasons.append(dict_web_trial1[verb]["reasons"])
+        list_verbs.append(verb)
+
+
+    list_gt_labels, list_p_labels = [], []
+    verb_initial = list_verbs[0]
+    for reasons_pred, reasons_gt, all_reasons, verb in zip(list_predicted, list_gt, list_reasons, list_verbs):
+        if verb != verb_initial:
+            y_all = MultiLabelBinarizer().fit_transform(list_gt_labels + list_p_labels)
+            y_true = y_all[:len(list_gt_labels)]
+            y_pred = y_all[len(list_gt_labels):]
+            flat_y_true = [item for sublist in y_true for item in sublist]
+            flat_y_pred = [item for sublist in y_pred for item in sublist]
+
+            list_gt_labels, list_p_labels = [], []
+            print(verb_initial)
+            print("accuracy_score:", accuracy_score(flat_y_true, flat_y_pred))
+            print("precision_score:", precision_score(flat_y_true, flat_y_pred))
+            print("recall_score:", recall_score(flat_y_true, flat_y_pred))
+            print("-----------------------")
+            verb_initial = verb
+        # one_hot_pred = transform_one_hot(reasons_pred, all_reasons)
+        one_hot_pred = transform_text_to_indices(reasons_pred, all_reasons)
+        one_hot_gt = transform_text_to_indices(reasons_gt, all_reasons)
+        list_gt_labels.append(tuple(one_hot_gt))
+        list_p_labels.append(tuple(one_hot_pred))
+        # print("reasons_pred: ", reasons_pred, str(one_hot_pred))
+        # print("reasons_gt: ", reasons_gt, str(one_hot_gt))
+        # print("all_reasons: ", all_reasons)
+        # print("-------------------------------------------")
+    print(verb_initial)
+    y_all = MultiLabelBinarizer().fit_transform(list_gt_labels + list_p_labels)
+    y_true = y_all[:len(list_gt_labels)]
+    y_pred = y_all[len(list_gt_labels):]
+    flat_y_true = [item for sublist in y_true for item in sublist]
+    flat_y_pred = [item for sublist in y_pred for item in sublist]
+    print("accuracy_score:", accuracy_score(flat_y_true, flat_y_pred))
+    print("precision_score:", precision_score(flat_y_true, flat_y_pred))
+    print("recall_score:", recall_score(flat_y_true, flat_y_pred))
+    print("-----------------------")
+
+
+    # y_true = MultiLabelBinarizer().fit_transform(list_gt_labels)
+    # y_pred = MultiLabelBinarizer().fit_transform(list_p_labels)
+    # print("total accuracy_score:", accuracy_score(y_true, y_pred))
+    # print("precision_score:", precision_score(y_true, y_pred))
+    # print("recall_score:", recall_score(y_true, y_pred))
 
 # transform labels in one-hot vectors
 def label_to_onehot(list_GT_text_label, conceptnet_labels):
@@ -191,37 +304,57 @@ def label_to_onehot(list_GT_text_label, conceptnet_labels):
     return one_hot_list_text_label
 
 
-def calculate_metrics(list_GT_text_label, list_predicted_output, conceptnet_labels):
-    from sklearn.metrics import label_ranking_average_precision_score, hamming_loss, accuracy_score, jaccard_score
+def majority_class_baseline(file_in):
+    with open(file_in) as json_file:
+        dict_GT_text_label = json.load(json_file)
 
-    one_hot_list_text_label_GT = label_to_onehot(list_GT_text_label, conceptnet_labels)
-    one_hot_list_text_label_P = label_to_onehot(list_predicted_output, conceptnet_labels)
+    for verb in dict_GT_text_label:
+        list_GT_labels = [l[1] for l in dict_GT_text_label[verb]["answers"]]
+        candidate_labels = dict_GT_text_label[verb]["reasons"]
+        # print(list_GT_labels)
+        all_labels = [item for sublist in list_GT_labels for item in sublist]
+        majority_class = Counter(all_labels).most_common(1)[0][0]
+        one_hot_pred = transform_text_to_indices([majority_class], candidate_labels)
+        print(one_hot_pred)
+        for task in list_GT_labels:
+            one_hot_gt = transform_text_to_indices(task, candidate_labels)
 
-    list_gt_labels = []
-    list_p_labels = []
-    for [text, label] in one_hot_list_text_label_GT:
-        list_gt_labels.append(label)
-    for [text, label] in one_hot_list_text_label_P:
-        list_p_labels.append(label)
 
-    y_true = np.array(list_gt_labels)
-    y_pred = np.array(list_p_labels)
-    # label_ranking_average_precision_score(y_true, y_score)
 
-    print("label_ranking_average_precision_score:", label_ranking_average_precision_score(y_true, y_pred))
-    print("accuracy_score:", accuracy_score(y_true, y_pred))
-    print("jaccard_score:", jaccard_score(y_true, y_pred, average='samples'))
-    print("Hamming_loss: (smaller is better)", hamming_loss(y_true, y_pred))
 
+# def calculate_metrics(list_GT_text_label, list_predicted_output, conceptnet_labels):
+#     from sklearn.metrics import label_ranking_average_precision_score, hamming_loss, accuracy_score, jaccard_score
+#
+#     one_hot_list_text_label_GT = label_to_onehot(list_GT_text_label, conceptnet_labels)
+#     one_hot_list_text_label_P = label_to_onehot(list_predicted_output, conceptnet_labels)
+#
+#     list_gt_labels = []
+#     list_p_labels = []
+#     for [text, label] in one_hot_list_text_label_GT:
+#         list_gt_labels.append(label)
+#     for [text, label] in one_hot_list_text_label_P:
+#         list_p_labels.append(label)
+#
+#     y_true = np.array(list_gt_labels)
+#     y_pred = np.array(list_p_labels)
+#     # label_ranking_average_precision_score(y_true, y_score)
+#
+#     print("label_ranking_average_precision_score:", label_ranking_average_precision_score(y_true, y_pred))
+#     print("accuracy_score:", accuracy_score(y_true, y_pred))
+#     print("jaccard_score:", jaccard_score(y_true, y_pred, average='samples'))
+#     print("Hamming_loss: (smaller is better)", hamming_loss(y_true, y_pred))
+#
 
 def main():
-    # TODO - verb vs. list of verbs from ConceptNet
-    list_verbs, list_GT_text_label, conceptnet_labels = read_annotations(
-        file_output="dict_web_annotations_for_agreement.json")
-    verb = "clean"
-    list_hyponyms = get_verb_hyponyms(verb="clean")
-    similarity_CN_transcript(list_GT_text_label, conceptnet_labels, list_hyponyms, verb, is_SRL=True)
-    # NLI(list_GT_text_label, conceptnet_labels)
+    dict_GT_text_label = read_annotations(file_in="data/AMT/output/pipeline_trial1.json", file_out="data/AMT/output/dict_web_trial1.json")
+
+    majority_class_baseline(file_in="data/AMT/output/dict_web_trial1.json")
+
+    # verb = "clean"
+    # list_hyponyms = get_verb_hyponyms(verb="clean")
+    # similarity_CN_transcript(list_GT_text_label, conceptnet_labels, list_hyponyms, verb, is_SRL=True)
+    # NLI(file_in="data/AMT/output/dict_web_trial1.json", file_out="data/AMT/output/dict_NLI_results_trial1.json")
+    # compute_accuracy("data/AMT/output/dict_NLI_results_trial1.json")
     # Roberta_multilabel(list_GT_text_label, conceptnet_labels)
 
 

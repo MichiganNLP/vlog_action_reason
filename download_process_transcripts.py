@@ -180,16 +180,16 @@ def sentence_split(channel_id):
 def save_all_sentences():
     all_dict = {}
     path_to_json = 'data/sentences_transcripts/'
-    json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
-    # json_files = ["UCM3P_G21gOSVdepXrEFojIg.json"]
+    # json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
+    json_files = ["UCM3P_G21gOSVdepXrEFojIg.json"]
     for index, js in enumerate(json_files):
         with open(os.path.join(path_to_json, js)) as json_file:
             json_text = json.load(json_file)
         for key in json_text.keys():
             all_dict[key] = json_text[key]
 
-    with open('data/all_sentence_transcripts.json', 'w+') as fp:
-    # with open('data/all_sentence_transcripts_rachel.json', 'w+') as fp:
+    # with open('data/all_sentence_transcripts.json', 'w+') as fp:
+    with open('data/all_sentence_transcripts_rachel.json', 'w+') as fp:
         json.dump(all_dict, fp)
 
 
@@ -197,6 +197,7 @@ def main():
     list_channels = ['UCT9y7nOBdqfWuaZJ_x9mPkA', 'UCM3P_G21gOSVdepXrEFojIg', 'UC-8yLb1K-DEC6dCYlLOJfiQ', 'UCDy89wegrl-5Qv0ZkTtlnPg',
                        'UCK2d_KfjVPwh9gqoczQ9sSw', 'UCVKFs0cesQUEGtn8gQmhbHw', 'UCMfXv2enRXepxG92VoxfrEg', 'UCbQj1aJiioDM8g0tmGmtC_w',
                        'UCJCgaQzY5z5sA-xwkwibygw']
+    list_channels = ['UCM3P_G21gOSVdepXrEFojIg']
     for channel_id in list_channels:
     # for channel_id in ['UCK2d_KfjVPwh9gqoczQ9sSw']:
         print(channel_id)

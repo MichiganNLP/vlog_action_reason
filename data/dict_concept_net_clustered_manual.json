@@ -7,10 +7,10 @@
     "share happiness"
   ],
   "clean": [
-    "remove dirt",
+    "company was coming",
     "do not like dirtiness",
     "declutter",
-    "company was coming"
+    "remove dirt"
   ],
   
   "cook": [
@@ -339,10 +339,10 @@
     "8: ['hurt']"
   ],
   "read": [
-    "learn",
-    "appreciate great works of fiction",
-    "bored",
     "appear cultured to opposite sex",
+    "bored",
+    "learn",
+    "appreciate",
     "entertained"
   ],
   "relax": [
@@ -596,7 +596,6 @@
     "need money"
   ],
   "write": [
-    "have story to tell",
     "remember",
     "famous",
     "create novel",

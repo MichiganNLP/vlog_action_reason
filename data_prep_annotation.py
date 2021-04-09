@@ -3,6 +3,8 @@ import json
 import re
 import time
 from collections import Counter
+
+import ast
 import pandas as pd
 import datetime
 import numpy as np
@@ -13,10 +15,14 @@ from nltk.collections import OrderedDict
 from sentence_transformers import SentenceTransformer
 from sklearn.cluster import AgglomerativeClustering
 from spellchecker import SpellChecker
+from nltk import agreement
+from statistics import mean
 
 nlp = spacy.load('en_core_web_sm')
 
 spell = SpellChecker()
+
+from pyinflect import getInflection
 
 
 def concept_net():
@@ -251,8 +257,10 @@ def save_sentences_per_verb(list_verbs, file_in, file_out):
                         # dict_ = {"sentence": sentence, "time_s": time_s, "time_e": time_e, "video": video}
                         # dict_ = {"sentence_before": sentence_before, "sentence": sentence, "sentence_after": sentence_after,
                         #                              "time_s": time_s_before, "time_e": time_e_after, "video": video}
-                        dict_ = {"sentence_before": sentence_before, "sentence": sentence, "sentence_after": sentence_after,
-                                 "time_s": time_s_before, "time_e": time_e_after, "video": video, "verb_pos_sentence": token.idx}  # enlarge video context
+                        dict_ = {"sentence_before": sentence_before, "sentence": sentence,
+                                 "sentence_after": sentence_after,
+                                 "time_s": time_s_before, "time_e": time_e_after, "video": video,
+                                 "verb_pos_sentence": token.idx}  # enlarge video context
                         if dict_ not in dict_sentences_per_verb[verb]:
                             dict_sentences_per_verb[verb].append(dict_)
                         break
@@ -455,7 +463,7 @@ def filter_sentences_by_reason(file_in):
         print(reason, str(len(dict_sentences_per_verb_REASONS["clean"][reason])))
 
 
-def filter_sentences_by_casual_markers(file_in, list_verbs):
+def filter_sentences_by_casual_markers(file_in, file_out, list_verbs):
     with open(file_in) as json_file:
         data = json.load(json_file)
 
@@ -482,7 +490,7 @@ def filter_sentences_by_casual_markers(file_in, list_verbs):
                         dict_sentences_per_verb_MARKERS[verb].append(dict)
                         break
 
-    with open('data/dict_sentences_per_verb_MARKERS.json', 'w+') as fp:
+    with open(file_out, 'w+') as fp:
         json.dump(dict_sentences_per_verb_MARKERS, fp)
 
     for verb in list_verbs:
@@ -534,21 +542,28 @@ def select_actions_for_trial_annotation():
     print(len(data["run"]))
     print(len(data["listen"]))
 
-def make_AMT_input(file_in1, file_in2, list_verbs):
+
+def make_AMT_input(file_in1, file_in2, file_out1, file_out2, list_verbs):
     list_videos = []
+    list_video_urls = []
     list_actions = []
     list_reasons = []
+    list_transcripts = []
     with open(file_in1) as json_file:
-        dict_sentences_per_verb_MARKERS= json.load(json_file)
+        dict_sentences_per_verb_MARKERS = json.load(json_file)
 
     with open(file_in2) as json_file:
         dict_concept_net = json.load(json_file)
 
     nb_posts_per_verb = 5
+    trial = 1 #0 before
     root_video_name = "https://github.com/OanaIgnat/miniclips/blob/master/"
     for verb in list_verbs:
-        reasons = str(dict_concept_net[verb])
-        for element in dict_sentences_per_verb_MARKERS[verb][:nb_posts_per_verb]:
+        reasons = str(
+            dict_concept_net[verb] + ['I cannot find any reason mentioned verbally or shown visually in the video']
+            + ['other (please write them in the provided box)'])
+        # for element in dict_sentences_per_verb_MARKERS[verb][:nb_posts_per_verb]:
+        for element in dict_sentences_per_verb_MARKERS[verb][nb_posts_per_verb * trial:nb_posts_per_verb * (trial + 1)]:
             x = time.strptime(element["time_s"].split('.')[0], '%H:%M:%S')
             time_s = datetime.timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
             time_start = str(datetime.timedelta(seconds=time_s))
@@ -557,13 +572,184 @@ def make_AMT_input(file_in1, file_in2, list_verbs):
             time_e = datetime.timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
             time_end = str(datetime.timedelta(seconds=time_e))
 
-            video_name = root_video_name + element["video"] + '||' + time_start + '||' + time_end + '.mp4?raw=true'
-            list_videos.append(video_name)
-            list_actions.append(verb)
+            video_name = root_video_name + element["video"] + '+' + time_start + '+' + time_end + '.mp4?raw=true'
+            list_video_urls.append(video_name)
+            # list_videos.append(element["video"] + '+' + time_start + '+' + time_end + '.mp4')
+            verb_ing = getInflection(verb, 'VBG')[0]
+            list_actions.append(verb_ing)
             list_reasons.append(reasons)
+            list_transcripts.append(
+                element["sentence_before"] + " " + element["sentence"] + " " + element["sentence_after"])
 
-    df = pd.DataFrame({'video_url': list_videos, 'action': list_actions, 'reasons': list_reasons})
-    df.to_csv("data/AMT/trial1.csv", index=False)
+    df_AMT = pd.DataFrame({'video_url': list_video_urls, 'action': list_actions, 'reasons': list_reasons})
+    df_AMT.to_csv(file_out1, index=False)
+
+    dict_content_label = {}
+    for video, action, transcript, reasons in zip(list_video_urls, list_actions, list_transcripts, list_reasons):
+        if str((video, action)) not in dict_content_label.keys():
+            dict_content_label[str((video, action))] = {"transcripts": [], "reasons": []}
+        dict_content_label[str((video, action))]["transcripts"].append(transcript)
+        dict_content_label[str((video, action))]["reasons"].append(reasons)
+
+    with open(file_out2, 'w+') as fp:
+        json.dump(dict_content_label, fp)
+    # df_all_data = pd.DataFrame({'video': list_videos, 'transcript': list_transcripts, 'action': list_actions, 'reasons': list_reasons})
+    # df_all_data.to_csv(file_out2, index=False)
+
+
+def read_AMT_output(file_in1, file_out):
+    ann_df = pd.read_csv(file_in1)
+    dict_content_label = {}
+    dict_verb_label = {}
+    for video, action, reasons, labels, conf, why_both, why_mentioned, why_shown in zip(ann_df["Input.video_url"],
+                                                                               ann_df["Input.action"],
+                                                                               ann_df["Input.reasons"],
+                                                                               ann_df["Answer.category.labels"],
+                                                                               ann_df["Answer.confidence.high.on"],
+                                                                               ann_df["Answer.why.both.on"],
+                                                                               ann_df["Answer.why.mentioned.on"],
+                                                                               ann_df["Answer.why.shown.on"]):
+        if str((video, action)) not in dict_content_label.keys():
+            dict_content_label[str((video, action))] = {"labels": [], "confidence": [], "why": []}
+        if action not in dict_verb_label.keys():
+            dict_verb_label[action] = {"GT": ast.literal_eval(reasons), "labels": []}
+        dict_content_label[str((video, action))]["labels"].append(labels)
+        dict_verb_label[action]["labels"].append(ast.literal_eval(labels))
+        if conf:
+            dict_content_label[str((video, action))]["confidence"].append("high")
+        else:
+            dict_content_label[str((video, action))]["confidence"].append("low")
+        if why_both:
+            dict_content_label[str((video, action))]["why"].append("both")
+        if why_mentioned:
+            dict_content_label[str((video, action))]["why"].append("mentioned")
+        if why_shown:
+            dict_content_label[str((video, action))]["why"].append("shown")
+
+    nb_posts_at_least_1_high = 0
+    nb_posts_at_least_1_low = 0
+    nb_posts_at_least_1_mention = 0
+    nb_posts_at_least_1_shown = 0
+    nb_posts_at_least_1_both = 0
+    list_labels, list_confidence, list_whys = [], [], []
+    for content in dict_content_label.keys():
+        labels = dict_content_label[content]["labels"]
+        list_labels.append(labels)
+        if len(labels) != 3:
+            print("error!!, nb of labels per posts is not 3")
+        confidences = dict_content_label[content]["confidence"]
+        list_confidence.append(confidences)
+        whys = dict_content_label[content]["why"]
+        list_whys.append(whys)
+        if "high" in confidences:
+            nb_posts_at_least_1_high += 1
+        if "low" in confidences:
+            nb_posts_at_least_1_low += 1
+
+        if "mentioned" in whys:
+            nb_posts_at_least_1_mention += 1
+        if "shown" in whys:
+            nb_posts_at_least_1_shown += 1
+        if "both" in whys:
+            nb_posts_at_least_1_both += 1
+
+    print(nb_posts_at_least_1_high)
+    print(nb_posts_at_least_1_low)
+    print(nb_posts_at_least_1_mention)
+    print(nb_posts_at_least_1_shown)
+    print(nb_posts_at_least_1_both)
+    print(len(dict_content_label.keys()))
+
+    with open(file_out, 'w+') as fp:
+        json.dump(dict_content_label, fp)
+
+    return dict_verb_label, list_confidence, list_whys
+
+
+def calculate_fleiss_kappa_agreement(list_labels):
+    coder1 = [l[0] for l in list_labels]
+    coder2 = [l[1] for l in list_labels]
+    coder3 = [l[2] for l in list_labels]
+    formatted_codes = [[1, i, coder1[i]] for i in range(len(coder1))] + [[2, i, coder2[i]] for i in
+                                                                         range(len(coder2))] + [
+                          [3, i, coder3[i]] for i in range(len(coder3))]
+    ratingtask = agreement.AnnotationTask(data=formatted_codes)
+    print('Fleiss\'s Kappa:', ratingtask.multi_kappa())
+
+def agreement_labels_AMT(dict_verb_label):
+    dict_binary = {}
+    list_all_kappa = []
+    for verb in dict_verb_label.keys():
+        print(verb)
+        dict_binary[verb] = []
+        gt_labels = dict_verb_label[verb]["GT"]
+        all_labels = dict_verb_label[verb]["labels"]
+        binary_labels_per_verb = []
+        for labels in all_labels:
+            binary_labels = []
+            for label_GT in gt_labels:
+                if label_GT in labels:
+                    binary_labels.append(1)
+                else:
+                    binary_labels.append(0)
+            binary_labels_per_verb.append(binary_labels)
+        dict_binary[verb] = binary_labels_per_verb
+        # print(dict_verb_label[verb])
+        # print(dict_binary[verb])
+        list_kappa = []
+        for i in range(0, len(binary_labels_per_verb), 3):
+            chunk = binary_labels_per_verb[i:i + 3]
+            # print(chunk)
+            [coder1, coder2, coder3] = chunk
+            formatted_codes = [[1, i, coder1[i]] for i in range(len(coder1))] + [[2, i, coder2[i]] for i in
+                                                                                 range(len(coder2))] + [
+                                  [3, i, coder3[i]] for i in range(len(coder3))]
+
+            ratingtask = agreement.AnnotationTask(data=formatted_codes)
+
+            list_kappa.append(ratingtask.multi_kappa())
+        print('Avg Fleiss\'s Kappa per verb:', mean(list_kappa))
+        list_all_kappa.append(mean(list_kappa))
+    print('Avg Fleiss\'s Kappa all verbs:', mean(list_all_kappa))
+
+
+def agreement_AMT_output(dict_verb_label, list_confidence, list_whys):
+    list_high_confidence_whys = []
+    new_list_whys = []  # both overlaps with mention and shown
+    print("####### Label agreement:")
+    agreement_labels_AMT(dict_verb_label)
+    for post_whys, post_confidences in zip(list_whys, list_confidence):
+        if "mentioned" in post_whys:
+            post_whys = ["mentioned" if x == "both" else x for x in post_whys]
+        else:
+            post_whys = ["shown" if x == "both" else x for x in post_whys]
+        new_list_whys.append(post_whys)
+        if 'low' in post_confidences:
+            # if False in post_confidences:
+            continue
+        list_high_confidence_whys.append(post_whys)
+    print("####### Why (both, mentioned, shown) agreement ")
+    calculate_fleiss_kappa_agreement(new_list_whys)
+    print("After removing low confidence posts: ")
+    calculate_fleiss_kappa_agreement(list_high_confidence_whys)
+    print(len(list_whys), len(list_high_confidence_whys))
+
+
+def create_data_pipeline(file_in1, file_in2, file_out):
+    with open(file_in1) as json_file:
+        annotations = json.load(json_file)
+    with open(file_in2) as json_file:
+        data = json.load(json_file)
+
+    data_pipeline = {}
+    for key in annotations:
+        if key not in data:
+            print("Error! " + key + "not in data")
+        data_pipeline[key] = [data[key]["transcripts"][0], data[key]["reasons"][0], annotations[key]["labels"]]
+
+    with open(file_out, 'w+') as fp:
+        json.dump(data_pipeline, fp)
+
 
 def main():
     ######### CONCEPT NET
@@ -584,13 +770,13 @@ def main():
     # verbs = dict_concept_net_clustered.keys()
     # print(len(verbs))
     verbs = ["clean", "read", "write"]
-    # save_sentences_per_verb(list(verbs), file_in='data/all_sentence_transcripts.json',
-    #                         file_out='data/dict_sentences_per_verb3.json')
+    # save_sentences_per_verb(list(verbs), file_in='data/all_sentence_transcripts_rachel.json',
+    #                         file_out='data/dict_sentences_per_verb_rachel.json')
 
     # TODO send file_in to LIT1000: scp data/dict_sentences_per_verb.json oignat@lit1000.eecs.umich.edu:/tmp/pycharm_project_296/data/
 
     # filter_sentences_by_reason(file_in='data/dict_sentences_per_verb3.json')
-    # filter_sentences_by_casual_markers(file_in='data/dict_sentences_per_verb3.json', list_verbs=verbs)
+    # filter_sentences_by_casual_markers(file_in='data/dict_sentences_per_verb_rachel.json', file_out='data/dict_sentences_per_verb_MARKERS_rachel.json', list_verbs=verbs)
     # filter_out_sentence(file_in='data/dict_sentences_per_verb.json', list_verbs=["clean", "write"]) # run on lit1000, scp oignat@lit1000.eecs.umich.edu:/tmp/pycharm_project_296/data/dict_sentences_per_verb_reasons.json data/
     # regular_expr([" clean", " read"]) # not using this for now
 
@@ -601,7 +787,17 @@ def main():
     # check_if_key_duplicate()
 
     ## AMT
-    make_AMT_input(file_in1='data/dict_sentences_per_verb_MARKERS.json', file_in2='data/dict_concept_net_clustered_manual.json', list_verbs = verbs)
+    # make_AMT_input(file_in1='data/dict_sentences_per_verb_MARKERS_rachel.json',
+    #                file_in2='data/dict_concept_net_clustered_manual.json',
+    #                file_out1="data/AMT/input/trial2.csv", file_out2="data/AMT/input/trial2_all_data.json",
+    #                list_verbs=verbs)
+
+    list_labels, list_confidence, list_whys = read_AMT_output(file_in1="data/AMT/output/trial1_Batch_4385951_batch_results.csv",
+                                                          file_out="data/AMT/output/trial1.json")
+    agreement_AMT_output(list_labels, list_confidence, list_whys)
+
+    # create_data_pipeline(file_in1="data/AMT/output/trial1.json", file_in2="data/AMT/input/trial1_all_data.json",
+    #                      file_out="data/AMT/output/pipeline_trial1.json")
 
 
 if __name__ == '__main__':

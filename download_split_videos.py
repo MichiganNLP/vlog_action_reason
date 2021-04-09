@@ -8,7 +8,7 @@ import shutil
 import numpy as np
 import pandas as pd
 
-def split_video_by_time(video_id, time_start, time_end, verb):
+def split_video_by_time(video_id, time_start, time_end, verb, github_path):
     duration = time_end - time_start
     print(time_start)
     print(time_end)
@@ -18,10 +18,13 @@ def split_video_by_time(video_id, time_start, time_end, verb):
     duration = str(datetime.timedelta(seconds=duration))
     print(time_start)
     print(time_end)
-    command_split_video = 'ffmpeg -ss ' + time_start + ' -i ' + 'data/videos/' + video_id + '.mp4 ' + '-to ' + duration + \
-                    ' -c copy data/videos/splits/' + verb + "/" + video_id + '_' + time_start + '_' + time_end + '.mp4'
-    os.system(command_split_video)
+    # command_split_video = 'ffmpeg -ss ' + time_start + ' -i ' + 'data/videos/' + video_id + '.mp4 ' + "-fs 25M " + '-to ' + duration + \
+    #                 ' -c copy data/videos/splits/' + verb + "/" + video_id + '+' + time_start + '+' + time_end + '.mp4'
+    command_split_video = 'ffmpeg -ss ' + time_start + ' -i ' + 'data/videos/' + video_id + '.mp4 ' + "-fs 25M " + '-to ' + duration + \
+                          ' -c copy ' + github_path + video_id + '+' + time_start + '+' + time_end + '.mp4'
+
     print(command_split_video)
+    os.system(command_split_video)
 
 
 def download_video(video_id):
@@ -123,10 +126,10 @@ def download_from_dict():
 
 def download_from_AMT_input(file_in):
     list_all_video_names_removed = []
-
+    github_path = '../miniclips/'
     df = pd.read_csv(file_in)
     for video_url, verb, reasons in zip(df["video_url"], df["action"], df["reasons"]):
-        video_id, time_s, time_e = video_url.split("https://github.com/OanaIgnat/miniclips/blob/master/")[1].split("||")
+        video_id, time_s, time_e = video_url.split("https://github.com/OanaIgnat/miniclips/blob/master/")[1].split("+")
         time_e = time_e.split(".mp4?raw=true")[0]
 
         x = time.strptime(time_s.split('.')[0], '%H:%M:%S')
@@ -136,23 +139,23 @@ def download_from_AMT_input(file_in):
 
         if not os.path.exists('data/videos/' + video_id + ".mp4"):
             download_video(video_id)
-        if not os.path.exists('data/videos/splits/' + verb):
-            os.makedirs('data/videos/splits/' + verb)
-        split_video_by_time(video_id, time_s, time_e, verb)
+        # if not os.path.exists('data/videos/splits/' + verb):
+        #     os.makedirs(github_path + '/data/videos/splits/' + verb)
+        split_video_by_time(video_id, time_s, time_e, verb, github_path)
 
-    for verb in list(set(df["action"])):
-        list_video_names_removed = filter_split_by_motion(PATH_miniclips="data/videos/splits/" + verb + "/",
-                                                          PATH_problematic_videos="data/videos/splits/" + verb + "/filtered_out/",
-                                                          PARAM_CORR2D_COEFF=0.8)
-    # 0.8 by default
-    for video_name in list_video_names_removed:
-        list_all_video_names_removed.append(video_name)
-
-    df = pd.DataFrame({'videos_to_remove': list_all_video_names_removed})
-    df.to_csv('data/AMT/videos_to_remove.csv')
+    # for verb in list(set(df["action"])):
+    #     list_video_names_removed = filter_split_by_motion(PATH_miniclips="data/videos/splits/" + verb + "/",
+    #                                                       PATH_problematic_videos="data/videos/splits/" + verb + "/filtered_out/",
+    #                                                       PARAM_CORR2D_COEFF=0.8)
+    # # 0.8 by default
+    # for video_name in list_video_names_removed:
+    #     list_all_video_names_removed.append(video_name)
+    #
+    # df = pd.DataFrame({'videos_to_remove': list_all_video_names_removed})
+    # df.to_csv('data/AMT/videos_to_remove.csv')
 
 def main():
-    download_from_AMT_input(file_in="data/AMT/trial1.csv")
+    download_from_AMT_input(file_in="data/AMT/input/trial2.csv")
 
 
 if __name__ == '__main__':
