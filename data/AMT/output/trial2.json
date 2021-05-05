@@ -1,0 +1,282 @@
+{
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/EphWUUqxbck+0:00:04+0:00:27.mp4?raw=true', 'cleaning')": {
+    "labels": [
+      "['other (please write them in the provided box)']"
+    ],
+    "other_labels": [
+      "Get everything ready for the week ahead"
+    ],
+    "confidence": [
+      "high"
+    ],
+    "why": [
+      "mentioned"
+    ],
+    "comments": [
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/Qmv3oEg9saE+0:02:32+0:03:24.mp4?raw=true', 'cleaning')": {
+    "labels": [
+      "['remove dirt']",
+      "['do not like dirtiness', 'remove dirt']"
+    ],
+    "other_labels": [
+      "none",
+      "none"
+    ],
+    "confidence": [
+      "high",
+      "high"
+    ],
+    "why": [
+      "mentioned",
+      "both"
+    ],
+    "comments": [
+      "none",
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/nKz1AvWIz9A+0:01:48+0:02:27.mp4?raw=true', 'cleaning')": {
+    "labels": [
+      "['remove dirt']"
+    ],
+    "other_labels": [
+      "none"
+    ],
+    "confidence": [
+      "high"
+    ],
+    "why": [
+      "mentioned"
+    ],
+    "comments": [
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/gsplEHYXHRo+0:04:21+0:05:10.mp4?raw=true', 'cleaning')": {
+    "labels": [
+      "['do not like dirtiness', 'remove dirt']"
+    ],
+    "other_labels": [
+      "none"
+    ],
+    "confidence": [
+      "high"
+    ],
+    "why": [
+      "mentioned"
+    ],
+    "comments": [
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/gsplEHYXHRo+0:07:11+0:08:33.mp4?raw=true', 'cleaning')": {
+    "labels": [
+      "['remove dirt']",
+      "['remove dirt']"
+    ],
+    "other_labels": [
+      "none",
+      "none"
+    ],
+    "confidence": [
+      "high",
+      "high"
+    ],
+    "why": [
+      "mentioned",
+      "mentioned"
+    ],
+    "comments": [
+      "none",
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/Qmv3oEg9saE+0:09:26+0:10:03.mp4?raw=true', 'writing')": {
+    "labels": [
+      "['remember']"
+    ],
+    "other_labels": [
+      "none"
+    ],
+    "confidence": [
+      "high"
+    ],
+    "why": [
+      "mentioned"
+    ],
+    "comments": [
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/Qmv3oEg9saE+0:09:42+0:10:19.mp4?raw=true', 'writing')": {
+    "labels": [
+      "['remember']"
+    ],
+    "other_labels": [
+      "none"
+    ],
+    "confidence": [
+      "high"
+    ],
+    "why": [
+      "mentioned"
+    ],
+    "comments": [
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/djf79no_Gig+0:09:52+0:10:56.mp4?raw=true', 'writing')": {
+    "labels": [
+      "['other (please write them in the provided box)']",
+      "['express yourself', 'remember']"
+    ],
+    "other_labels": [
+      "writing songs",
+      "none"
+    ],
+    "confidence": [
+      "high",
+      "high"
+    ],
+    "why": [
+      "mentioned",
+      "mentioned"
+    ],
+    "comments": [
+      "none",
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/QADa8CzlKpw+0:10:50+0:11:34.mp4?raw=true', 'writing')": {
+    "labels": [
+      "['other (please write them in the provided box)']"
+    ],
+    "other_labels": [
+      "writing music for an album "
+    ],
+    "confidence": [
+      "high"
+    ],
+    "why": [
+      "mentioned"
+    ],
+    "comments": [
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/QADa8CzlKpw+0:10:53+0:11:35.mp4?raw=true', 'writing')": {
+    "labels": [
+      "['express yourself']"
+    ],
+    "other_labels": [
+      "none"
+    ],
+    "confidence": [
+      "high"
+    ],
+    "why": [
+      "mentioned"
+    ],
+    "comments": [
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/Rv25fPrGMDo+0:01:14+0:02:02.mp4?raw=true', 'reading')": {
+    "labels": [
+      "['other (please write them in the provided box)']",
+      "['I cannot find any reason mentioned verbally or shown visually in the video']"
+    ],
+    "other_labels": [
+      "healthy habit",
+      "none"
+    ],
+    "confidence": [
+      "high",
+      "low"
+    ],
+    "why": [
+      "mentioned",
+      "mentioned"
+    ],
+    "comments": [
+      "none",
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/Rv25fPrGMDo+0:01:28+0:02:05.mp4?raw=true', 'reading')": {
+    "labels": [
+      "['entertained']"
+    ],
+    "other_labels": [
+      "none"
+    ],
+    "confidence": [
+      "high"
+    ],
+    "why": [
+      "mentioned"
+    ],
+    "comments": [
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/Rv25fPrGMDo+0:10:28+0:10:56.mp4?raw=true', 'reading')": {
+    "labels": [
+      "['learn']"
+    ],
+    "other_labels": [
+      "none"
+    ],
+    "confidence": [
+      "high"
+    ],
+    "why": [
+      "mentioned"
+    ],
+    "comments": [
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/CGD3cTu_PrQ+0:01:45+0:02:23.mp4?raw=true', 'reading')": {
+    "labels": [
+      "['learn']",
+      "['learn']"
+    ],
+    "other_labels": [
+      "none",
+      "none"
+    ],
+    "confidence": [
+      "high",
+      "high"
+    ],
+    "why": [
+      "mentioned",
+      "mentioned"
+    ],
+    "comments": [
+      "none",
+      "none"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/main/trial1/CGD3cTu_PrQ+0:03:49+0:04:16.mp4?raw=true', 'reading')": {
+    "labels": [
+      "['learn']"
+    ],
+    "other_labels": [
+      "none"
+    ],
+    "confidence": [
+      "high"
+    ],
+    "why": [
+      "mentioned"
+    ],
+    "comments": [
+      "none"
+    ]
+  }
+}

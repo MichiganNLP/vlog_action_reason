@@ -1,12 +1,16 @@
 import glob
 import json
 import os
+import subprocess
+from subprocess import PIPE
 import datetime
 import time
 import cv2
 import shutil
 import numpy as np
 import pandas as pd
+import tqdm
+
 
 def split_video_by_time(video_id, time_start, time_end, verb, github_path):
     duration = time_end - time_start
@@ -18,9 +22,10 @@ def split_video_by_time(video_id, time_start, time_end, verb, github_path):
     duration = str(datetime.timedelta(seconds=duration))
     print(time_start)
     print(time_end)
+    path_video = 'data/videos/' + video_id + '.mp4 '
     # command_split_video = 'ffmpeg -ss ' + time_start + ' -i ' + 'data/videos/' + video_id + '.mp4 ' + "-fs 25M " + '-to ' + duration + \
     #                 ' -c copy data/videos/splits/' + verb + "/" + video_id + '+' + time_start + '+' + time_end + '.mp4'
-    command_split_video = 'ffmpeg -ss ' + time_start + ' -i ' + 'data/videos/' + video_id + '.mp4 ' + "-fs 25M " + '-to ' + duration + \
+    command_split_video = 'ffmpeg -ss ' + time_start + ' -i ' + path_video + "-fs 25M " + '-to ' + duration + \
                           ' -c copy ' + github_path + video_id + '+' + time_start + '+' + time_end + '.mp4'
 
     print(command_split_video)
@@ -33,7 +38,6 @@ def download_video(video_id):
                          + "data/videos/" + video_id + " " + url
     os.system(command_save_video)
 
-
 def filter_split_by_motion(PATH_miniclips, PATH_problematic_videos, PARAM_CORR2D_COEFF= 0.8):
     print("filtering videos by motion")
     if not os.path.exists(PATH_problematic_videos):
@@ -42,7 +46,7 @@ def filter_split_by_motion(PATH_miniclips, PATH_problematic_videos, PARAM_CORR2D
     list_video_names_removed = []
     list_videos = sorted(glob.glob(PATH_miniclips + "*.mp4"), key=os.path.getmtime)
 
-    for video in list_videos:
+    for video in tqdm.tqdm(list_videos):
         vidcap = cv2.VideoCapture(video)
 
         if (vidcap.isOpened() == False):
@@ -80,46 +84,39 @@ def filter_split_by_motion(PATH_miniclips, PATH_problematic_videos, PARAM_CORR2D
 
     return list_video_names_removed
 
-def download_from_dict():
-    # with open('data/dict_sentences_per_verb2.json') as json_file:
-    with open('data/dict_sentences_per_verb_REASONS.json') as json_file:
-        # with open('data/dict_sentences_per_verb_reasons.json') as json_file:
+def download_from_dict(file_in):
+    with open(file_in) as json_file:
         data = json.load(json_file)
-
-    # verb = "drink this"
-    # list_verbs = ["read", "eat", "drink", "write", "clean"]
-    ftr = [3600, 60, 1]
+    github_path = '../miniclips/'
+    # ftr = [3600, 60, 1]
     list_all_video_names_removed = []
     list_actions = data.keys()
-    # list_actions = ["clean", "read", "write", "sleep", "eat", "travel", "shop", "sew", "run", "listen"]
-    # list_actions = ["travel", "shop", "sew", "run", "listen"]
     for verb in list_actions:
-        # for s in data[verb][:1000]: #TODO: MAYBE REMOVE LIMIT
-        for reason in data[verb].keys():
-            if data[verb][reason]:
-                for s in data[verb][reason][:10]:  # TODO: MAYBE REMOVE LIMIT
-                    # print(verb.split())
-                    x = time.strptime(s["time_s"].split('.')[0], '%H:%M:%S')
-                    time_s = datetime.timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
-                    x = time.strptime(s["time_e"].split('.')[0], '%H:%M:%S')
-                    time_e = datetime.timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
+        for s in data[verb][:10]: #TODO: change index
+            # print(verb.split())
+            x = time.strptime(s["time_s"].split('.')[0], '%H:%M:%S')
+            time_s = datetime.timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
+            x = time.strptime(s["time_e"].split('.')[0], '%H:%M:%S')
+            time_e = datetime.timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
+            video_id = s["video"]
+            verb = "_".join(verb.split())
+            # check if miniclip already exists
+            time_start = str(datetime.timedelta(seconds=time_s))
+            time_end = str(datetime.timedelta(seconds=time_e))
+            if os.path.exists(github_path + video_id + '+' + time_start + '+' + time_end + '.mp4'):
+                print(github_path + video_id + '+' + time_start + '+' + time_end + '.mp4' + " EXISTS! MOVING ON ..")
+                continue
 
-                    # time_s = round(s["time_s"])
-                    # time_e = round(s["time_e"])
-                    video_id = s["video"]
-                    verb = "_".join(verb.split())
-                    if not os.path.exists('data/videos/' + video_id + ".mp4"):
-                        download_video(video_id)
-                    if not os.path.exists('data/videos/splits/' + verb):
-                        os.makedirs('data/videos/splits/' + verb)
-                    split_video_by_time(video_id, time_s, time_e, verb)
+            if not os.path.exists('data/videos/' + video_id + ".mp4"):
+                download_video(video_id)
+            split_video_by_time(video_id, time_s, time_e, verb, github_path)
 
-        list_video_names_removed = filter_split_by_motion(PATH_miniclips="data/videos/splits/" + verb + "/",
-                                                          PATH_problematic_videos="data/videos/splits/" + verb + "/filtered_out/",
-                                                          PARAM_CORR2D_COEFF=0.9)
-        # 0.8 by default
-        for video_name in list_video_names_removed:
-            list_all_video_names_removed.append(video_name)
+    list_video_names_removed = filter_split_by_motion(PATH_miniclips=github_path,
+                                                      PATH_problematic_videos="data/videos/filtered_out/",
+                                                      PARAM_CORR2D_COEFF=0.9)
+    # 0.8 by default
+    for video_name in list_video_names_removed:
+        list_all_video_names_removed.append(video_name)
 
     df = pd.DataFrame({'videos_to_remove': list_all_video_names_removed})
     df.to_csv('data/videos_to_remove.csv')
@@ -137,16 +134,22 @@ def download_from_AMT_input(file_in):
         x = time.strptime(time_e.split('.')[0], '%H:%M:%S')
         time_e = datetime.timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
 
+        # check if miniclip already exists
+        time_start = str(datetime.timedelta(seconds=time_s))
+        time_end = str(datetime.timedelta(seconds=time_e))
+        if os.path.exists(github_path + video_id + '+' + time_start + '+' + time_end + '.mp4'):
+            print(github_path + video_id + '+' + time_start + '+' + time_end + '.mp4' + " EXISTS! MOVING ON ..")
+            continue
         if not os.path.exists('data/videos/' + video_id + ".mp4"):
             download_video(video_id)
         # if not os.path.exists('data/videos/splits/' + verb):
         #     os.makedirs(github_path + '/data/videos/splits/' + verb)
         split_video_by_time(video_id, time_s, time_e, verb, github_path)
 
-    # for verb in list(set(df["action"])):
-    #     list_video_names_removed = filter_split_by_motion(PATH_miniclips="data/videos/splits/" + verb + "/",
-    #                                                       PATH_problematic_videos="data/videos/splits/" + verb + "/filtered_out/",
-    #                                                       PARAM_CORR2D_COEFF=0.8)
+
+    # list_video_names_removed = filter_split_by_motion(PATH_miniclips="github_path,
+    #                                                 PATH_problematic_videos="data/videos/filtered_out/",
+    #                                                 PARAM_CORR2D_COEFF=0.9)
     # # 0.8 by default
     # for video_name in list_video_names_removed:
     #     list_all_video_names_removed.append(video_name)
@@ -155,8 +158,13 @@ def download_from_AMT_input(file_in):
     # df.to_csv('data/AMT/videos_to_remove.csv')
 
 def main():
-    download_from_AMT_input(file_in="data/AMT/input/trial2.csv")
+    # download_from_AMT_input(file_in="data/AMT/input/trial2.csv")
+    # download_from_dict(file_in="data/dict_sentences_per_verb_MARKERS_for_annotation.json")
 
+    # list_video_names_removed = filter_split_by_motion(PATH_miniclips="../miniclips/no_check/",
+    list_video_names_removed = filter_split_by_motion(PATH_miniclips="../miniclips2/",
+                                                    PATH_problematic_videos="../miniclips3/filtered_out/",
+                                                    PARAM_CORR2D_COEFF=0.9)
 
 if __name__ == '__main__':
     main()

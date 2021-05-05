@@ -1,0 +1,238 @@
+{
+  "('https://github.com/OanaIgnat/miniclips/blob/master/NdnyiDBi7Ik+0:07:25+0:08:06.mp4?raw=true', 'cleaning')": {
+    "labels": [
+      "[\"do not like dirtiness\"]",
+      "[]",
+      "[\"remove dirt\"]"
+    ],
+    "confidence": [
+      "high",
+      "high",
+      "high"
+    ],
+    "why": [
+      "both",
+      "both",
+      "both"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/yb6oR120WIU+0:06:50+0:07:37.mp4?raw=true', 'cleaning')": {
+    "labels": [
+      "[\"I cannot find any reason mentioned verbally or shown visually in the video\"]",
+      "[\"remove dirt\"]",
+      "[\"other (please write them in the provided box)\"]"
+    ],
+    "confidence": [
+      "low",
+      "high",
+      "low"
+    ],
+    "why": [
+      "both",
+      "mentioned"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/SdZH7AJh1WM+0:00:29+0:00:57.mp4?raw=true', 'cleaning')": {
+    "labels": [
+      "[\"declutter\"]",
+      "[\"declutter\"]",
+      "[\"remove dirt\"]"
+    ],
+    "confidence": [
+      "high",
+      "low",
+      "high"
+    ],
+    "why": [
+      "both",
+      "both",
+      "both"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/SdZH7AJh1WM+0:00:51+0:01:20.mp4?raw=true', 'cleaning')": {
+    "labels": [
+      "[\"do not like dirtiness\"]",
+      "[\"remove dirt\"]",
+      "[\"do not like dirtiness\"]"
+    ],
+    "confidence": [
+      "high",
+      "high",
+      "low"
+    ],
+    "why": [
+      "both",
+      "shown",
+      "both"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/SdZH7AJh1WM+0:01:17+0:01:39.mp4?raw=true', 'cleaning')": {
+    "labels": [
+      "[\"I cannot find any reason mentioned verbally or shown visually in the video\"]",
+      "[\"remove dirt\"]",
+      "[\"do not like dirtiness\"]"
+    ],
+    "confidence": [
+      "low",
+      "high",
+      "low"
+    ],
+    "why": [
+      "both",
+      "shown"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/nFJqbmEVEws+0:04:28+0:04:51.mp4?raw=true', 'reading')": {
+    "labels": [
+      "[\"learn\"]",
+      "[\"learn\"]",
+      "[\"learn\"]"
+    ],
+    "confidence": [
+      "high",
+      "low",
+      "high"
+    ],
+    "why": [
+      "shown",
+      "both",
+      "shown"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/-AzBDUeKA8A+0:06:01+0:06:27.mp4?raw=true', 'reading')": {
+    "labels": [
+      "[\"learn\"]",
+      "[\"learn\"]",
+      "[\"learn\"]"
+    ],
+    "confidence": [
+      "high",
+      "high",
+      "high"
+    ],
+    "why": [
+      "shown",
+      "both",
+      "both"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/-AzBDUeKA8A+0:06:07+0:06:28.mp4?raw=true', 'reading')": {
+    "labels": [
+      "[\"learn\"]",
+      "[\"appreciate\"]",
+      "[\"appreciate\"]"
+    ],
+    "confidence": [
+      "high",
+      "high",
+      "low"
+    ],
+    "why": [
+      "both",
+      "both",
+      "shown"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/wObuA7a50ao+0:02:30+0:03:06.mp4?raw=true', 'reading')": {
+    "labels": [
+      "[\"learn\"]",
+      "[\"learn\"]",
+      "[\"learn\"]"
+    ],
+    "confidence": [
+      "high",
+      "high",
+      "high"
+    ],
+    "why": [
+      "shown",
+      "both",
+      "both"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/Hns8JHAn4sQ+0:03:07+0:03:22.mp4?raw=true', 'reading')": {
+    "labels": [
+      "[\"appreciate\"]",
+      "[\"learn\"]",
+      "[\"appreciate\",\"learn\"]"
+    ],
+    "confidence": [
+      "high",
+      "high",
+      "high"
+    ],
+    "why": [
+      "both",
+      "mentioned",
+      "both"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/HoR-nNGyQpk+0:04:50+0:05:16.mp4?raw=true', 'writing')": {
+    "labels": [
+      "[\"famous\"]",
+      "[\"express yourself\"]",
+      "[\"express yourself\"]"
+    ],
+    "confidence": [
+      "high",
+      "low",
+      "high"
+    ],
+    "why": [
+      "both",
+      "both",
+      "both"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/ZO88Cj_hjQk+0:04:16+0:04:40.mp4?raw=true', 'writing')": {
+    "labels": [
+      "[\"express yourself\"]",
+      "[\"express yourself\"]",
+      "[\"express yourself\"]"
+    ],
+    "confidence": [
+      "high",
+      "low",
+      "high"
+    ],
+    "why": [
+      "both",
+      "both",
+      "both"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/ZO88Cj_hjQk+0:06:13+0:06:42.mp4?raw=true', 'writing')": {
+    "labels": [
+      "[\"express yourself\",\"remember\"]",
+      "[\"create novel\"]",
+      "[\"remember\"]"
+    ],
+    "confidence": [
+      "high",
+      "high",
+      "high"
+    ],
+    "why": [
+      "both",
+      "both",
+      "both"
+    ]
+  },
+  "('https://github.com/OanaIgnat/miniclips/blob/master/ZaQ71whbmQ4+0:05:28+0:05:48.mp4?raw=true', 'writing')": {
+    "labels": [
+      "[\"express yourself\"]",
+      "[\"remember\"]",
+      "[\"express yourself\"]"
+    ],
+    "confidence": [
+      "high",
+      "high",
+      "low"
+    ],
+    "why": [
+      "both",
+      "both",
+      "both"
+    ]
+  }
+}

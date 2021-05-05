@@ -1,0 +1,24 @@
+ids,labels,parents
+1,clean,
+2,remove dirt,1
+3,company was coming,1
+4,do not like dirtiness,1
+5,declutter,1
+6,cook,
+7,make meal,6
+8,hungry,6
+9,be healthy,6
+10,dance,
+11,have fun,10
+12,celebrate,10
+13,socialize,10
+14,express yourself,10
+15,are a dancer,10
+16,to exercise,10
+17,drink,
+18,were thirsty,17
+19,avoid becoming dehydrated,17
+20,would want to forget,17
+21,drink tasted good,17
+22,get drunk,17
+23,celebrating,17

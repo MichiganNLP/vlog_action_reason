@@ -1,0 +1,460 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+      integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<style>
+    #instructions, li {
+        color: gray;
+    }
+
+    #instructions-inner {
+        margin-top: 20px;
+    }
+
+    #container {
+        position: relative;
+    }
+
+    .example-answer {
+        color: blue;
+    }
+
+    .counterexample-answer {
+        color: red;
+    }
+
+    #collapse-instructions {
+        color: grey;
+    }
+
+    .instance {
+        border-radius: 15px;
+        border: 4px dashed #cee3e9;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        padding-left: 40px;
+        padding-right: 40px;
+        text-align: center;
+    }
+
+    .instance-title {
+        text-align: center;
+    }
+
+    .video {
+        display: block;
+        height: 360px;
+        margin: 10px auto;
+    }
+
+    .loading-video {
+        position: relative;
+        top: 50%;
+        text-align: center;
+    }
+
+    .video-buttons {
+        margin-bottom: 5px;
+    }
+
+    .video-button {
+        border-radius: 15px;
+    }
+
+    .video-instructions {
+        list-style-type: none;
+    }
+
+    .video-relates {
+        position: relative;
+        text-align: center;
+    }
+
+    .question-label {
+        font-size: 1.5rem;
+    }
+
+    .question {
+        font-size: 2rem;
+        margin: auto auto 20px auto;
+        text-align: center;
+    }
+
+    .answer-input {
+        border: 2px solid #C2C2C2;
+        box-shadow: 1px 1px 4px #EBEBEB;
+        display: inline-block;
+        padding: 5px;
+        font-size: 2rem;
+        width: 420px;
+        height: 40px;
+    }
+
+    .answer-input:hover {
+        border: 2px solid black;
+    }
+
+    .answer-input::placeholder {
+        color: lightgray;
+    }
+
+    .answers {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .answer {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+        margin-right: 10px;
+    }
+
+    .remove-answer {
+        margin-left: .25rem;
+        color: inherit;
+        font-size: 100%;
+    }
+
+    .remove-answer:hover {
+        color: white;
+    }
+
+    .alert-answer {
+        margin: auto;
+        width: 50%;
+        text-align: center;
+    }
+
+    .answer-instructions {
+        list-style-type: none;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .reason-list{
+      text-align: left;
+      padding-left: 40px;
+      border: 0 ;
+      width: 100%;
+    }
+
+    #comments {
+        border-radius: 15px;
+        border: 4px dashed #cee3e9;
+    }
+</style>
+
+<div id="container" class="container">
+  <h1 id="top">Video Classification</h1>
+
+  <details id="instructions">
+    <summary>Instructions</summary>
+
+    <div id="instructions-inner">
+      <p>You are given a video that contains a person describing an action and a list of <b>candidate reasons for why they want to do the action</b>.</p>
+        <p>From the list of candidate <b>reasons</b>, select the ones that are mentioned verbally or shown visually in the video.</p>
+        <p> Please see three examples below:</p>
+        <br>
+
+        <h4>1. Action reasons are mentioned verbally, and shown visually in the video:</h4>
+        <video width="70%"  height="370" controls>
+        <source src="https://github.com/OanaIgnat/miniclips/blob/main/instructions/HLRIJmZ9X6k+0:00:54+0:01:26.mp4?raw=true" type="video/mp4">
+        </video> 
+        <br>
+        <br>
+        <label><b>Answers:</b></label>
+        <br>
+          <input type="checkbox" checked="checked" disabled="disabled"> remove dirt (because it shown and metioned in the video)<br>
+          <input type="checkbox" checked="checked" disabled="disabled"> don't like dirtiness (because it is mentioned in the video)<br>
+          <input type="checkbox" disabled="disabled"> declutter<br>
+          <input type="checkbox" disabled="disabled"> company is coming<br>
+          <input type="checkbox" disabled="disabled"> feel productive<br>
+
+        <br>
+        <hr>
+        <br>
+
+        <h4>2. Action reason is mentioned verbally, but <b>not</b> shown visually in the video:</h4>
+        <video width="70%"  height="370" controls>
+        <source src="https://github.com/OanaIgnat/miniclips/blob/main/instructions/4jYWxhMg1Dw+0:01:27+0:01:43.mp4?raw=true" type="video/mp4">
+        </video> 
+        <br>
+        <br>
+        <label><b>Answers:</b></label>
+        <br>
+           <input type="checkbox" checked="checked" disabled="disabled"> remove dirt (because it is mentioned in the video)<br>
+          <input type="checkbox" disabled="disabled"> don't like dirtiness<br>
+          <input type="checkbox" disabled="disabled"> declutter<br>
+          <input type="checkbox" disabled="disabled"> company is coming<br>
+          <input type="checkbox" disabled="disabled"> feel productive<br>
+        
+        <br>
+        <hr>
+        <br>
+
+        <h4>3. Action reason is shown visually, but <b>not</b> mentioned verbally in the video:</h4>
+        <video width="70%"  height="370" controls>
+        <source src="https://github.com/OanaIgnat/miniclips/blob/main/instructions/8qiK-awcJbM+0:02:42+0:03:06.mp4?raw=true" type="video/mp4">
+        </video> 
+        <br>
+        <br>
+       
+        <label><b>Answers:</b></label>
+        <br>
+          <input type="checkbox" checked="checked" disabled="disabled"> remove dirt (because it shown in the video)<br>
+          <input type="checkbox" disabled="disabled"> don't like dirtiness<br>
+          <input type="checkbox" disabled="disabled"> declutter<br>
+          <input type="checkbox" disabled="disabled"> company is coming<br>
+          <input type="checkbox" disabled="disabled"> feel productive<br>
+
+      <button type="button" class="btn" id="collapse-instructions" onclick="collapseInstructions()">
+        &#x25B2 Collapse instructions
+      </button>
+    </div>
+  </details>
+
+  <hr>
+
+  <crowd-form onsubmit="return checkValid()">
+    <div id="instances"></div>
+
+    <div class="form-group">
+      <label for="comments">Comments:</label>
+      <textarea class="form-control" id="comments" name="comments" rows="10"
+                placeholder="Please, write any comment/error/suggestion you have."></textarea>
+    </div>
+
+    <crowd-button id="submit-button" form-action="submit" variant="primary">Submit</crowd-button>
+  </crowd-form>
+</div>
+
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+<!--suppress CommaExpressionJS -->
+<script type="text/javascript">
+  // JS string interpolations clash with the Amazon Mechanical Turk template system, as they both use the syntax ${...}.
+  // So we do a trick which is to put the simple string interpolation of variables inside a comma operator expression,
+  // which always returns the last operand. For example, if we have to interpolate the variable "i" inside the backticks
+  // (`) then we do `${0, i}`. This is basically the minimum we can write as far as we know.
+  // Complex expressions usually don't need this. I tried other variants, but it seems that AMT captures spaces and plus
+  // signs as valid syntax. The ternary operator is another option (`${1 ? i : 0}`), though more verbose.
+
+  const ENTER_KEY_CODE = 13;
+
+  const videos = ["${video1}", "${video2}", "${video3}", "${video4}", "${video5}"]
+      .map(v => templateWasSubstituted(v) ? v :
+       "https://github.com/OanaIgnat/miniclips/blob/main/instructions/rNcCcFi0k-k+0:01:04+0:02:22.mp4?raw=true");
+  const actions = ["${action1}", "${action2}", "${action3}", "${action4}", "${action5}"]
+      .map(v => templateWasSubstituted(v) ? v : "cleaning");
+  const reasons = ["${reason1}", "${reason2}", "${reason3}", "${reason4}", "${reason5}"]
+      .map(v => templateWasSubstituted(v) ? eval(v) :
+       ['company was coming', 'do not like dirtiness', 'declutter', 'remove dirt',
+       'I cannot find any reason mentioned verbally or shown visually in the video'
+       ]);
+
+  console.assert(videos.length === actions.length && videos.length === reasons.length);
+  console.assert(reasons.every(q => q))
+
+  function templateWasSubstituted(s) {
+    return !s.startsWith("${") || !s.endsWith("}");
+  }
+
+  // From https://stackoverflow.com/a/6234804/1165181
+  function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        // Use single quotes as AMT expands the double quote escaping and gives a syntax error otherwise:
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, "&#039;");
+  }
+
+  function createInstanceElement(i, title, video, action, reason, showNextButton) {
+    return $(`
+        <div class="instance" id="instance-${0, i}">
+          <h2 class="instance-title">${0, title}</h2>
+          <div class="video" id="video-${0, i}">
+            <video width="70%" height="370" controls>
+              <source src=${0,video} type="video/mp4">
+            </video>
+          </div>
+          </br>
+          <p>
+            <font color="gray"> Please carefully read the
+               <a href="#instructions">instructions</a> before performing the task.</font>
+          </p>
+
+          <hr>
+
+
+          <div class="reason">
+            <h4>What are the reasons shown or mentioned in the 
+              video for performing the action of ${0,action}? </h4></br>
+            <p style="text-align: left;padding-left: 40px;"> <font color="gray"> 
+              Please select <b><big>one or more</big></b> categories: </br></font></p>
+            
+            <p class="reason-list" id="reason-lists-${0, i}"></p>
+
+            <hr>
+
+          </div>
+
+          <div class="how-reason-group">
+            <h4>Please select how did you find the reasons in the video:</h4>
+            <br>
+            <div class="how-reason">
+              <input type="radio" name="how-${0, i}" id="how-mentioned-${0, i}" value="mentioned">
+              <label for="how-mentionde-${0, i}">The reasons are mentioned verbally</label>
+              <input type="radio" name="how-${0, i}" id="how-shown-${0, i}" value="shown">
+              <label for="how-shown-${0, i}">The reasons are shown visually</label>
+              <input type="radio" name="how-${0, i}" id="how-both-${0, i}" value="both">
+              <label for="how-both-${0, i}">The reasons are mentioned verbally and shown visually</label>
+            </dic>
+            <br>
+          </div>
+
+          <hr>
+
+          <div class="confidence-group">
+            <h4>Please select how confident are you in your answers:</h4>
+            <br>
+            <div class="confidence">
+              <input type="radio" name="confidence-${0, i}" id="confidence-high-${0, i}" value="high">
+              <label for="confidence-high-${0, i}">High Confidence</label>
+              <input type="radio" name="confidence-${0, i}" id="confidence-low-${0, i}" value="low">
+              <label for="confidence-low-${0, i}">Low Confidence</label>
+            </div>
+            <br>
+          </div>
+
+          <div class="alert alert-warning alert-answer" id="alert-${0, i}"></div></br>
+
+          ${showNextButton ? `<button type="button" class="btn btn-info" id="next-instance-${0, i}">
+                                Go to the next Video</button>` : ""}
+        </div>`);
+  }
+
+  function createReasonElement(i, j, reason) {
+    return $(`
+    <input type="checkbox" name="reasons-${0, i}" id="reasons-${0, i}-${0, j}" value="${0, reason}" />
+    <label for="reasons-${0, i}-${0, j}">${0,reason}</label> <br/>
+    `);
+  }
+
+  function createInstances() {
+    reasons.forEach((reason, i) => {
+      const title = `Video ${0, i+1}`;
+      const parentId = "instances";
+      const showNextButton = i < reasons.length - 1;
+      createInstanceElement(i, title, videos[i], actions[i], reason, showNextButton).appendTo(`#${0, parentId}`);
+      reason.forEach((reas, j) => {
+        const reasonParentId = `reason-lists-${0, i}`;
+        createReasonElement(i, j, reas).appendTo(`#${0, reasonParentId}`);
+      });
+      if (showNextButton) {
+        $(`#next-instance-${0, i}`).click(() => {
+          window.location.href = `#instance-${0, i + 1}`;
+        });
+      }
+    });
+  }
+
+  function collapseInstructions() {
+    $("#instructions").removeAttr("open");
+    window.location = "#top";
+  }
+
+  function reasonsCompleted(i) {
+    return $(`[name="reasons-${0, i}"]:checked`).length > 0;
+  }
+
+  function howCompleted(i) {
+    return $(`[name="how-${0,i}"]:checked`).length > 0;
+  }
+
+  function confidenceCompleted(i) {
+    return $(`[name="confidence-${0,i}"]:checked`).length > 0;
+  }
+
+  function questionCompleted(i) {
+    return reasonsCompleted(i) && howCompleted(i) && confidenceCompleted(i);
+  }
+
+  function checkValid() {
+    const completed = reasons.map((_, i) => {
+      const completed = questionCompleted(i);
+      const message = completed ? "" :
+       "Choose at least one option for each multiple/single choice question.";
+      document.getElementById(`reasons-${0, i}-0`).setCustomValidity(reasonsCompleted(i)? "" : message);
+      document.getElementById(`how-mentioned-${0, i}`).setCustomValidity(howCompleted(i)? "" : message);
+      document.getElementById(`confidence-high-${0, i}`).setCustomValidity(confidenceCompleted(i)? "" : message);
+      return completed;
+    }).every(Boolean);
+
+    document.getElementsByTagName("form")[0].reportValidity();
+
+    return completed;
+  }
+
+  function checkValidationAlerts(i) {
+    const $errorMessage = $(`#alert-${0, i}`);
+    if (questionCompleted(i)) {
+      $errorMessage.fadeOut("fast");
+    } else {
+      $errorMessage.text("Please Choose at least one option "+
+      "for each multiple/single choice question.").fadeIn();
+    }
+  }
+
+  function setUpInputListeners() 
+  {
+    reasons.forEach((_, i) => 
+    {
+      Array.from($(`[name="reasons-${0, i}"]`)).forEach(rease => 
+      { $(rease).click(e => 
+        { if (reasonsCompleted(i))
+          {
+            document.getElementById(`reasons-${0, i}-0`).setCustomValidity("");
+            $(document.getElementById(`reasons-${0, i}-0`)).removeClass("is-invalid");
+          }
+          checkValidationAlerts(i);
+        });
+      });
+      Array.from($(`[name="how-${0, i}"]`)).forEach(rease => 
+      { $(rease).click(e => 
+        {
+          document.getElementById(`how-mentioned-${0, i}`).setCustomValidity("");
+          $(document.getElementById(`how-mentioned-${0, i}`)).removeClass("is-invalid");
+          checkValidationAlerts(i);
+        });
+      });
+      Array.from($(`[name="confidence-${0,i}"]`)).forEach(rease => 
+      { $(rease).click(e => 
+        {
+          document.getElementById(`confidence-high-${0, i}`).setCustomValidity("");
+          $(document.getElementById(`confidence-high-${0, i}`)).removeClass("is-invalid");
+          checkValidationAlerts(i);
+        });
+      });
+      checkValidationAlerts(i);
+    });
+  }
+
+  function onDomContentLoaded() {
+    createInstances();
+    setUpInputListeners();
+  }
+
+  function main() {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", onDomContentLoaded);
+    } else {
+      onDomContentLoaded();
+    }
+  }
+
+  main();
+</script>

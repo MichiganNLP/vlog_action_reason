@@ -1,0 +1,316 @@
+ids,labels,parents
+1,buy,
+2,need,1
+3,replace broken,1
+4,enjoy,1
+5,celebrate,
+6,mark happy occasion,5
+7,acknowledge accomplishment,5
+8,have good time,5
+9,share happiness,5
+10,clean,
+11,company was coming,10
+12,do not like dirtiness,10
+13,declutter,10
+14,remove dirt,10
+15,cook,
+16,make meal,15
+17,hungry,15
+18,be healthy,15
+19,dance,
+20,have fun,19
+21,celebrate,19
+22,socialize,19
+23,get off couch,19
+24,express yourself,19
+25,are a dancer,19
+26,to exercise,19
+27,like dancing,19
+28,to learn,19
+29,dream,
+30,plan for future,29
+31,imagine different possibilities,29
+32,distract brain,29
+33,feel relaxed,29
+34,were asleep,29
+35,drink,
+36,were thirsty,35
+37,avoid becoming dehydrated,35
+38,refreshing,35
+39,would want to forget,35
+40,drink tasted good,35
+41,get drunk,35
+42,celebrating,35
+43,drive,
+44,get someplace,43
+45,use gas,43
+46,relax,43
+47,do chores,43
+48,eat,
+49,tastes good,48
+50,were hungry,48
+51,had craving,48
+52,be healthy,48
+53,entertain,
+54,fun activity,53
+55,enjoy company,53
+56,like,53
+57,visiting,53
+58,please,53
+59,bored,53
+60,exercise,
+61,stay fit,60
+62,keeps healthy,60
+63,become muscular,60
+64,get in shape,60
+65,loose weight,60
+66,is fun,60
+67,increase energy level,60
+68,fall,
+69,rush,68
+70,ladder broke,68
+71,tripped,68
+72,fiddle,
+73,uncomfortable,72
+74,like music,72
+75,were bored,72
+76,fish,
+77,eat fish,76
+78,need food,76
+79,found relaxing,76
+80,have fun,76
+81,enjoy,76
+82,it is job,76
+83,forgive,
+84,hurt,83
+85,compassionate,83
+86,move on,83
+87,feel better,83
+88,maintain relationship,83
+89,groom,
+90,look good,89
+91,get clean,89
+92,impress others,89
+93,hammer,
+94,build,93
+95,demo,93
+96,help,
+97,maximise own utility,96
+98,help in return,96
+99,makes feel good inside,96
+100,become friend,96
+101,accomplish mutual goal,96
+102,express altruism,96
+103,hike,
+104,get somewhere,103
+105,fresh air,103
+106,exercise,103
+107,get outdoors away from civilization,103
+108,suffer,103
+109,climb hill,103
+110,enjoy nature,103
+111,have fun,103
+112,walk,103
+113,hug,
+114,sad,113
+115,love,113
+116,jog,
+117,get in shape,116
+118,exercise,116
+119,stay healthy,116
+120,like relaxed feeling afterwards,116
+121,lose weight,116
+122,jump,
+123,get over obstacle,122
+124,scared,122
+125,exercise,122
+126,kiss,
+127,express love,126
+128,manipulate,126
+129,say goodbye,126
+130,powerful emotions present,126
+131,like,126
+132,knit,
+133,pass time,132
+134,make sweater,132
+135,relaxing,132
+136,enjoy making clothes,132
+137,enjoy knitting,132
+138,have nothing to do,132
+139,laugh,
+140,happy,139
+141,heard good joke,139
+142,told funny joke,139
+143,learn,
+144,know more information,143
+145,become educated,143
+146,going to get tested,143
+147,failure painful,143
+148,course was recommended,143
+149,curious,143
+150,helps to cope,143
+151,empowering,143
+152,improve yourself,143
+153,avoid repeating mistakes,143
+154,fun,143
+155,listen,
+156,learn,155
+157,obey,155
+158,hear what saying,155
+159,memorize,
+160,retain what you learned,159
+161,able to repeat information,159
+162,studying for exam,159
+163,paint,
+164,create art,163
+165,express yourself,163
+166,feel creative,163
+167,change colors in home,163
+168,enjoy,163
+169,clean walls,163
+170,play,
+171,have fun,170
+172,win game,170
+173,bored,170
+174,relax,170
+175,entertain yourself,170
+176,pray,
+177,you are scared,176
+178,need emotional strength,176
+179,talk to god,176
+180,stop being lonely,176
+181,think about life issues,176
+182,forgiveness,176
+183,program,
+184,make game,183
+185,solves problem,183
+186,new software,183
+187,give computer task,183
+188,punch,
+189,lost temper,188
+190,got joke,188
+191,lied,188
+192,beat up,188
+193,read,
+194,appear cultured to opposite sex,193
+195,bored,193
+196,learn,193
+197,appreciate,193
+198,entertained,193
+199,relax,
+200,have done good job,199
+201,healthy,199
+202,reduce stress,199
+203,recover energy,199
+204,remember,
+205,was memorable,204
+206,was interesting,204
+207,learn from,204
+208,use later,204
+209,rest,
+210,catch breath,209
+211,relief from pain,209
+212,felt tired,209
+213,get more sleep,209
+214,run,
+215,get away from,214
+216,late,214
+217,dog chasing,214
+218,in running race,214
+219,become physically fit,214
+220,get into shape,214
+221,get somewhere fast,214
+222,sell,
+223,get money,222
+224,enjoy,222
+225,work,222
+226,sew,
+227,enjoy sewing,226
+228,wanted to have unique clothes,226
+229,patch clothes,226
+230,reattach button,226
+231,shop,
+232,buy necessary things,231
+233,buy new things,231
+234,enjoy,231
+235,bored,231
+236,sing,
+237,making fun,236
+238,express feelings,236
+239,annoy people around,236
+240,perform,236
+241,skate,
+242,exercise,241
+243,engage in recreation,241
+244,ski,
+245,have fun,244
+246,exercise,244
+247,sleep,
+248,get up early next day,247
+249,sleepy,247
+250,need to restore energy,247
+251,you are tired,247
+252,smoke,
+253,unwind after meal,252
+254,satisfy craving,252
+255,relax,252
+256,spit,
+257,mad,256
+258,show contempt,256
+259,get out of mouth,256
+260,study,
+261,make parents happy,260
+262,pass test,260
+263,learn things,260
+264,surf,
+265,impress girls,264
+266,have fun,264
+267,surprise,
+268,wanted to make smile,267
+269,birthday,267
+270,catch off guard,267
+271,give present,267
+272,like,267
+273,switch,
+274,fickle,273
+275,change your mind,273
+276,do not like,273
+277,talk,
+278,explain,277
+279,share feelings,277
+280,communicate ideas,277
+281,thank,
+282,grateful,281
+283,feel good,281
+284,appreciate,281
+285,helped,281
+286,tickle,
+287,make laugh,286
+288,flirt,286
+289,travel,
+290,visit people,289
+291,experience different culture,289
+292,work,289
+293,type,
+294,produce document,293
+295,communicate,293
+296,enter information on computer,293
+297,write letter,293
+298,vomit,
+299,sick,298
+300,drunk,298
+301,walk,
+302,exercise,301
+303,want to relax,301
+304,enjoyable,301
+305,go somewhere,301
+306,work,
+307,feel productive,306
+308,complete job,306
+309,have to,306
+310,need money,306
+311,write,
+312,remember,311
+313,famous,311
+314,create novel,311
+315,express yourself,311

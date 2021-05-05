@@ -7,6 +7,8 @@ import pandas as pd
 from youtube_transcript_api import YouTubeTranscriptApi
 import spacy
 nlp = spacy.load('en_core_web_sm')  # or whatever model you have installed
+import urllib.request
+import ssl
 
 def save_all_video_urls_in_channel(channel_id):
     print("save_all_video_urls_in_channel")
@@ -18,6 +20,7 @@ def save_all_video_urls_in_channel(channel_id):
 
     video_links = []
     url = first_url
+    ssl._create_default_https_context = ssl._create_unverified_context
     while True:
         inp = urllib.request.urlopen(url)
         resp = json.load(inp)
@@ -181,7 +184,14 @@ def save_all_sentences():
     all_dict = {}
     path_to_json = 'data/sentences_transcripts/'
     # json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
-    json_files = ["UCM3P_G21gOSVdepXrEFojIg.json"]
+    # json_files = ["UCM3P_G21gOSVdepXrEFojIg.json"]
+    # json_files = ["UC-ga3onzHSJFAGsIebtVeBg.json", "UCM3P_G21gOSVdepXrEFojIg.json", "UC-8yLb1K-DEC6dCYlLOJfiQ.json"]
+    # json_files = ["UCM3P_G21gOSVdepXrEFojIg.json"] #rachel
+    # json_files = ["UC-ga3onzHSJFAGsIebtVeBg.json"] #lavendaire
+    # json_files = ["UC-8yLb1K-DEC6dCYlLOJfiQ.json"] #sadie
+    # json_files = ["UCVKFs0cesQUEGtn8gQmhbHw.json"] #britany
+    # json_files = ["UCq2E1mIwUKMWzCA4liA_XGQ.json"] #pickup
+    json_files = ["UCtk95ovBZbBKYfxIg8RQCSw.json"] #jairwoo
     for index, js in enumerate(json_files):
         with open(os.path.join(path_to_json, js)) as json_file:
             json_text = json.load(json_file)
@@ -189,7 +199,12 @@ def save_all_sentences():
             all_dict[key] = json_text[key]
 
     # with open('data/all_sentence_transcripts.json', 'w+') as fp:
-    with open('data/all_sentence_transcripts_rachel.json', 'w+') as fp:
+    # with open('data/all_sentence_transcripts_rachel.json', 'w+') as fp:
+    # with open('data/all_sentence_transcripts_lavendaire.json', 'w+') as fp:
+    # with open('data/all_sentence_transcripts_sadie.json', 'w+') as fp:
+    # with open('data/all_sentence_transcripts_britany.json', 'w+') as fp:
+    # with open('data/all_sentence_transcripts_pickup.json', 'w+') as fp:
+    with open('data/all_sentence_transcripts_jairwoo.json', 'w+') as fp:
         json.dump(all_dict, fp)
 
 
@@ -197,13 +212,17 @@ def main():
     list_channels = ['UCT9y7nOBdqfWuaZJ_x9mPkA', 'UCM3P_G21gOSVdepXrEFojIg', 'UC-8yLb1K-DEC6dCYlLOJfiQ', 'UCDy89wegrl-5Qv0ZkTtlnPg',
                        'UCK2d_KfjVPwh9gqoczQ9sSw', 'UCVKFs0cesQUEGtn8gQmhbHw', 'UCMfXv2enRXepxG92VoxfrEg', 'UCbQj1aJiioDM8g0tmGmtC_w',
                        'UCJCgaQzY5z5sA-xwkwibygw']
-    list_channels = ['UCM3P_G21gOSVdepXrEFojIg']
+    # list_channels = ['UCM3P_G21gOSVdepXrEFojIg'] # rachel
+    # list_channels = ['UC-ga3onzHSJFAGsIebtVeBg'] # lavendaire
+    # list_channels = ['UC-8yLb1K-DEC6dCYlLOJfiQ'] # sadie?
+    # list_channels = ['UCVKFs0cesQUEGtn8gQmhbHw'] # britany?
+    # list_channels = ['UCq2E1mIwUKMWzCA4liA_XGQ'] # pickuplimes?
+    list_channels = ['UCtk95ovBZbBKYfxIg8RQCSw'] # jairwoo - man?
     for channel_id in list_channels:
-    # for channel_id in ['UCK2d_KfjVPwh9gqoczQ9sSw']:
         print(channel_id)
-        # save_all_video_urls_in_channel(channel_id)
-        # list_urls = read_list_urls(channel_id)
-        # save_raw_transcripts(list_urls, channel_id)
+        save_all_video_urls_in_channel(channel_id)
+        list_urls = read_list_urls(channel_id)
+        save_raw_transcripts(list_urls, channel_id)
         sentence_split(channel_id)
     save_all_sentences()
 

@@ -1,0 +1,377 @@
+{
+  "buy": [
+    "need",
+    "replace broken",
+    "enjoy"
+  ],
+  "celebrate": [
+    "mark happy occasion",
+    "acknowledge accomplishment",
+    "have good time",
+    "share happiness"
+  ],
+  "clean": [
+    "company was coming",
+    "do not like dirtiness",
+    "declutter",
+    "remove dirt"
+  ],
+  "cook": [
+    "make meal",
+    "hungry",
+    "be healthy"
+  ],
+  "dance": [
+    "have fun",
+    "celebrate",
+    "socialize",
+    "get off couch",
+    "express yourself",
+    "are a dancer",
+    "to exercise",
+    "like dancing",
+    "to learn"
+  ],
+  "dream": [
+    "plan for future",
+    "imagine different possibilities",
+    "distract brain",
+    "feel relaxed",
+    "were asleep"
+  ],
+  "drink": [
+    "were thirsty",
+    "avoid becoming dehydrated",
+    "refreshing",
+    "would want to forget",
+    "drink tasted good",
+    "get drunk",
+    "celebrating"
+  ],
+  "drive": [
+    "get someplace",
+    "use gas",
+    "relax",
+    "do chores"
+  ],
+  "eat": [
+    "tastes good",
+    "were hungry",
+    "had craving",
+    "be healthy"
+  ],
+  "entertain": [
+    "fun activity",
+    "enjoy company",
+    "like",
+    "visiting",
+    "please",
+    "bored"
+  ],
+  "exercise": [
+    "stay fit",
+    "keeps healthy",
+    "become muscular",
+    "get in shape",
+    "loose weight",
+    "is fun",
+    "increase energy level"
+  ],
+  "fall": [
+    "rush",
+    "ladder broke",
+    "tripped"
+  ],
+  "fiddle": [
+    "uncomfortable",
+    "like music",
+    "were bored"
+  ],
+  "fish": [
+    "eat fish",
+    "need food",
+    "found relaxing",
+    "have fun",
+    "enjoy",
+    "it is job"
+  ],
+  "forgive": [
+    "hurt",
+    "compassionate",
+    "move on",
+    "feel better",
+    "maintain relationship"
+  ],
+  "groom": [
+    "look good",
+    "get clean",
+    "impress others"
+  ],
+  "hammer": [
+    "build",
+    "demo"
+  ],
+  "help": [
+    "maximise own utility",
+    "help in return",
+    "makes feel good inside",
+    "become friend",
+    "accomplish mutual goal",
+    "express altruism"
+  ],
+  "hike": [
+    "get somewhere",
+    "fresh air",
+    "exercise",
+    "get outdoors away from civilization",
+    "suffer",
+    "climb hill",
+    "enjoy nature",
+    "have fun",
+    "walk"
+  ],
+  "hug": [
+    "sad",
+    "love"
+  ],
+  "jog": [
+    "get in shape",
+    "exercise",
+    "stay healthy",
+    "like relaxed feeling afterwards",
+    "lose weight"
+  ],
+  "jump": [
+    "get over obstacle",
+    "scared",
+    "exercise"
+  ],
+  "kiss": [
+    "express love",
+    "manipulate",
+    "say goodbye",
+    "powerful emotions present",
+    "like"
+  ],
+  "knit": [
+    "pass time",
+    "make sweater",
+    "relaxing",
+    "enjoy making clothes",
+    "enjoy knitting",
+    "have nothing to do"
+  ],
+  "laugh": [
+    "happy",
+    "heard good joke",
+    "told funny joke"
+  ],
+  "learn": [
+    "know more information",
+    "become educated",
+    "going to get tested",
+    "failure painful",
+    "course was recommended",
+    "curious",
+    "helps to cope",
+    "empowering",
+    "improve yourself",
+    "avoid repeating mistakes",
+    "fun"
+  ],
+  "listen": [
+    "learn",
+    "obey",
+    "hear what saying"
+  ],
+  "memorize": [
+    "retain what you learned",
+    "able to repeat information",
+    "studying for exam"
+  ],
+  "paint": [
+    "create art",
+    "express yourself",
+    "feel creative",
+    "change colors in home",
+    "enjoy",
+    "clean walls"
+  ],
+  "play": [
+    "have fun",
+    "win game",
+    "bored",
+    "relax",
+    "entertain yourself"
+  ],
+  "pray": [
+    "you are scared",
+    "need emotional strength",
+    "talk to god",
+    "stop being lonely",
+    "think about life issues",
+    "forgiveness"
+  ],
+  "program": [
+    "make game",
+    "solves problem",
+    "new software",
+    "give computer task"
+  ],
+  "punch": [
+    "lost temper",
+    "got joke",
+    "lied",
+    "beat up"
+  ],
+  "read": [
+    "appear cultured to opposite sex",
+    "bored",
+    "learn",
+    "appreciate",
+    "entertained"
+  ],
+  "relax": [
+    "have done good job",
+    "healthy",
+    "reduce stress",
+    "recover energy"
+  ],
+  "remember": [
+    "was memorable",
+    "was interesting",
+    "learn from",
+    "use later"
+  ],
+  "rest": [
+    "catch breath",
+    "relief from pain",
+    "felt tired",
+    "get more sleep"
+  ],
+  "run": [
+    "get away from",
+    "late",
+    "dog chasing",
+    "in running race",
+    "become physically fit",
+    "get into shape",
+    "get somewhere fast"
+  ],
+  "sell": [
+    "get money",
+    "enjoy",
+    "work"
+  ],
+  "sew": [
+    "enjoy sewing",
+    "wanted to have unique clothes",
+    "patch clothes",
+    "reattach button"
+  ],
+  "shop": [
+    "buy necessary things",
+    "buy new things",
+    "enjoy",
+    "bored"
+  ],
+  "sing": [
+    "making fun",
+    "express feelings",
+    "annoy people around",
+    "perform"
+  ],
+  "skate": [
+    "exercise",
+    "engage in recreation"
+  ],
+  "ski": [
+    "have fun",
+    "exercise"
+  ],
+  "sleep": [
+    "get up early next day",
+    "sleepy",
+    "need to restore energy",
+    "you are tired"
+  ],
+  "smoke": [
+    "unwind after meal",
+    "satisfy craving",
+    "relax"
+  ],
+  "spit": [
+    "mad",
+    "show contempt",
+    "get out of mouth"
+  ],
+  "study": [
+    "make parents happy",
+    "pass test",
+    "learn things"
+  ],
+  "surf": [
+    "impress girls",
+    "have fun"
+  ],
+  "surprise": [
+    "wanted to make smile",
+    "birthday",
+    "catch off guard",
+    "give present",
+    "like"
+  ],
+  "switch": [
+    "fickle",
+    "change your mind",
+    "do not like"
+  ],
+  "talk": [
+    "explain",
+    "share feelings",
+    "communicate ideas"
+  ],
+  "thank": [
+    "grateful",
+    "feel good",
+    "appreciate",
+    "helped"
+  ],
+  "tickle": [
+    "make laugh",
+    "flirt"
+  ],
+  "travel": [
+    "visit people",
+    "experience different culture",
+    "work"
+  ],
+  "type": [
+    "produce document",
+    "communicate",
+    "enter information on computer",
+    "write letter"
+  ],
+  "vomit": [
+    "sick",
+    "drunk"
+  ],
+  "walk": [
+    "exercise",
+    "want to relax",
+    "enjoyable",
+    "go somewhere"
+  ],
+  "work": [
+    "feel productive",
+    "complete job",
+    "have to",
+    "need money"
+  ],
+  "write": [
+    "remember",
+    "famous",
+    "create novel",
+    "express yourself"
+  ]
+}

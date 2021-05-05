@@ -1,23 +1,37 @@
 {
+  "accomplish": [
+    "tried"
+  ],
   "analyse": [
     "don't_understand",
     "scientist",
     "figure_out_how_works",
-    "need_to_understand",
+    "need_to_understan",
     "need_solution",
     "grandson_to_learn",
+    "wanted_to_understand",
     "understand_better",
     "want_understand",
     "know"
+  ],
+  "apologize": [
+    "made_mistake"
   ],
   "argue": [
     "stubborn",
     "believed_were_right"
   ],
+  "attack": [
+    "terrorize"
+  ],
+  "audition": [
+    "act"
+  ],
   "awake": [
     "oversleeping_not_productive",
     "go_to_bathroom",
     "finished_sleeping",
+    "to",
     "weren't_sleeping",
     "alarm_sounded",
     "go_to_work",
@@ -28,13 +42,16 @@
   "bathe": [
     "dirty",
     "become_clean",
-    "try_new_bubble_bath",
+    "try_new_buble_bath",
     "squeaky_clean",
     "don't_want_to_smell_bad",
     "stink",
     "smell_good",
     "have_hot_date_tonight",
     "clean_body"
+  ],
+  "bike": [
+    "feels_great"
   ],
   "breathe": [
     "live",
@@ -48,7 +65,9 @@
     "need_air",
     "human_body_relies_on_oxygen",
     "want_to_live",
+    "oxygern",
     "stay_alive",
+    "air",
     "need_oxygen_to_live",
     "if_don't_would_die"
   ],
@@ -64,32 +83,38 @@
     "use_for_purpose",
     "wanted",
     "better",
-    "material_possessions"
+    "material_posessions"
+  ],
+  "camp": [
+    "entertainment"
   ],
   "celebrate": [
     "war_was_not_option",
     "it's_party_time",
     "excuse_good",
-    "mark_occasion_as_special",
+    "mark_occassion_as_special",
     "got_promotion",
     "acknowledge_accomplishment",
     "christ_rose_from_dead",
     "have_good_time",
     "celebration_good",
     "good_happened",
-    "joyful_event_has_occurred",
+    "joyful_event_has_occured",
     "others_to_know_about_victory",
-    "good_happened",
+    "good_happend",
     "have_fun",
     "had_new_baby",
     "share_happiness",
     "mark_happy_occasion",
     "did_not_eat_olive",
     "got_married",
-    "special_occasion",
+    "special_occassion",
     "alive",
     "birthday",
-    "happiness"
+    "happeness"
+  ],
+  "clap": [
+    "enjoyed"
   ],
   "clean": [
     "dirty",
@@ -101,6 +126,7 @@
     "things_cleaner",
     "don't_like_dirtiness",
     "have_clean_house",
+    "remove_dort",
     "there_dust",
     "dirtiness_unpleasant",
     "dirt_can_make_ill"
@@ -108,6 +134,7 @@
   "climb": [
     "reach_top",
     "get_on_top_of",
+    "get_to_top",
     "see_top_of_hill",
     "need_to_get_higher",
     "hiking_up_hill",
@@ -134,6 +161,7 @@
     "need_to_think",
     "make_right_decision",
     "recognize_additional_possibilities",
+    "to",
     "think_too_much",
     "figure_out",
     "reason",
@@ -154,7 +182,7 @@
     "need_information",
     "needed_to_share_information",
     "others_to_understand",
-    "opinion",
+    "opine",
     "wanted_to_express_feelings",
     "information"
   ],
@@ -172,7 +200,7 @@
     "victory_over_opponent",
     "win_against_opponent",
     "there_only_one_opening_available",
-    "challenge_yourself_against_other",
+    "challenge_youself_against_other",
     "improve_own_performance"
   ],
   "complain": [
@@ -207,6 +235,7 @@
     "eat",
     "create",
     "hungry",
+    "nungry",
     "need_food",
     "hot_meal",
     "make_meal",
@@ -276,12 +305,15 @@
     "feel_music_in_movement",
     "honor",
     "fun",
-    "exercise",
+    "excercise",
     "music_inspires",
     "listening_to_good_music",
     "liked_dancing",
     "get_party_going",
     "demonstrate_dance"
+  ],
+  "daydream": [
+    "bored"
   ],
   "die": [
     "old",
@@ -325,6 +357,9 @@
     "see_what's_under_water",
     "have_fun_in_water"
   ],
+  "donate": [
+    "would_like_to_help"
+  ],
   "dream": [
     "asleep",
     "involuntary_biological_function",
@@ -345,6 +380,7 @@
     "thirsty",
     "drink_tasted_good",
     "was_thirsty",
+    "thristy",
     "wet_tongue",
     "not_to_thirsty",
     "get_drunk",
@@ -376,7 +412,7 @@
   "eat": [
     "survive",
     "hungry",
-    "fill_stomach",
+    "fill_stomath",
     "tastes_good",
     "feed_hunger",
     "hunger",
@@ -389,7 +425,13 @@
     "food",
     "had_craving",
     "stop_feeling_hungry",
-    "were_hungry"
+    "were_hungy"
+  ],
+  "email": [
+    "don't_answer_telephone"
+  ],
+  "embroider": [
+    "gives_pleasure"
   ],
   "entertain": [
     "please",
@@ -424,16 +466,21 @@
     "get_in_shape",
     "build_stamina",
     "live_longer",
-    "better_health",
+    "better_ehalth",
     "get_thin",
     "increase_energy_level",
     "can_good_fun",
+    "fatass",
     "keep_up_with_dog",
     "become_better",
     "improve"
   ],
+  "facepalm": [
+    "people_stupid"
+  ],
   "fall": [
     "too_much",
+    "avoid_steppin",
     "die",
     "ladder_broke",
     "to",
@@ -454,7 +501,7 @@
     "rude",
     "attention",
     "have_gases",
-    "sometimes_uncontrollable",
+    "sometimes_uncontrolable",
     "relieve_internal_pressure",
     "make_laugh",
     "smell_bad",
@@ -477,8 +524,9 @@
     "like_challenging_sports",
     "lost_gun",
     "needed_exercise",
+    "own_epee",
     "defend",
-    "enclosed_separate_outside_space",
+    "enclosed_seperate_outside_space",
     "new_radio",
     "enclose_space",
     "like_to_play_with_swords",
@@ -492,6 +540,7 @@
     "reduce_boredom",
     "play_in_irish_folk_band",
     "make_beautiful_music",
+    "satisfies_analretentive_urges",
     "like_music",
     "change_activities",
     "liked_to_square_dance",
@@ -537,7 +586,7 @@
     "human",
     "nice",
     "was_accident",
-    "apologized",
+    "appologized",
     "feel_better",
     "maintain_relationship",
     "peace",
@@ -552,17 +601,23 @@
     "compassionate",
     "put_stress_behind"
   ],
+  "gamble": [
+    "need_money"
+  ],
   "get": [
     "have",
     "ran_out_of",
     "asked_for",
-    "earn",
+    "earnt",
     "make_creation",
     "wanted",
     "won_prize",
-    "satisfy_perceived_need",
+    "satisify_precieved_need",
     "need",
     "need_or_want"
+  ],
+  "grin": [
+    "funny"
   ],
   "groom": [
     "look_good",
@@ -576,6 +631,9 @@
     "impress_others",
     "look_good_in_picture",
     "look_nice"
+  ],
+  "growl": [
+    "angry"
   ],
   "hammer": [
     "demo",
@@ -600,6 +658,9 @@
     "nice",
     "were_able_to_help"
   ],
+  "hiccup": [
+    "ate_too_fast"
+  ],
   "hike": [
     "exercise",
     "get_somewhere",
@@ -613,7 +674,7 @@
     "like_to_exercise_outdoors",
     "of_scenery",
     "fresh_air",
-    "exercise",
+    "excercise",
     "sore_feet",
     "exercise_dog",
     "get_outdoors_away_from_civilization",
@@ -623,9 +684,15 @@
     "suffer",
     "view_of_nature"
   ],
+  "hit": [
+    "were_boxer"
+  ],
   "hug": [
     "love",
     "sad"
+  ],
+  "interrupt": [
+    "had_no_manners"
   ],
   "jog": [
     "get_in_shape",
@@ -642,8 +709,9 @@
     "good_health",
     "increase_stamina",
     "too_fat",
+    "want_to_increase_sportivity",
     "knees_were_feeling_much_better",
-    "lose_weight",
+    "lose_wieght",
     "maintain_health",
     "keeps_fit"
   ],
@@ -656,7 +724,7 @@
     "supreme_court_justice",
     "evaluate_skills",
     "classify",
-    "determine_guilt_or_innocence",
+    "determing_guilt_or_innocence",
     "rubbed_wrong",
     "impose_will",
     "worry",
@@ -673,6 +741,9 @@
   "jump": [
     "scared",
     "get_over_obstacle"
+  ],
+  "kick": [
+    "made_mad"
   ],
   "kill": [
     "revenge",
@@ -702,7 +773,7 @@
     "die",
     "sate_anger",
     "get_rid_of",
-    "have_no_other_choice",
+    "have_no_ther_choice",
     "rid_planet_of_rapists",
     "keep_silent",
     "stay_alive",
@@ -726,6 +797,7 @@
     "like",
     "feel_good",
     "let_know_care",
+    "to",
     "have_pleasure",
     "touch_intimately",
     "demonstrate_love",
@@ -752,7 +824,7 @@
     "making_baby_clothes",
     "enjoy_making_clothes",
     "sweater",
-    "combining_two_things_together",
+    "combinging_two_things_together",
     "want_hat",
     "make_with_wool",
     "create_bedding",
@@ -820,12 +892,15 @@
     "there_things_don't_know",
     "fun"
   ],
+  "leave": [
+    "don't_like_being_there"
+  ],
   "lie": [
     "protect",
     "hide_truth",
     "cheat",
     "need_to_protect_yourself",
-    "protect_some_feelings",
+    "protect_somes_feelings",
     "get",
     "trick_into_doing",
     "give_false_impression",
@@ -835,9 +910,9 @@
     "self_destruct",
     "ashamed_of",
     "not_tell_truth",
-    "wish_to_mislead_interrogator",
+    "wish_to_mislead_interrigator",
     "get_out_of_doing_wrong",
-    "deceive",
+    "decieve",
     "do_not_know_truth",
     "avoid_telling_truth",
     "cover_for_mistake",
@@ -856,7 +931,7 @@
     "there's_to_hear",
     "hear",
     "there_to_hear",
-    "you_want_to_listen",
+    "u_want_to_listned",
     "communication_important",
     "were_interested",
     "understand_what_being_said",
@@ -877,6 +952,7 @@
     "have_to_live_for",
     "existence_can_lead_to_pleasure",
     "have_been_born",
+    "ccan",
     "cna",
     "have_fun",
     "love",
@@ -890,6 +966,12 @@
     "like",
     "don't_want_to_die",
     "dying_painful"
+  ],
+  "look": [
+    "see"
+  ],
+  "marry": [
+    "love"
   ],
   "masturbate": [
     "have_no_partner",
@@ -923,7 +1005,7 @@
     "feel_creative",
     "make_picture",
     "change_colors_in_home",
-    "beautiful",
+    "beutiful",
     "covers_up_blood",
     "enjoyed_to_paint",
     "express_creativity",
@@ -955,6 +1037,9 @@
     "playing_fun",
     "makes_feel_happy"
   ],
+  "poop": [
+    "butt_hurts"
+  ],
   "pray": [
     "talk_to_god",
     "believe_in_deity",
@@ -976,6 +1061,9 @@
     "lonely",
     "express_thoughts_to_god"
   ],
+  "presume": [
+    "knew_well"
+  ],
   "pretend": [
     "actor",
     "playing",
@@ -990,6 +1078,9 @@
     "were_acting",
     "people_to_think_highly_of",
     "fool_others"
+  ],
+  "procrastinate": [
+    "don't_want_to_do"
   ],
   "procreate": [
     "children",
@@ -1062,7 +1153,7 @@
     "vengeance",
     "make_pay_for_injustice",
     "ejaculate_on_rug",
-    "has_stole",
+    "s_stole",
     "killed_person",
     "or_made_wrong",
     "misbehaved",
@@ -1077,7 +1168,7 @@
   "read": [
     "learn",
     "bored",
-    "improve_know_how",
+    "improove_know_how",
     "entertained",
     "makes_wiser",
     "wanted_to_gain_information",
@@ -1085,7 +1176,7 @@
     "appreciate_great_works_of_fiction",
     "appear_cultured_to_opposite_sex",
     "lawyer_told_to",
-    "like_chekhov",
+    "like_chekov",
     "get_information"
   ],
   "relax": [
@@ -1111,6 +1202,7 @@
     "there's_to_remember",
     "of_interest_to",
     "was_interesting",
+    "do",
     "needed_information",
     "repeat_later",
     "need_to_remember",
@@ -1143,10 +1235,13 @@
     "raise_children",
     "larger_herd",
     "populate_species",
-    "accidentally_got_pregnant_somehow",
+    "accidently_got_pregnant_somehow",
     "what_people_want",
     "human_instinct",
     "offspring"
+  ],
+  "resign": [
+    "job_was_impossible_to_do"
   ],
   "rest": [
     "tired",
@@ -1167,7 +1262,7 @@
     "feel_more_energetic",
     "need_to",
     "gain_energy",
-    "feel_better",
+    "feel_bettert",
     "get_more_sleep"
   ],
   "run": [
@@ -1181,8 +1276,9 @@
     "might_miss_bus",
     "mean_dog_chasing",
     "get_somewhere_fast",
+    "get_someware_quickly",
     "go_faster",
-    "would_increase_heart_rate",
+    "would_increase_heartrate",
     "win_race",
     "get_into_shape",
     "need_to_travel_fast",
@@ -1194,6 +1290,12 @@
     "in_hurry",
     "were_wound_up",
     "frightened"
+  ],
+  "scratch": [
+    "itch"
+  ],
+  "sell": [
+    "money"
   ],
   "sew": [
     "patch_pants",
@@ -1220,6 +1322,9 @@
     "has_unraveled",
     "mend_clothes"
   ],
+  "shiver": [
+    "was_cold"
+  ],
   "shop": [
     "buy",
     "need_new_things",
@@ -1233,8 +1338,14 @@
     "buy_products",
     "get_things_dont_now_have",
     "purchase",
-    "necessary",
+    "nessary",
     "need"
+  ],
+  "shove": [
+    "in_way"
+  ],
+  "shower": [
+    "have_awoken"
   ],
   "sing": [
     "happy",
@@ -1258,6 +1369,7 @@
     "hold_partner",
     "adrenaline_rush",
     "perform_for_others",
+    "excercise",
     "like",
     "like_skating",
     "move_fast",
@@ -1289,7 +1401,7 @@
     "enjoy_challenging_yourself",
     "like_breaking_bones",
     "like_to_go_fast_easily",
-    "like_colby_winston_cloud",
+    "like_colby_winstons_cloud",
     "think_it's_fun",
     "relax",
     "enjoy_thrill",
@@ -1310,8 +1422,11 @@
     "challenging",
     "take_chances",
     "move_quicker_on_snow",
-    "exhilarating",
+    "exhillarating",
     "go_fast"
+  ],
+  "skip": [
+    "happy"
   ],
   "sleep": [
     "rest",
@@ -1329,7 +1444,7 @@
     "rest_body",
     "tired_and_need_rest",
     "have_long_day_tomorrow",
-    "you_are_tired",
+    "youare_tired",
     "well_rested",
     "entertainment",
     "need_to_rest",
@@ -1342,6 +1457,7 @@
   "smile": [
     "happy",
     "atmosphere_friendly",
+    "heather_told_joje",
     "good_had_just_happened"
   ],
   "smoke": [
@@ -1365,6 +1481,9 @@
   "sneeze": [
     "nose_tickles",
     "allergic_to",
+    "of_cold"
+  ],
+  "sniffle": [
     "of_cold"
   ],
   "snore": [
@@ -1391,7 +1510,7 @@
     "around_other_people",
     "popular",
     "have_fun_with_friends",
-    "humans_social_beings",
+    "humans_socail_beeings",
     "lonely",
     "meet_new_people",
     "companionship"
@@ -1405,8 +1524,9 @@
     "bug_flew_into_mouth",
     "drank_poison",
     "get_rid_of_watermelon_seeds",
+    "have_phlem_to_release",
     "look_nasty",
-    "remove_saliva_from_mouth",
+    "remove_salaiva_from_mouth",
     "show_contempt",
     "hate",
     "get_rid_of_gum",
@@ -1475,6 +1595,9 @@
     "joined_crowd",
     "occasion_special"
   ],
+  "stab": [
+    "have_no_gun"
+  ],
   "steal": [
     "have_no_money",
     "want_money"
@@ -1505,7 +1628,7 @@
     "have_fun_on_water",
     "get_thrill",
     "like_surfing",
-    "feeling_of_riding_on_water",
+    "feeling_of_riding_on_wate",
     "enjoy_yourself",
     "it's_way_of_escaping",
     "enjoy_riding_waves",
@@ -1514,13 +1637,13 @@
     "enjoy_speed",
     "have_fun",
     "impress_girls",
-    "need_information"
+    "need_informations"
   ],
   "surprise": [
     "scare",
     "wanted_to_make_smile",
     "like",
-    "make_happy",
+    "make_happey",
     "make_feel_happy",
     "it's_birthday",
     "delighted",
@@ -1532,6 +1655,7 @@
   ],
   "swim": [
     "hot",
+    "excercise",
     "exercise",
     "cool_down",
     "fun",
@@ -1539,6 +1663,7 @@
     "in_water",
     "water_cool_and_wet",
     "hot_outside",
+    "exersize",
     "enjoy_swimming",
     "avoid_drowning",
     "pass_swim_test",
@@ -1546,6 +1671,9 @@
     "save_life",
     "cool_off",
     "like_water"
+  ],
+  "switch": [
+    "fickle"
   ],
   "talk": [
     "communicate",
@@ -1581,6 +1709,7 @@
     "did_nice_for",
     "show_appreciation",
     "express_thanks",
+    "did_for",
     "express_gratitude"
   ],
   "think": [
@@ -1641,7 +1770,7 @@
     "write_friend",
     "faster_than_writing",
     "have_bad_handwriting",
-    "freedom",
+    "fredom",
     "message_to_legible",
     "produce_document",
     "ensure_writing_legible",
@@ -1659,10 +1788,10 @@
     "relieve_pressure_in_bladder",
     "eliminate_excess_fluids_from_body",
     "bladder_full",
-    "relieve_yourself_of_internal_pressure",
+    "releive_yourself_of_internal_pressure",
     "drank_lot_of_water",
     "need_to_pee",
-    "bladder_needs_emptying",
+    "bladdar_needs_emptying",
     "relieve_pressure_feel",
     "evacuate_excess_fluids_from_body",
     "everyone_has_to_do",
@@ -1673,6 +1802,9 @@
     "sick",
     "sickness",
     "drank_poison"
+  ],
+  "wakeboard": [
+    "fun"
   ],
   "walk": [
     "exercise",
@@ -1727,7 +1859,7 @@
     "remember",
     "have_to_say",
     "get_thoughts_out",
-    "communicate",
+    "comunicate",
     "put_thoughts_on_paper",
     "want_to_tell_thought",
     "have_to_communicate",
@@ -1740,5 +1872,8 @@
   "yawn": [
     "sleepy",
     "tired"
+  ],
+  "yell": [
+    "angry"
   ]
 }

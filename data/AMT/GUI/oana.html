@@ -1,0 +1,180 @@
+<!-- You must include this JavaScript file -->
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+<style> 
+input:checked {
+  height: 10px;
+  width: 10px;
+}
+</style>
+
+<!-- For the full list of available Crowd HTML Elements and their input/output documentation,
+      please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+
+<!-- You must include crowd-form so that your task submits answers to MTurk -->
+      <!-- categories="${reasons}" -->
+<crowd-form answer-format="flatten-objects">
+
+    <!-- The crowd-classifier element will create a tool for the Worker to select the
+           correct answer to your question -->
+    <crowd-classifier-multi-select
+      name="category"
+      categories="['remove dirt','dont like dirtiness','declutter', 'company is coming', 'I cannot find any reason mentioned in the transcript or shown video', 'other (please write them in the provided box)']"
+      header="What are the reasons shown or mentioned in the video for performing the action of cleaning? Please select one or more categories. Please carefully read the instructions before performing the task."
+    >
+     
+      <classification-target>
+         <video width="70%" height="370" controls>
+
+          <!-- Your video file URLs will be substituted for the "video_url" attribute below when 
+                 you publish a batch with a CSV input file containing multiple video file URLs -->
+          <!-- <source src="${video_url}" type="video/mp4"> -->
+          <source src="https://github.com/OanaIgnat/miniclips/blob/master/rNcCcFi0k-k_0:01:04_0:02:22.mp4?raw=true" type="video/mp4">
+        </video> 
+        <br>
+        <br>
+
+        <label><b>Please select how did you find the reasons in the video:</b></label>
+        <br>
+        <crowd-radio-group>
+          <crowd-radio-button name="why.mentioned">The reasons are mentioned verbally</crowd-radio-button>
+          <crowd-radio-button name="why.shown">The reasons are shown visually</crowd-radio-button>
+          <crowd-radio-button name="why.both">The reasons are mentioned verbally and shown visually</crowd-radio-button>
+        </crowd-radio-group>
+        <br>
+        <br>
+        
+        <label><b>Please select how confident are you in your answers:</b></label>
+        <br>
+        <crowd-radio-group>
+          <crowd-radio-button name="confidence.high">High Confidence</crowd-radio-button>
+          <crowd-radio-button name="confidence.low">Low confidence</crowd-radio-button>
+        </crowd-radio-group>
+        <br>
+        <br>
+      
+        <textarea name="comments" rows="5" cols="60" placeholder="Please, write any comment/error/suggestion you have." ></textarea>
+        <textarea name="others" rows="5" cols="60" placeholder="If there are other reasons you found, please write them here, separated by ," ></textarea>
+  
+      </classification-target>
+
+
+      <short-instructions>
+        <p>You are given a video that contains a person describing an action and a list of <b>candidate reasons for why they want to do the action</b>.</p>
+        <p>From the list of candidate <b>reasons</b>, select the ones that are mentioned verbally or shown visually in the video.</p>
+        <p> Please see three examples below:</p>
+        <br>
+
+        <h4>1. Action reasons are mentioned verbally, and shown visually in the video:</h4>
+        <video width="100%"  controls>
+        <source src="https://github.com/OanaIgnat/miniclips/blob/master/HLRIJmZ9X6k_0:00:54_0:01:26.mp4?raw=true" type="video/mp4">
+        </video> 
+        <label><b>Answers:</b></label>
+        <br>
+          <input type="checkbox" checked="checked">remove dirt (because it shown and metioned in the video)<br>
+          <input type="checkbox" checked="checked"> don't like dirtiness (because it is mentioned in the video)<br>
+          <input type="checkbox"> declutter<br>
+          <input type="checkbox"> company is coming<br>
+          <input type="checkbox"> feel productive<br>
+
+        <br>
+        <hr>
+        <br>
+
+        <h4>2. Action reason is mentioned verbally, but <b>not</b> shown visually in the video:</h4>
+        <video width="100%" controls>
+        <source src="https://github.com/OanaIgnat/miniclips/blob/master/4jYWxhMg1Dw_0:01:27_0:01:43.mp4?raw=true" type="video/mp4">
+        </video> 
+        <br>
+        <br>
+        <label><b>Answers:</b></label>
+        <br>
+           <input type="checkbox" checked="checked">remove dirt (because it is mentioned in the video)<br>
+          <input type="checkbox"> don't like dirtiness<br>
+          <input type="checkbox"> declutter<br>
+          <input type="checkbox"> company is coming<br>
+          <input type="checkbox"> feel productive<br>
+        
+        <br>
+        <hr>
+        <br>
+
+        <h4>3. Action reason is shown visually, but <b>not</b> mentioned verbally in the video:</h4>
+        <video width="100%"  controls>
+        <source src="https://github.com/OanaIgnat/miniclips/blob/master/8qiK-awcJbM_0:02:42_0:03:06.mp4?raw=true" type="video/mp4">
+        </video> 
+        <br>
+        <br>
+       
+        <label><b>Answers:</b></label>
+        <br>
+          <input type="checkbox" checked="checked">remove dirt (because it shown in the video)<br>
+          <input type="checkbox"> don't like dirtiness<br>
+          <input type="checkbox"> declutter<br>
+          <input type="checkbox"> company is coming<br>
+          <input type="checkbox"> feel productive<br>
+
+
+
+      </short-instructions>
+
+
+      <full-instructions header="Video Classification Instructions">
+      <p>You are given a video that contains a person describing an action and a list of <b>candidate reasons for why they want to do the action</b>.</p>
+        <p>From the list of candidate <b>reasons</b>, select the ones that are mentioned verbally or shown visually in the video.</p>
+        <p> Please see three examples below:</p>
+        <br>
+
+        <h4>1. Action reasons are mentioned verbally, and shown visually in the video:</h4>
+        <video width="100%"  controls>
+        <source src="https://github.com/OanaIgnat/miniclips/blob/master/HLRIJmZ9X6k_0:00:54_0:01:26.mp4?raw=true" type="video/mp4">
+        </video> 
+        <label><b>Answers:</b></label>
+        <br>
+          <input type="checkbox" checked="checked">remove dirt (because it shown and metioned in the video)<br>
+          <input type="checkbox" checked="checked"> don't like dirtiness (because it is mentioned in the video)<br>
+          <input type="checkbox"> declutter<br>
+          <input type="checkbox"> company is coming<br>
+          <input type="checkbox"> feel productive<br>
+
+        <br>
+        <hr>
+        <br>
+
+        <h4>2. Action reason is mentioned verbally, but <b>not</b> shown visually in the video:</h4>
+        <video width="100%" controls>
+        <source src="https://github.com/OanaIgnat/miniclips/blob/master/4jYWxhMg1Dw_0:01:27_0:01:43.mp4?raw=true" type="video/mp4">
+        </video> 
+        <br>
+        <br>
+        <label><b>Answers:</b></label>
+        <br>
+           <input type="checkbox" checked="checked">remove dirt (because it is mentioned in the video)<br>
+          <input type="checkbox"> don't like dirtiness<br>
+          <input type="checkbox"> declutter<br>
+          <input type="checkbox"> company is coming<br>
+          <input type="checkbox"> feel productive<br>
+        
+        <br>
+        <hr>
+        <br>
+
+        <h4>3. Action reason is shown visually, but <b>not</b> mentioned verbally in the video:</h4>
+        <video width="100%"  controls>
+        <source src="https://github.com/OanaIgnat/miniclips/blob/master/8qiK-awcJbM_0:02:42_0:03:06.mp4?raw=true" type="video/mp4">
+        </video> 
+        <br>
+        <br>
+       
+        <label><b>Answers:</b></label>
+        <br>
+          <input type="checkbox" checked="checked">remove dirt (because it shown in the video)<br>
+          <input type="checkbox"> don't like dirtiness<br>
+          <input type="checkbox"> declutter<br>
+          <input type="checkbox"> company is coming<br>
+          <input type="checkbox"> feel productive<br>
+
+
+      </full-instructions>
+
+    </crowd-classifier-multi-select>
+</crowd-form>
