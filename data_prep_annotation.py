@@ -1049,25 +1049,38 @@ def read_AMT_output(file_in1, file_out):
         if len(labels) < 2:
             print("nb of labels per posts is less than 2 .. removing content " + content)
             del new_dict[content]
-        # else:
-        elif len(labels) == 3:
-            for label in labels:
-                dict_verb_label[action]["labels"].append(ast.literal_eval(label))
-            confidences = dict_content_label[content]["confidence"]
-            list_confidence.append(confidences)
-            whys = dict_content_label[content]["why"]
-            list_whys.append(whys)
-            if "high" in confidences:
-                nb_posts_at_least_1_high += 1
-            if "low" in confidences:
-                nb_posts_at_least_1_low += 1
+        else:
+            if len(labels) == 3:
+                for label in labels:
+                    list_label = ast.literal_eval(label)
+                    if action == "thanking":
+                        list_label = ['appreciate' if i == 'grateful' else i for i in list_label]
+                    elif action == "buying":
+                        list_label = ['need' if i == 'replace broken' else i for i in list_label]
+                    elif action == "sleeping":
+                        list_label = ['you are tired' if i == 'sleepy' else i for i in list_label]
+                        list_label = ['need to restore energy' if i == 'get up early next day' else i for i in list_label]
+                    elif action == "helping":
+                        list_label = ['help in return' if i == 'express altruism' else i for i in list_label]
+                        list_label = ['help in return' if i == 'accomplish mutual goal' else i for i in list_label]
+                    elif action == "relaxing":
+                        list_label = ['self care' if i == 'healthy' else i for i in list_label]
+                    dict_verb_label[action]["labels"].append(list_label)
+                confidences = dict_content_label[content]["confidence"]
+                list_confidence.append(confidences)
+                whys = dict_content_label[content]["why"]
+                list_whys.append(whys)
+                if "high" in confidences:
+                    nb_posts_at_least_1_high += 1
+                if "low" in confidences:
+                    nb_posts_at_least_1_low += 1
 
-            if "mentioned" in whys:
-                nb_posts_at_least_1_mention += 1
-            if "shown" in whys:
-                nb_posts_at_least_1_shown += 1
-            if "both" in whys:
-                nb_posts_at_least_1_both += 1
+                if "mentioned" in whys:
+                    nb_posts_at_least_1_mention += 1
+                if "shown" in whys:
+                    nb_posts_at_least_1_shown += 1
+                if "both" in whys:
+                    nb_posts_at_least_1_both += 1
 
     print(nb_posts_at_least_1_high)
     print(nb_posts_at_least_1_low)
@@ -1081,13 +1094,14 @@ def read_AMT_output(file_in1, file_out):
         json.dump(new_dict, fp)
 
     # return only dictionary values with len(items) == 3 - for agreement compute
-    new_dict_verb_label = dict_verb_label.copy()
+    # new_dict_verb_label = dict_verb_label.copy()
+    # new_dict_verb_label = dict_content_label.copy()
     # for key in dict_verb_label.keys():
     #     if len(dict_verb_label[key]["labels"]) != 3:
     #         del new_dict_verb_label[key]
     # print(len(new_dict_verb_label.keys()))
 
-    return new_dict_verb_label, list_confidence, list_whys
+    return dict_verb_label, list_confidence, list_whys
 
 
 def calculate_fleiss_kappa_agreement(list_labels):
@@ -1105,7 +1119,12 @@ def calculate_fleiss_kappa_agreement(list_labels):
 def agreement_labels_AMT(dict_verb_label):
     dict_binary = {}
     list_all_kappa = []
+    list_all_multi_kappa = []
+    list_micro_kappa = []
+    list_verb_agreement = []
     for verb in dict_verb_label.keys():
+        if verb == "remembering":
+            continue
         if dict_verb_label[verb]["labels"]:
             print(verb)
             dict_binary[verb] = []
@@ -1124,26 +1143,43 @@ def agreement_labels_AMT(dict_verb_label):
             # print(dict_verb_label[verb])
             # print(dict_binary[verb])
             list_kappa = []
+            list_multi_kappa = []
+            print(len(binary_labels_per_verb))
             for i in range(0, len(binary_labels_per_verb), 3):
                 chunk = binary_labels_per_verb[i:i + 3]
                 # print(chunk)
+                # [coder1, coder2, coder3] = chunk
                 [coder1, coder2, coder3] = chunk
-                formatted_codes = [[1, i, coder1[i]] for i in range(len(coder1))] + [[2, i, coder2[i]] for i in
-                                                                                     range(len(coder2))] + [
-                                      [3, i, coder3[i]] for i in range(len(coder3))]
+                # formatted_codes = [[1, i, coder1[i]] for i in range(len(coder1))] + [[2, i, coder2[i]] for i in
+                #                                                                      range(len(coder2))] + [
+                #                       [3, i, coder3[i]] for i in range(len(coder3))]
+                formatted_codes = [[0, str(i), str(coder1[i])] for i in range(0, len(coder1))] + [[1, str(i), str(coder2[i])]
+                                                                                           for i in range(0, len(coder2))] + \
+                                  [[2, str(i), str(coder3[i])] for i in range(0, len(coder3))]
 
                 ratingtask = agreement.AnnotationTask(data=formatted_codes)
-                list_kappa.append(ratingtask.multi_kappa())
-            print('Avg Fleiss\'s Kappa per verb:', mean(list_kappa))
+                list_multi_kappa.append(ratingtask.multi_kappa())
+                list_kappa.append(ratingtask.kappa())
+                # if verb == "relaxing":
+                #     if ratingtask.kappa() < 0.1:
+                #         print(all_labels[i:i + 3], ratingtask.kappa())
+                list_micro_kappa.append(ratingtask.kappa())
+            list_verb_agreement.append([verb, mean(list_kappa)])
+            print('Avg Cohen\'s Kappa per verb:', mean(list_kappa))
+            print('Avg Fleiss\'s Kappa per verb:', mean(list_multi_kappa))
             list_all_kappa.append(mean(list_kappa))
-    print('Avg Fleiss\'s Kappa all verbs:', mean(list_all_kappa))
-
+            list_all_multi_kappa.append(mean(list_multi_kappa))
+    # print("-----------------------------------------")
+    print('Macro Avg Cohen\'s Kappa all verbs:', mean(list_all_kappa))
+    print('Macro Avg Fleiss\'s Kappa all verbs:', mean(list_all_multi_kappa))
+    print('Micro Avg Cohen\'s Kappa all verbs:', mean(list_micro_kappa))
+    return list_verb_agreement
 
 def agreement_AMT_output(dict_verb_label, list_confidence, list_whys):
     list_high_confidence_whys = []
     new_list_whys = []  # both overlaps with mention and shown
     print("####### Label agreement:")
-    agreement_labels_AMT(dict_verb_label)
+    list_verb_agreement = agreement_labels_AMT(dict_verb_label)
     for post_whys, post_confidences in zip(list_whys, list_confidence):
         if "mentioned" in post_whys:
             post_whys = ["mentioned" if x == "both" else x for x in post_whys]
@@ -1159,6 +1195,7 @@ def agreement_AMT_output(dict_verb_label, list_confidence, list_whys):
     print("After removing low confidence posts: ")
     calculate_fleiss_kappa_agreement(list_high_confidence_whys)
     print(len(list_whys), len(list_high_confidence_whys))
+    return list_verb_agreement
 
 
 def create_data_pipeline(file_in1, file_in2, file_out1):
@@ -1191,13 +1228,6 @@ def create_data_pipeline(file_in1, file_in2, file_out1):
     #     print(labels)
     #     break
         # answers.append([transcript, labels])
-
-                
-
-
-
-
-
 
 def merge_dictionaries(file_out):
     dict = {}
@@ -1439,22 +1469,19 @@ def main():
     #     list_spammers = spam_check_AMT_output(file_in1=file_out1, file_in2=file_in, file_out=file_out2)
     #     file_out3 = "data/AMT/output/for_spam_detect/reject_approve/" + file_in.split("/")[-1]
     #     make_spam_reject_file(file_in1=file_in, file_out=file_out3, list_spammers=list_spammers)
-        # break
+        ## break
 
-    # # ####3. #TODO - manually make all_batches.csv from edited_no_spam
+    # ####3. #TODO - manually make all_batches.csv from edited_no_spam
     file_out3 = "data/AMT/output/for_spam_detect/final_output/trial.json"
-    # dict_verb_label, list_confidence, list_whys = read_AMT_output(
-    #         file_in1="data/AMT/output/for_spam_detect/edited_no_spam/all_batches.csv",
-    #         file_out=file_out3)
+    dict_verb_label, list_confidence, list_whys = read_AMT_output(
+            file_in1="data/AMT/output/for_spam_detect/edited_no_spam/all_batches.csv",
+            file_out=file_out3)
 
-    # agreement_AMT_output(dict_verb_label, list_confidence, list_whys)
+    list_verb_agreement = agreement_AMT_output(dict_verb_label, list_confidence, list_whys)
     #
-    create_data_pipeline(file_in1=file_out3, file_in2="data/AMT/input/for_spam_detect/all_data.json",
-                         file_out1="data/AMT/output/for_spam_detect/final_output/pipeline_trial.json")
-                         # file_out2="data/AMT/output/for_spam_detect/final_output/dict_web_trial.json")
-
-
-    #### 4. republish data from others
+    # create_data_pipeline(file_in1=file_out3, file_in2="data/AMT/input/for_spam_detect/all_data.json",
+    #                      file_out1="data/AMT/output/for_spam_detect/final_output/pipeline_trial.json")
+    #                      ## file_out2="data/AMT/output/for_spam_detect/final_output/dict_web_trial.json")
 
 
 if __name__ == '__main__':

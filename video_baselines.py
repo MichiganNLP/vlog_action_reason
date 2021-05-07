@@ -123,18 +123,18 @@ def results_objects_captions(file_in1, file_in2, file_in3, file_out):
 
 def main():
     ## results_object_detection()
-    # results_captions(file_in1='data/video_baselines/captions.json',
-    #                  file_in2="data/AMT/output/for_spam_detect/final_output/pipeline_trial.json",
-    #                  file_out='data/video_baselines/pipeline_captions.json')
+    results_captions(file_in1='data/video_baselines/captions.json',
+                     file_in2="data/AMT/output/for_spam_detect/final_output/pipeline_trial.json",
+                     file_out='data/video_baselines/pipeline_captions.json')
 
     # results_objects(file_in1='data/video_baselines/object_detections.json',
     #                  file_in2="data/AMT/output/for_spam_detect/final_output/pipeline_trial.json",
     #                  file_out='data/video_baselines/pipeline_objects.json')
 
-    results_objects_captions(file_in1='data/video_baselines/captions.json',
-                             file_in2='data/video_baselines/object_detections.json',
-                    file_in3="data/AMT/output/for_spam_detect/final_output/pipeline_trial.json",
-                    file_out='data/video_baselines/pipeline_objects_captions.json')
+    # results_objects_captions(file_in1='data/video_baselines/captions.json',
+    #                          file_in2='data/video_baselines/object_detections.json',
+    #                 file_in3="data/AMT/output/for_spam_detect/final_output/pipeline_trial.json",
+    #                 file_out='data/video_baselines/pipeline_objects_captions.json')
 
 if __name__ == '__main__':
     main()

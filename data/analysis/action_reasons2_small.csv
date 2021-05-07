@@ -1,61 +1,50 @@
 ids,labels,parents
 1,buy,
-2,need,1
-3,replace broken,1
-4,enjoy,1
-5,celebrate,
-6,mark happy occasion,5
-7,acknowledge accomplish.,5
-8,have good time,5
-9,share happiness,5
-10,clean,
-11,company was coming,10
-12,do not like dirtiness,10
-13,declutter,10
-14,remove dirt,10
-15,cook,
-16,make meal,15
-17,hungry,15
-18,be healthy,15
-19,dance,
-20,have fun,19
-21,celebrate,19
-22,socialize,19
-23,get off couch,19
-24,express yourself,19
-25,are a dancer,19
-26,to exercise,19
-27,like dancing,19
-28,to learn,19
-29,dream,
-30,plan for future,29
-31,imagine possibilities,29
-32,distract brain,29
-33,feel relaxed,29
-34,were asleep,29
-35,drink,
-36,were thirsty,35
-37,avoid become dehydrated,35
-38,refreshing,35
-39,would want to forget,35
-40,drink tasted good,35
-41,get drunk,35
-42,celebrating,35
-43,drive,
-44,get someplace,43
-45,use gas,43
-46,relax,43
-47,do chores,43
-48,eat,
-49,tastes good,48
-50,were hungry,48
-51,had craving,48
-52,be healthy,48
-53,entertain,
-54,fun activity,53
-55,enjoy company,53
-56,like,53
-57,visiting,53
-58,please,53
-59,bored,53
-60,...,
+2,replace broken,1
+3,habit,1
+4,worth it,1
+5,enjoy,1
+6,need,1
+7,clean,
+8,company was coming,7
+9,do not like dirtiness,7
+10,habit,7
+11,self care,7
+12,declutter,7
+13,remove dirt,7
+14,cook,
+15,improve skills,14
+16,make meal,14
+17,hungry,14
+18,be healthy,14
+19,drink,
+20,healthy,19
+21,relax,19
+22,skincare,19
+23,were thirsty,19
+24,avoid becoming dehydrated,19
+25,refreshing,19
+26,would want to forget,19
+27,drink tasted good,19
+28,get drunk,19
+29,celebrating,19
+30,drive,
+31,get someplace,30
+32,use gas,30
+33,relax,30
+34,do chores,30
+35,eat,
+36,tastes good,35
+37,were hungry,35
+38,had craving,35
+39,be healthy,35
+40,enjoy,35
+41,fall,
+42,rush,41
+43,tired,41
+44,accident,41
+45,ladder broke,41
+46,tripped,41
+47,makeup fell,41
+48,objects fall,41
+49,...,
