@@ -1,0 +1,148 @@
+{
+  "buy": [
+    "towel",
+    "version",
+    "piano",
+    "deck",
+    "house"
+  ],
+  "clean": [
+    "shower",
+    "window",
+    "dog",
+    "bowl",
+    "bedding"
+  ],
+  "cook": [
+    "meat",
+    "meal",
+    "stuff",
+    "dinner",
+    "dish"
+  ],
+  "drink": [
+    "water",
+    "coffee",
+    "chocolate",
+    "tea",
+    "juice"
+  ],
+  "drive": [
+    "makeup",
+    "car",
+    "audition",
+    "video"
+  ],
+  "eat": [
+    "onion",
+    "ton",
+    "cupcake",
+    "egg",
+    "sheet"
+  ],
+  "fall": [
+    "place"
+  ],
+  "help": [
+    "soil",
+    "aesthetic",
+    "breathing",
+    "flow",
+    "digestion"
+  ],
+  "learn": [
+    "recipe",
+    "succulent",
+    "vinegar",
+    "skill",
+    "lesson"
+  ],
+  "paint": [
+    "nail",
+    "wall",
+    "toenail",
+    "color",
+    "bottom"
+  ],
+  "play": [
+    "game",
+    "music",
+    "instrument",
+    "routine",
+    "card"
+  ],
+  "read": [
+    "page",
+    "book",
+    "chart",
+    "sign",
+    "autobiography"
+  ],
+  "relax": [
+    "muscle",
+    "stomach",
+    "head",
+    "voice"
+  ],
+  "remember": [
+    "moment",
+    "lot",
+    "number",
+    "holiday",
+    "anticipation"
+  ],
+  "sell": [
+    "oil",
+    "hope",
+    "bag",
+    "rest",
+    "candle"
+  ],
+  "shop": [
+    "thredup",
+    "section",
+    "collection",
+    "tip",
+    "clothing"
+  ],
+  "switch": [
+    "day",
+    "coffee",
+    "curtain",
+    "task",
+    "perspective"
+  ],
+  "thank": [
+    "sponsor",
+    "guy",
+    "gift",
+    "Skillshare",
+    "God"
+  ],
+  "travel": [
+    "world",
+    "trip",
+    "vacation"
+  ],
+  "walk": [
+    "pet",
+    "that",
+    "block",
+    "around",
+    "street"
+  ],
+  "work": [
+    "part",
+    "hand",
+    "hour",
+    "bit",
+    "scrunchie"
+  ],
+  "write": [
+    "book",
+    "Chinese",
+    "novel",
+    "script",
+    "goal"
+  ]
+}

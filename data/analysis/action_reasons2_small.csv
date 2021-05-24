@@ -6,8 +6,8 @@ ids,labels,parents
 5,enjoy,1
 6,need,1
 7,clean,
-8,company was coming,7
-9,do not like dirtiness,7
+8,company coming,7
+9,not like dirt,7
 10,habit,7
 11,self care,7
 12,declutter,7
@@ -22,9 +22,9 @@ ids,labels,parents
 21,relax,19
 22,skincare,19
 23,were thirsty,19
-24,avoid becoming dehydrated,19
+24,not be dehydrated,19
 25,refreshing,19
-26,would want to forget,19
+26,want to forget,19
 27,drink tasted good,19
 28,get drunk,19
 29,celebrating,19
@@ -43,8 +43,6 @@ ids,labels,parents
 42,rush,41
 43,tired,41
 44,accident,41
-45,ladder broke,41
-46,tripped,41
-47,makeup fell,41
-48,objects fall,41
-49,...,
+45,makeup fell,41
+46,objects fall,41
+47,...,

@@ -1020,6 +1020,8 @@ def read_AMT_output(file_in1, file_out):
             if "spam" in video:
                 print("Removing spam check content: " + video)
                 continue
+            if "QYuG1y0l45E+0:16:56+0:17:32" in video or "ZKFuwFtxx50+0:08:47+0:09:18" in video: #corrupted
+                continue
             if str((video, action)) not in dict_content_label.keys():
                 dict_content_label[str((video, action))] = {"labels": [], "other_labels": [], "confidence": [], "why": [],
                                                             "comments": []}
@@ -1123,7 +1125,10 @@ def agreement_labels_AMT(dict_verb_label):
     list_micro_kappa = []
     list_verb_agreement = []
     for verb in dict_verb_label.keys():
-        if verb == "remembering":
+        if verb not in ["buying", "cleaning", "cooking", "drinking", "driving", "eating", "falling", "helping", "listening",
+                        "learning", "painting", "playing", "reading", "relaxing", "remembering", "selling", "shopping",
+                        "sleeping", "switching", "thanking", "travelling", "walking", "working", "writing"
+                        ]:
             continue
         if dict_verb_label[verb]["labels"]:
             print(verb)
@@ -1145,9 +1150,11 @@ def agreement_labels_AMT(dict_verb_label):
             list_kappa = []
             list_multi_kappa = []
             print(len(binary_labels_per_verb))
-            for i in range(0, len(binary_labels_per_verb), 3):
+            # if verb == "learning":
+            #     print(binary_labels_per_verb)
+            for index, i in enumerate(range(0, len(binary_labels_per_verb), 3)):
                 chunk = binary_labels_per_verb[i:i + 3]
-                # print(chunk)
+                # print(index, chunk)
                 # [coder1, coder2, coder3] = chunk
                 [coder1, coder2, coder3] = chunk
                 # formatted_codes = [[1, i, coder1[i]] for i in range(len(coder1))] + [[2, i, coder2[i]] for i in
@@ -1209,7 +1216,7 @@ def create_data_pipeline(file_in1, file_in2, file_out1):
     for key in annotations:
         if key not in data:
             print("Error! " + key + "not in data")
-        data_pipeline[key] = [data[key]["transcripts"][0], data[key]["reasons"][0], annotations[key]["labels"]]
+        data_pipeline[key] = [data[key]["transcripts"][0], data[key]["reasons"][0], annotations[key]["labels"], annotations[key]["why"]]
 
     with open(file_out1, 'w+') as fp:
         json.dump(data_pipeline, fp)
@@ -1472,15 +1479,30 @@ def main():
         ## break
 
     # ####3. #TODO - manually make all_batches.csv from edited_no_spam
-    file_out3 = "data/AMT/output/for_spam_detect/final_output/trial.json"
-    dict_verb_label, list_confidence, list_whys = read_AMT_output(
-            file_in1="data/AMT/output/for_spam_detect/edited_no_spam/all_batches.csv",
-            file_out=file_out3)
-
-    list_verb_agreement = agreement_AMT_output(dict_verb_label, list_confidence, list_whys)
+    # file_out3 = "data/AMT/output/for_spam_detect/final_output/trial_initial.json"
+    # # I removed 2 corrupted videos from trial.json
+    # dict_verb_label, list_confidence, list_whys = read_AMT_output(
+    #         file_in1="data/AMT/output/for_spam_detect/edited_no_spam/all_batches.csv",
+    #         file_out=file_out3)
     #
-    # create_data_pipeline(file_in1=file_out3, file_in2="data/AMT/input/for_spam_detect/all_data.json",
-    #                      file_out1="data/AMT/output/for_spam_detect/final_output/pipeline_trial.json")
+    # with open("data/AMT/output/for_spam_detect/final_output/trial.json") as json_file:
+    #     annotations_clean = json.load(json_file)
+    #
+    # new_dict_verb_label = {}
+    # for key in annotations_clean:
+    #     (video, verb) = ast.literal_eval(key)
+    #     labels = annotations_clean[key]["labels"]
+    #     if verb not in new_dict_verb_label:
+    #         new_dict_verb_label[verb] = {"labels": [], "GT": dict_verb_label[verb]["GT"]}
+    #     for label in labels:
+    #         list_label = ast.literal_eval(label)
+    #         new_dict_verb_label[verb]["labels"].append(list_label)
+    #
+    # list_verb_agreement = agreement_AMT_output(new_dict_verb_label, list_confidence, list_whys)
+
+    file_out3 = "data/AMT/output/for_spam_detect/final_output/trial.json"
+    create_data_pipeline(file_in1=file_out3, file_in2="data/AMT/input/for_spam_detect/all_data_modif.json",
+                         file_out1="data/AMT/output/for_spam_detect/final_output/pipeline_trial.json")
     #                      ## file_out2="data/AMT/output/for_spam_detect/final_output/dict_web_trial.json")
 
 

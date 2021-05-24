@@ -1,21 +1,36 @@
+import ast
+import json
+import logging  # if error - change runtime and try again
 from collections import Counter
 
-from simpletransformers.classification import MultiLabelClassificationModel
 import pandas as pd
-import logging  # if error - change runtime and try again
-import json
-import tqdm
-import numpy as np
 import spacy
-import ast
+import torch
+import tqdm
 from sentence_transformers import SentenceTransformer, util
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, precision_recall_fscore_support
 from sklearn.preprocessing import MultiLabelBinarizer
 from statistics import mean
 
-from data_prep_annotation import get_verb_hyponyms
-
 nlp = spacy.load('en_core_web_sm')
+
+torch.cuda.empty_cache()
+
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+
+class ReasonDataset(torch.utils.data.Dataset):
+    def __init__(self, encodings, labels):
+        self.encodings = encodings
+        self.labels = labels
+
+    def __getitem__(self, idx):
+        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        item['labels'] = torch.tensor(self.labels[idx])
+        return item
+
+    def __len__(self):
+        return len(self.labels)
 
 
 def read_annotations(file_in, file_out):
@@ -28,6 +43,8 @@ def read_annotations(file_in, file_out):
         verb = ast.literal_eval(key)[1]
         transcript = dict_AMT_annotations[key][0]
         reasons = ast.literal_eval(dict_AMT_annotations[key][1])
+        why = dict_AMT_annotations[key][3]
+        list_why_maj = [k for k, v in Counter(why).items() if v >= 2]  # take majority answers
         list_all_answers = []
         for ans in ast.literal_eval(dict_AMT_annotations[key][2][0]):
             list_all_answers.append(ans)
@@ -48,11 +65,11 @@ def read_annotations(file_in, file_out):
         if not list_all_answers_maj:
             print(key + " " + str(list_all_answers) + " not okay ..")
             count_not_ok += 1
-            list_all_answers_maj = list_all_answers # TODO remove these or not ..
+            list_all_answers_maj = list_all_answers  # TODO remove these or not ..
         if verb not in dict_GT_text_label.keys():
             dict_GT_text_label[verb] = {"reasons": reasons, "answers": []}
         if list_all_answers_maj:
-            dict_GT_text_label[verb]["answers"].append([transcript, list_all_answers_maj])
+            dict_GT_text_label[verb]["answers"].append([transcript, list_all_answers_maj, list_why_maj])
 
     print(len(dict_AMT_annotations.keys()))
     print(count_not_ok)
@@ -151,7 +168,6 @@ def get_SRL(sentence, SRL_predictor, lemmatizer, verb):
 
 
 def similarity_CN_transcript(threshold, model, is_SRL, file_in, file_out):
-
     # if is_SRL:
     #     lemmatizer = nlp.vocab.morphology.lemmatizer
     #     from allennlp.predictors.predictor import Predictor
@@ -260,7 +276,9 @@ def NLI(threshold, nli_model, tokenizer, file_in, file_out):
 
     dict_results = {"gt": {}, "predicted": {}}
 
-    for verb in dict_GT_text_label:
+    nli_model = nli_model.to(DEVICE)
+
+    for verb in tqdm.tqdm(dict_GT_text_label.keys()):
         candidate_labels = dict_GT_text_label[verb]["reasons"][:-1]  # without "I cannot find"
         list_GT_text_label = dict_GT_text_label[verb]["answers"]
 
@@ -270,17 +288,18 @@ def NLI(threshold, nli_model, tokenizer, file_in, file_out):
                 dict_results["gt"][str((verb, transcript))] = []
             dict_results["gt"][str((verb, transcript))].append(annotated_labels)
 
-        for premise in tqdm.tqdm(transcripts):
-        # for premise in transcripts:
+        for premise in transcripts:
+            # for premise in transcripts:
             list_predicted_labels = []
             for label in candidate_labels:
                 hypothesis = f'The reason for {verb} is {label}.'
                 # run through model pre-trained on MNLI
-                x = tokenizer.encode(premise, hypothesis, return_tensors='pt', truncation_strategy='only_first')
+                x = tokenizer.encode(premise, hypothesis, return_tensors='pt',
+                                     truncation_strategy='only_first').to(DEVICE)
                 logits = nli_model(x)[0]
                 # we throw away "neutral" (dim 1) and take the probability of
                 # "entailment" (2) as the probability of the label being true
-                entail_contradiction_logits = logits[:, [0, 2]]
+                entail_contradiction_logits = logits[:, [nli_model.config.label2id["contradiction"], nli_model.config.label2id["entailment"]]]
                 probs = entail_contradiction_logits.softmax(dim=1)
 
                 true_prob = probs[:, 1].item()
@@ -297,6 +316,93 @@ def NLI(threshold, nli_model, tokenizer, file_in, file_out):
         json.dump(dict_results, fp)
 
     return dict_results
+
+
+def prepare_data(dict_GT_text_label):
+    all_list_labels, all_list_premises, all_list_hypotheses = [], [], []
+    for verb in list(dict_GT_text_label.keys()):
+        candidate_labels = dict_GT_text_label[verb]["reasons"][:-1]  # without "I cannot find"
+        list_GT_text_label = dict_GT_text_label[verb]["answers"]
+
+        transcripts = [l[0] for l in list_GT_text_label]
+        labels = [l[1] for l in list_GT_text_label]
+        for i, premise in enumerate(transcripts):
+            for label in candidate_labels:
+                hypothesis = f'The reason for {verb} is {label}.'
+                all_list_hypotheses.append(hypothesis)
+                all_list_premises.append(premise)
+                if label in labels[i]:
+                    all_list_labels.append(1)
+                else:
+                    all_list_labels.append(0)
+    # i = 0
+    # for label, premise, hypothesis in zip(all_list_labels, all_list_premises, all_list_hypotheses):
+    #     print(label, premise, hypothesis)
+    #     print("------------------------------")
+    #     i += 1
+    #     if i == 10:
+    #         break
+    return all_list_labels, all_list_premises, all_list_hypotheses
+
+
+def NLI_finetune(nli_model, tokenizer, file_in_train, file_in_test, file_out):
+    with open(file_in_train) as json_file:
+        dict_GT_text_label_train = json.load(json_file)
+    all_list_labels_train, all_list_premises_train, all_list_hypotheses_train = prepare_data(dict_GT_text_label_train)
+    # all_list_labels_train, all_list_premises_train, all_list_hypotheses_train = all_list_labels_train[
+    #                                                                             :10], all_list_premises_train[
+    #                                                                                   :10], all_list_hypotheses_train[
+    #                                                                                         :10]
+
+    with open(file_in_test) as json_file:
+        dict_GT_text_label_test = json.load(json_file)
+    all_list_labels_eval, all_list_premises_eval, all_list_hypotheses_eval = prepare_data(dict_GT_text_label_test)
+    # all_list_labels_eval, all_list_premises_eval, all_list_hypotheses_eval = all_list_labels_train[
+    #                                                                          :10], all_list_premises_train[
+    #                                                                                :10], all_list_hypotheses_train[:10]
+
+    train_encodings = tokenizer(all_list_premises_train, all_list_hypotheses_train, truncation=True, padding=True)
+    test_encodings = tokenizer(all_list_premises_eval, all_list_hypotheses_eval, truncation=True, padding=True)
+
+    train_dataset = ReasonDataset(train_encodings, all_list_labels_train)
+    test_dataset = ReasonDataset(test_encodings, all_list_labels_eval)
+
+    def compute_metrics(pred):
+        labels = pred.label_ids
+        # print(labels)
+        # print(pred.predictions)
+        preds = pred.predictions[:, [nli_model.config.label2id["contradiction"], nli_model.config.label2id["entailment"]]].argmax(-1)
+        precision, recall, f1, _ = precision_recall_fscore_support(labels, preds, average='binary')
+        acc = accuracy_score(labels, preds)
+        print(acc, precision, recall, f1)
+        return {
+            'f1': f1
+        }
+
+    from transformers import Trainer, TrainingArguments
+    training_args = TrainingArguments(
+        output_dir='finetune_model/NLI/results',  # output directory
+        num_train_epochs=1,  # total # of training epochs
+        per_device_train_batch_size=2,  # batch size per device during training
+        per_device_eval_batch_size=2,  # batch size for evaluation
+        warmup_steps=500,  # number of warmup steps for learning rate scheduler
+        weight_decay=0.01,  # strength of weight decay
+        logging_dir='finetune_model/NLI/logs',  # directory for storing logs
+    )
+
+    trainer = Trainer(
+        model=nli_model,  # the instantiated 🤗 Transformers model to be trained
+        args=training_args,
+        compute_metrics=compute_metrics,  # training arguments, defined above
+        train_dataset=train_dataset,  # training dataset
+        eval_dataset=test_dataset  # evaluation dataset
+    )
+    print("training")
+    ######### training
+    trainer.train()
+    print("eval")
+    ########## eval
+    trainer.evaluate(ignore_keys=["encoder_last_hidden_state"])
 
 
 def transform_one_hot(reasons_pred, all_reasons):
@@ -345,10 +451,17 @@ def compute_metrics(file_in1, file_in2, print_per_verb):
         list_reasons.append(dict_web_trial1[verb]["reasons"])
         list_verbs.append(verb)
 
+    ### Santi's test
+    # list_verbs = ['clean', 'clean', 'jump']
+    # list_gt = [["guests are coming"], ["guests are coming", "dirty"], ["fitness"]]
+    # list_reasons = [["dirty", "guests are coming", "tidy"], ["dirty", "guests are coming", "tidy"], ["is fun!", "fitness"]]
+    # list_predicted = [["dirty"], ["guests are coming", "tidy"], ["fitness", "is fun!"]]
+
     list_gt_labels, list_p_labels = [], []
     list_acc_scores, list_prec_scores, list_recall_scores, list_f1_scores = [], [], [], []
     verb_initial = list_verbs[0]
     all_reasons_initial = list_reasons[0]
+
     for reasons_pred, reasons_gt, all_reasons, verb in zip(list_predicted, list_gt, list_reasons, list_verbs):
         if verb != verb_initial:
             list_all = list_gt_labels + list_p_labels
@@ -361,9 +474,9 @@ def compute_metrics(file_in1, file_in2, print_per_verb):
 
             list_gt_labels, list_p_labels = [], []
             acc = accuracy_score(flat_y_true, flat_y_pred) * 100
-            prec = precision_score(flat_y_true, flat_y_pred) * 100
-            rec = recall_score(flat_y_true, flat_y_pred) * 100
-            f1 = f1_score(flat_y_true, flat_y_pred) * 100
+            prec = precision_score(y_true, y_pred, average="samples") * 100
+            rec = recall_score(y_true, y_pred, average="samples") * 100
+            f1 = f1_score(y_true, y_pred, average="samples") * 100
             list_acc_scores.append(acc)
             list_prec_scores.append(prec)
             list_recall_scores.append(rec)
@@ -371,7 +484,7 @@ def compute_metrics(file_in1, file_in2, print_per_verb):
             if print_per_verb:
                 print(verb_initial)
                 print("accuracy_score: %.2f | precision_score: %.2f | recall_score: %.2f | f1_score: %.2f" % (
-                acc, prec, rec, f1))
+                    acc, prec, rec, f1))
                 print("-----------------------")
             verb_initial = verb
             all_reasons_initial = all_reasons
@@ -383,7 +496,9 @@ def compute_metrics(file_in1, file_in2, print_per_verb):
         # print("reasons_gt: ", reasons_gt, str(one_hot_gt))
         # print("all_reasons: ", all_reasons)
         # print("-------------------------------------------")
-    y_all = MultiLabelBinarizer(all_reasons).fit_transform(list_gt_labels + list_p_labels)
+    list_all = list_gt_labels + list_p_labels
+    classes = range(len(all_reasons_initial))
+    y_all = MultiLabelBinarizer(classes).fit_transform(list_all)
     y_true = y_all[:len(list_gt_labels)]
     y_pred = y_all[len(list_gt_labels):]
     flat_y_true = [item for sublist in y_true for item in sublist]
@@ -406,6 +521,7 @@ def compute_metrics(file_in1, file_in2, print_per_verb):
     print("accuracy_score: %.2f | precision_score: %.2f | recall_score: %.2f | f1_score: %.2f" % (acc, prec, rec, f1))
     print(" %.2f & %.2f & %.2f & %.2f" % (acc, prec, rec, f1))
 
+
 # transform labels in one-hot vectors
 def label_to_onehot(list_GT_text_label, conceptnet_labels):
     one_hot_list_text_label = []
@@ -420,26 +536,35 @@ def label_to_onehot(list_GT_text_label, conceptnet_labels):
     return one_hot_list_text_label
 
 
-def majority_class_baseline(file_in, file_out):
-    with open(file_in) as json_file:
-        dict_GT_text_label = json.load(json_file)
+def majority_class_baseline(file_in1, file_in2, file_out):
+    with open(file_in1) as json_file:
+        dict_GT_text_label_train = json.load(json_file)
+
+    with open(file_in2) as json_file:
+        dict_GT_text_label_test = json.load(json_file)
 
     dict_results = {"gt": {}, "predicted": {}}
 
-    for verb in dict_GT_text_label:
-        list_GT_text_label = dict_GT_text_label[verb]["answers"]
-        list_GT_labels = [l[1] for l in dict_GT_text_label[verb]["answers"]]
-        all_labels = [item for sublist in list_GT_labels for item in sublist]
-        majority_class = Counter(all_labels).most_common()[0][0]  # get only the first most frequent answer
+    for verb in dict_GT_text_label_train:
+        list_GT_labels_train = [l[1] for l in dict_GT_text_label_train[verb]["answers"]]
+        all_labels = [item for sublist in list_GT_labels_train for item in sublist]
+        counter = Counter(all_labels).most_common()
+        max_nb_times = counter[0][1]
+        majority_class_list = []
+        for (reason, nb_times) in counter:
+            if nb_times == max_nb_times:
+                majority_class_list.append(reason)
+        # print(verb, majority_class_list)
 
-        for [transcript, annotated_labels] in list_GT_text_label:
+        list_GT_text_label_test = dict_GT_text_label_test[verb]["answers"]
+        for [transcript, annotated_labels] in list_GT_text_label_test:
             if str((verb, transcript)) not in dict_results["gt"].keys():
                 dict_results["gt"][str((verb, transcript))] = []
             dict_results["gt"][str((verb, transcript))].append(annotated_labels)
 
             if str((verb, transcript)) not in dict_results["predicted"].keys():
                 dict_results["predicted"][str((verb, transcript))] = []
-            dict_results["predicted"][str((verb, transcript))].append([majority_class])
+            dict_results["predicted"][str((verb, transcript))].append(majority_class_list)
 
     with open(file_out, 'w+') as fp:
         json.dump(dict_results, fp)
@@ -447,12 +572,58 @@ def majority_class_baseline(file_in, file_out):
     return dict_results
 
 
+def split_train_test_by_modality(file_in, file_out1, file_out2):
+    with open(file_in) as json_file:
+        data = json.load(json_file)
+
+    dict_text = {}
+    dict_vision = {}
+    nb_reasons_text = 0
+    nb_reasons_vis = 0
+    nb_videos_text = 0
+    nb_videos_vis = 0
+    for verb in data.keys():
+        all_reasons = data[verb]["reasons"]
+        all_answers = data[verb]["answers"]
+        all_answers_text = []
+        all_answers_vision = []
+        for ans in all_answers:
+            if ans[2]:
+                if ans[2][0] in ["both", "shown"]:
+                    all_answers_vision.append(ans)
+                else:
+                    all_answers_text.append(ans)
+        if all_answers_text:
+            if verb not in dict_text.keys():
+                dict_text[verb] = {"reasons": all_reasons, "answers": all_answers_text}
+            nb_reasons_text += len(all_reasons)
+            nb_videos_text += len(all_answers_text)
+
+        if all_answers_vision:
+            if verb not in dict_vision.keys():
+                dict_vision[verb] = {"reasons": all_reasons, "answers": all_answers_vision}
+            nb_reasons_vis += len(all_reasons)
+            nb_videos_vis += len(all_answers_vision)
+
+    with open(file_out1, 'w+') as fp:
+        json.dump(dict_text, fp)
+    with open(file_out2, 'w+') as fp:
+        json.dump(dict_vision, fp)
+
+    print("Stats text & vision")
+    print("Nb actions: ")
+    print(len(dict_text), len(dict_vision))
+    print("Nb videos:")
+    print(nb_videos_text, nb_videos_vis)
+    print("Nb reasons:")
+    print(nb_reasons_text, nb_reasons_vis)
+
 def split_train_test(file_in, file_out1, file_out2):
     with open(file_in) as json_file:
         data = json.load(json_file)
 
-    dict_train = {}  # 90%
-    dict_test = {}  # 10%
+    dict_train = {}  # 80%
+    dict_test = {}  # 20%
     nb_reasons_train = 0
     nb_reasons_test = 0
     nb_videos_train = 0
@@ -484,6 +655,152 @@ def split_train_test(file_in, file_out1, file_out2):
     print("Nb reasons:")
     print(nb_reasons_train, nb_reasons_test)
 
+
+def split_data_santi(file_in1, file_in2, file_in3, file_out1, file_out2):
+    with open(file_in1) as json_file:
+        dict_web_trial_train = json.load(json_file)
+    with open(file_in2) as json_file:
+        dict_web_trial_test = json.load(json_file)
+    with open(file_in3) as json_file:
+        dict_sentences_per_verb_MARKERS_for_annotation_all50 = json.load(json_file)
+
+    dict_train = {}  # 80%
+    dict_test = {}  # 20%
+    verbs = ['buy', 'clean', 'cook', 'drink', 'drive', 'eat', 'fall', 'help', 'learn',
+             'listen', 'paint', 'play', 'read', 'relax', 'sell', 'shop', 'sleep',
+             'switch', 'thank', 'travel', 'walk', 'work', 'write']
+    for verb in dict_web_trial_train.keys():
+        old_verb = verb
+        if verb == "buying":
+            verb = "buy"
+        elif verb == "cleaning":
+            verb = "clean"
+        elif verb == "cooking":
+            verb = "cook"
+        elif verb == "drinking":
+            verb = "drink"
+        elif verb == "driving":
+            verb = "drive"
+        elif verb == "eating":
+            verb = "eat"
+        elif verb == "falling":
+            verb = "fall"
+        elif verb == "helping":
+            verb = "help"
+        elif verb == "listening":
+            verb = "listen"
+        elif verb == "learning":
+            verb = "learn"
+        elif verb == "painting":
+            verb = "paint"
+        elif verb == "playing":
+            verb = "play"
+        elif verb == "painting":
+            verb = "paint"
+        elif verb == "reading":
+            verb = "read"
+        elif verb == "relaxing":
+            verb = "relax"
+        elif verb == "remembering":
+            verb = "remember"
+        elif verb == "selling":
+            verb = "sell"
+        elif verb == "shopping":
+            verb = "shop"
+        elif verb == "sleeping":
+            verb = "sleep"
+        elif verb == "switching":
+            verb = "switch"
+        elif verb == "thanking":
+            verb = "thank"
+        elif verb == "travelling":
+            verb = "travel"
+        elif verb == "walking":
+            verb = "walk"
+        elif verb == "working":
+            verb = "work"
+        elif verb == "writing":
+            verb = "write"
+        data_all = dict_sentences_per_verb_MARKERS_for_annotation_all50[verb]
+        dict_train[verb] = []
+        for sentence_full, answers in dict_web_trial_train[old_verb]["answers"]:
+            for data in data_all:
+                full_s = data["sentence_before"] + " " + data["sentence"] + " " + data["sentence_after"]
+                if full_s == sentence_full:
+                    data["answers"] = answers
+                    data["reasons"] = dict_web_trial_train[old_verb]["reasons"]
+                    dict_train[verb].append(data)
+                    break
+
+    for verb in dict_web_trial_test.keys():
+        old_verb = verb
+        if verb == "buying":
+            verb = "buy"
+        elif verb == "cleaning":
+            verb = "clean"
+        elif verb == "cooking":
+            verb = "cook"
+        elif verb == "drinking":
+            verb = "drink"
+        elif verb == "driving":
+            verb = "drive"
+        elif verb == "eating":
+            verb = "eat"
+        elif verb == "falling":
+            verb = "fall"
+        elif verb == "helping":
+            verb = "help"
+        elif verb == "listening":
+            verb = "listen"
+        elif verb == "learning":
+            verb = "learn"
+        elif verb == "painting":
+            verb = "paint"
+        elif verb == "playing":
+            verb = "play"
+        elif verb == "painting":
+            verb = "paint"
+        elif verb == "reading":
+            verb = "read"
+        elif verb == "relaxing":
+            verb = "relax"
+        elif verb == "remembering":
+            verb = "remember"
+        elif verb == "selling":
+            verb = "sell"
+        elif verb == "shopping":
+            verb = "shop"
+        elif verb == "sleeping":
+            verb = "sleep"
+        elif verb == "switching":
+            verb = "switch"
+        elif verb == "thanking":
+            verb = "thank"
+        elif verb == "travelling":
+            verb = "travel"
+        elif verb == "walking":
+            verb = "walk"
+        elif verb == "working":
+            verb = "work"
+        elif verb == "writing":
+            verb = "write"
+        data_all = dict_sentences_per_verb_MARKERS_for_annotation_all50[verb]
+        dict_test[verb] = []
+        for sentence_full, answers in dict_web_trial_test[old_verb]["answers"]:
+            for data in data_all:
+                full_s = data["sentence_before"] + " " + data["sentence"] + " " + data["sentence_after"]
+                if full_s == sentence_full:
+                    data["answers"] = answers
+                    data["reasons"] = dict_web_trial_test[old_verb]["reasons"]
+                    dict_test[verb].append(data)
+                    break
+
+    with open(file_out1, 'w+') as fp:
+        json.dump(dict_train, fp)
+    with open(file_out2, 'w+') as fp:
+        json.dump(dict_test, fp)
+
+
 # def calculate_metrics(list_GT_text_label, list_predicted_output, conceptnet_labels):
 #     from sklearn.metrics import label_ranking_average_precision_score, hamming_loss, accuracy_score, jaccard_score
 #
@@ -505,18 +822,38 @@ def split_train_test(file_in, file_out1, file_out2):
 #     print("accuracy_score:", accuracy_score(y_true, y_pred))
 #     print("jaccard_score:", jaccard_score(y_true, y_pred, average='samples'))
 #     print("Hamming_loss: (smaller is better)", hamming_loss(y_true, y_pred))
-#
+
+
+## remove reasons that were not selected at all
+def remove_unselected_reasons(file_output):
+    with open(file_output) as json_file:
+        dict_web_trial = json.load(json_file)
+    for verb in dict_web_trial:
+        reasons = dict_web_trial[verb]["reasons"]
+        answers = []
+        for [_, ans] in dict_web_trial[verb]["answers"]:
+            for a in ans:
+                answers.append(a)
+        if 'I cannot find any reason mentioned verbally or shown visually in the video' not in answers:
+            answers.append('I cannot find any reason mentioned verbally or shown visually in the video')
+        answers = list(set(answers))
+        diff = set(reasons) - set(answers)
+        if diff:
+            print(verb, answers, reasons, diff)
+            print("----------------------------------")
 
 def main():
     file_output = "data/baselines/dict_web_trial.json"
     file_input = "data/AMT/output/for_spam_detect/final_output/pipeline_trial.json"
 
+    # remove_unselected_reasons(file_output)
+
     # file_output = "data/baselines/dict_web_trial_objects.json"
     # file_input = "data/video_baselines/pipeline_objects.json"
-
+    # #
     # file_output = "data/baselines/dict_web_trial_captions.json"
     # file_input = "data/video_baselines/pipeline_captions.json"
-
+    #
     # file_output = "data/baselines/dict_web_trial_objects_captions.json"
     # file_input = "data/video_baselines/pipeline_objects_captions.json"
 
@@ -525,41 +862,63 @@ def main():
     ## list_hyponyms = get_verb_hyponyms(verb="clean")
 
     # method = "majority"
-    # method = "cosine"
-    method = "NLI"
+    method = "cosine"
+    # method = "NLI"
+
     file_out_train = "data/baselines/dict_web_trial_train.json"
     file_out_test = "data/baselines/dict_web_trial_test.json"
-    split_train_test(file_in=file_output, file_out1=file_out_train, file_out2=file_out_test)
 
-    if method == "majority":
-        majority_class_baseline(file_in=file_out_test, file_out="data/AMT/output/dict_majority_results_trial1.json")
-        compute_metrics(file_in1="data/AMT/output/dict_majority_results_trial1.json", file_in2=file_out_test,
-                        print_per_verb=False)
-    elif method == "cosine":
 
-        model = SentenceTransformer(
-            'stsb-roberta-base')  # models: https://www.sbert.net/docs/pretrained_models.html#semantic-textual-similarity
+    # split_train_test(file_in=file_output, file_out1=file_out_train, file_out2=file_out_test)
+    # split_train_test(file_in=file_output, file_out1=file_out_test, file_out2=file_out_train) #changed
+    split_train_test_by_modality(file_in=file_output, file_out1="data/baselines/dict_web_trial_text.json",
+                                 file_out2="data/baselines/dict_web_trial_visual.json")
+    file_out_test = "data/baselines/dict_web_trial_text.json"
+    # file_out_test = "data/baselines/dict_web_trial_visual.json"
 
-        # for threshold in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]:
-        # print(threshold)  # finetune 0n train: file_out_train
-        threshold = 0.1
-        similarity_CN_transcript(threshold, model, is_SRL=False, file_in=file_out_test,
-                                 file_out="data/AMT/output/dict_cosine_results_trial1.json")
-        compute_metrics(file_in1="data/AMT/output/dict_cosine_results_trial1.json", file_in2=file_out_test,
-                        print_per_verb=False)
-    elif method == "NLI":  # TODO run remote
-        from transformers import AutoModelForSequenceClassification, AutoTokenizer
-        nli_model = AutoModelForSequenceClassification.from_pretrained('joeddav/xlm-roberta-large-xnli')
-        tokenizer = AutoTokenizer.from_pretrained('joeddav/xlm-roberta-large-xnli')
+    # split_data_santi(file_in1=file_out_train, file_in2=file_out_test, file_in3="data/dict_sentences_per_verb_MARKERS_for_annotation_all50.json",
+    #                  file_out1="data/baselines/dict_web_trial_train_santi.json", file_out2="data/baselines/dict_web_trial_test_santi.json")
 
-        for threshold in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]: # TODO run finetuning
-            print(threshold)  # finetune 0n train: file_out_train
-            # threshold = 0.5  # better than 0.8
-            NLI(threshold, nli_model, tokenizer, file_in=file_out_test, file_out="data/AMT/output/dict_NLI_results_trial1.json")
-            compute_metrics(file_in1="data/AMT/output/dict_NLI_results_trial1.json", file_in2=file_out_test,
-                            print_per_verb=False)
+    # if method == "majority":
+    #     majority_class_baseline(file_in1=file_out_train, file_in2=file_out_test, file_out="data/AMT/output/dict_majority_results_trial1.json")
+    #     compute_metrics(file_in1="data/AMT/output/dict_majority_results_trial1.json", file_in2=file_out_test,
+    #                     print_per_verb=True)
+    #
+    # elif method == "cosine":
+    #     model = SentenceTransformer('stsb-roberta-base')  # models: https://www.sbert.net/docs/pretrained_models.html#semantic-textual-similarity
+    #
+    #     # for threshold in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]:
+    #     # print(threshold)  # finetune 0n train: file_out_train
+    #     threshold = 0.1
+    #     similarity_CN_transcript(threshold, model, is_SRL=True, file_in=file_out_test,
+    #                              file_out="data/AMT/output/dict_cosine_results_trial1.json")
+    #     compute_metrics(file_in1="data/AMT/output/dict_cosine_results_trial1.json", file_in2=file_out_test,
+    #                     print_per_verb=False)
+    #
+    # elif method == "NLI":  # TODO run remote
+    #     # finetune = True
+    #     finetune = False
+    #
+    #     from transformers import pipeline
+    #     # nli_pipeline = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+    #     nli_pipeline = pipeline("zero-shot-classification", model="joeddav/xlm-roberta-large-xnli")
+    #     nli_model = nli_pipeline.model
+    #     tokenizer = nli_pipeline.tokenizer
+    #
+    #     if finetune:
+    #         file_out = "data/AMT/output/dict_NLI_finetune_results_trial1.json"
+    #         NLI_finetune(nli_model, tokenizer, file_in_train=file_out_train, file_in_test=file_out_test,
+    #                      file_out=file_out)
+    #     else:
+    #         # for threshold in [0.8, 0.9]: # TODO run finetuning
+    #         #     print(threshold)  # finetune 0n train: file_out_train
+    #         # threshold = 0.8  # for transcript
+    #         threshold = 0.1  # for video
+    #         file_out = "data/AMT/output/dict_NLI_results_trial1.json"
+    #         NLI(threshold, nli_model, tokenizer, file_in=file_out_test, file_out=file_out)  # TODO: Check painting
+    #         compute_metrics(file_in1=file_out, file_in2=file_out_test, print_per_verb=True)
 
-    ## Roberta_multilabel(list_GT_text_label, conceptnet_labels)
+    # Roberta_multilabel(list_GT_text_label, conceptnet_labels)
 
 
 if __name__ == '__main__':

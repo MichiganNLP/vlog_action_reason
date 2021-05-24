@@ -1,0 +1,6 @@
+The .json data file contains all the data we collect and annotate. 
+
+The keys contain the name of the video urls and the time stamps they are downloaded at. 
+For example, 'NdnyiDBi7Ik+0:07:25+0:08:06.mp4?raw=true' can be found on YouTube at https://www.youtube.com/watch?v=NdnyiDBi7Ik, and it starts at 0:07:25 and ends at 0:08:06.
+
+The values contain the annotations from the 3 workers: the reasons, the confidence, the justification and comments.
