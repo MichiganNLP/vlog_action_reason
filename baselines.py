@@ -461,6 +461,7 @@ def compute_metrics(file_in1, file_in2, print_per_verb):
     list_acc_scores, list_prec_scores, list_recall_scores, list_f1_scores = [], [], [], []
     verb_initial = list_verbs[0]
     all_reasons_initial = list_reasons[0]
+    list_verb_f1 = []
 
     for reasons_pred, reasons_gt, all_reasons, verb in zip(list_predicted, list_gt, list_reasons, list_verbs):
         if verb != verb_initial:
@@ -486,6 +487,8 @@ def compute_metrics(file_in1, file_in2, print_per_verb):
                 print("accuracy_score: %.2f | precision_score: %.2f | recall_score: %.2f | f1_score: %.2f" % (
                     acc, prec, rec, f1))
                 print("-----------------------")
+                list_verb_f1.append([verb_initial, round(f1, 2)])
+
             verb_initial = verb
             all_reasons_initial = all_reasons
         one_hot_pred = transform_text_to_indices(reasons_pred, all_reasons)
@@ -511,15 +514,21 @@ def compute_metrics(file_in1, file_in2, print_per_verb):
     list_prec_scores.append(prec)
     list_recall_scores.append(rec)
     list_f1_scores.append(f1)
+
     if print_per_verb:
         print(verb_initial)
         print(
             "accuracy_score: %.2f | precision_score: %.2f | recall_score: %.2f | f1_score: %.2f" % (acc, prec, rec, f1))
         print("-----------------------")
+        list_verb_f1.append([verb_initial, round(f1, 2)])
     acc, prec, rec, f1 = mean(list_acc_scores), mean(list_prec_scores), mean(list_recall_scores), mean(list_f1_scores)
     print("Avg scores:")
     print("accuracy_score: %.2f | precision_score: %.2f | recall_score: %.2f | f1_score: %.2f" % (acc, prec, rec, f1))
     print(" %.2f & %.2f & %.2f & %.2f" % (acc, prec, rec, f1))
+
+    list_verb_f1.sort(key=lambda x: x[1])
+    print(list_verb_f1)
+
 
 
 # transform labels in one-hot vectors
@@ -557,6 +566,7 @@ def majority_class_baseline(file_in1, file_in2, file_out):
         # print(verb, majority_class_list)
 
         list_GT_text_label_test = dict_GT_text_label_test[verb]["answers"]
+        print(list_GT_text_label_test)
         for [transcript, annotated_labels] in list_GT_text_label_test:
             if str((verb, transcript)) not in dict_results["gt"].keys():
                 dict_results["gt"][str((verb, transcript))] = []
@@ -861,8 +871,8 @@ def main():
     # verb = "clean"
     ## list_hyponyms = get_verb_hyponyms(verb="clean")
 
-    # method = "majority"
-    method = "cosine"
+    method = "majority"
+    # method = "cosine"
     # method = "NLI"
 
     file_out_train = "data/baselines/dict_web_trial_train.json"
@@ -871,19 +881,19 @@ def main():
 
     # split_train_test(file_in=file_output, file_out1=file_out_train, file_out2=file_out_test)
     # split_train_test(file_in=file_output, file_out1=file_out_test, file_out2=file_out_train) #changed
-    split_train_test_by_modality(file_in=file_output, file_out1="data/baselines/dict_web_trial_text.json",
-                                 file_out2="data/baselines/dict_web_trial_visual.json")
+    # split_train_test_by_modality(file_in=file_output, file_out1="data/baselines/dict_web_trial_text.json",
+    #                              file_out2="data/baselines/dict_web_trial_visual.json")
     file_out_test = "data/baselines/dict_web_trial_text.json"
     # file_out_test = "data/baselines/dict_web_trial_visual.json"
 
     # split_data_santi(file_in1=file_out_train, file_in2=file_out_test, file_in3="data/dict_sentences_per_verb_MARKERS_for_annotation_all50.json",
     #                  file_out1="data/baselines/dict_web_trial_train_santi.json", file_out2="data/baselines/dict_web_trial_test_santi.json")
 
-    # if method == "majority":
-    #     majority_class_baseline(file_in1=file_out_train, file_in2=file_out_test, file_out="data/AMT/output/dict_majority_results_trial1.json")
-    #     compute_metrics(file_in1="data/AMT/output/dict_majority_results_trial1.json", file_in2=file_out_test,
-    #                     print_per_verb=True)
-    #
+    if method == "majority":
+        # majority_class_baseline(file_in1=file_out_train, file_in2=file_out_test, file_out="data/AMT/output/dict_majority_results_trial1.json")
+        compute_metrics(file_in1="data/AMT/output/dict_majority_results_trial1.json", file_in2=file_out_test,
+                        print_per_verb=True)
+
     # elif method == "cosine":
     #     model = SentenceTransformer('stsb-roberta-base')  # models: https://www.sbert.net/docs/pretrained_models.html#semantic-textual-similarity
     #
