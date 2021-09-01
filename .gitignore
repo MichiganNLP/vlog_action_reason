@@ -1,3 +1,4 @@
 data/videos
 .idea
  __pycache__
+ params.py

@@ -9,10 +9,10 @@ import spacy
 nlp = spacy.load('en_core_web_sm')  # or whatever model you have installed
 import urllib.request
 import ssl
+from params import api_key
 
 def save_all_video_urls_in_channel(channel_id):
     print("save_all_video_urls_in_channel")
-    api_key = 'AIzaSyD_ZAlkFsDD_Ty9u4NsJWtaLsQg-5WJ4cY'
 
     base_video_url = 'https://www.youtube.com/watch?v='
     base_search_url = 'https://www.googleapis.com/youtube/v3/search?'
