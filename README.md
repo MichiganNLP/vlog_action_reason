@@ -6,7 +6,7 @@ Language and Information Technologies (LIT), University of Michigan
 
 This repository contains the dataset and code for our EMNLP 2021 paper:
 
-[WhyAct: Identifying Action Reasons in Lifestyle Vlogs](TODO)
+[WhyAct: Identifying Action Reasons in Lifestyle Vlogs](TODO) (the PDF will be posted soon)
 
 ## Task Description
 
@@ -50,7 +50,7 @@ Other than this README file, the archive contains the data release in the follow
 + dev.json
 + test.json
 
-```json
+```js
 {
     "action": [
       {
@@ -63,17 +63,17 @@ Other than this README file, the archive contains the data release in the follow
         "verb_pos_sentence": "",
         "answers": [
           "",
-          //...
+          // ...
         ],
         "reasons": [
           "",
           "",
-          //...
+          // ...
         ]
       },
-      //...
+      // ...
     ],
-  //...
+  // ...
 }
 
 ```
