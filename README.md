@@ -6,7 +6,7 @@ Language and Information Technologies (LIT), University of Michigan
 
 This repository contains the dataset and code for our EMNLP 2021 paper:
 
-[WhyAct: Identifying Action Reasons in Lifestyle Vlogs](TODO)
+[WhyAct: Identifying Action Reasons in Lifestyle Vlogs](TODO) (the PDF will be posted soon)
 
 ## Task Description
 
@@ -50,7 +50,7 @@ Other than this README file, the archive contains the data release in the follow
 + dev.json
 + test.json
 
-```json
+```js
 {
     "action": [
       {
@@ -63,28 +63,29 @@ Other than this README file, the archive contains the data release in the follow
         "verb_pos_sentence": "",
         "answers": [
           "",
-          ...
+          // ...
         ],
         "reasons": [
           "",
           "",
-          ...
+          // ...
         ]
       },
-      ...
+      // ...
     ],
-  ...
+  // ...
 }
 
 ```
-+ "action" represents the verb (eat, drink, etc.).
-+ "sentence" represents the transcript sentence that contains the verb.
-+ "sentence_before" and "sentence_after" represent the before and after sentences.
-+ "time_s" and "time_e" represent the start time and end time of the clip in the video.
-+ "video" represents the YouTube video address.
-+ "verb_pos_sentence" represents the start position of the verb in "sentence".
-+ "answers" represent the list of annotated reasons (the ones labeled by the majority)
-+ "reasons" represent the list of all candidate reasons.
+
++ `"action"` represents the verb (eat, drink, etc.).
++ `"sentence"` represents the transcript sentence that contains the verb.
++ `"sentence_before"` and `"sentence_after"` represent the before and after sentences.
++ `"time_s"` and `"time_e"` represent the start time and end time of the clip in the video.
++ `"video"` represents the YouTube video address.
++ `"verb_pos_sentence"` represents the start position of the verb in `"sentence"`.
++ `"answers"` represent the list of annotated reasons (the ones labeled by the majority)
++ `"reasons"` represent the list of all candidate reasons.
 
 ## Experiments
 + Run baselines from [`baselines`](baselines)
@@ -92,7 +93,8 @@ Other than this README file, the archive contains the data release in the follow
 
 ## Citation information
 If you use this dataset or any ideas based on the associated research article, please cite the following:
- 
+
+```bibtex
 @inproceedings{,
     title="",
     author={},
@@ -100,6 +102,7 @@ If you use this dataset or any ideas based on the associated research article, p
     month="",
     year=""
 }
+```
 
 ## Acknowledgements
 
