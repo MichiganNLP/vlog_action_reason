@@ -86,8 +86,6 @@ Other than this README file, the archive contains the data release in the follow
 + "answers" represent the list of annotated reasons (the ones labeled by the majority)
 + "reasons" represent the list of all candidate reasons.
 
-[comment]: <> (All the video clips can be downloaded from [Github]&#40;https://github.com/OanaIgnat/miniclips&#41;.)
-
 ## Experiments
 + Run baselines from [`baselines`](baselines)
 + Run multi-modal model from [`multimodal`](multimodal)
