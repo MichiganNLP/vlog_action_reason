@@ -4,14 +4,20 @@ Oana Ignat, Santiago Castro, Hanwen Miao, Weiji Li and Rada Mihalcea
 
 Language and Information Technologies (LIT), University of Michigan
 
-oignat@umich.edu
-sacastro@umich.edu 
-hwmiao@umich.edu 
-weijili@umich.edu 
-mihalcea@umich.edu
+This repository contains the dataset and code for our EMNLP 2021 paper:
 
+[WhyAct: Identifying Action Reasons in Lifestyle Vlogs](TODO)
 
-1. Introduction
+## Task Description
+
+![Example instance](images/task_description.jpg)
+Automatic  identification of action reasons in online videos. 
+The reasons for *cleaning* change based on the visual and textual (video transcript) context. 
+The videos are selected from YouTube, and the actions together with their reasons are obtained
+from the ConceptNet (Speer et al., 2017) knowledge graph which we supplement with crowd sourced reasons.
+The figure shows two examples from our WhyAct dataset
+
+## Introduction
 
 We aim to automatically identify human action reasons in online videos. 
 We focus on the widespread genre of lifestyle vlogs, in which people perform actions while verbally describing them. 
@@ -19,8 +25,7 @@ We introduce and make publicly available the WhyAct dataset, consisting of 1,077
 their reasons. We describe a multimodal model that leverages visual and textual information 
 to automatically infer the reasons corresponding to an action presented in the video.
 
-===============================================================================
-2. Annotation Details
+## Annotation Details
 
 We select five YouTube channels and download all the videos and their transcripts. The channels are selected to have good quality videos with automatically generated transcripts containing detailed verbal descriptions of the actions depicted.
 
@@ -38,9 +43,7 @@ Video-clips | Video hours | Transcript words | Actions | Reasons |
 
 For our experiments, we split the data across video-clips: 20% development and 80% test
 
-===============================================================================
-
-3. Data Format
+## Data Format
 
 Other than this README file, the archive contains the data release in the following files:
 
@@ -83,14 +86,15 @@ Other than this README file, the archive contains the data release in the follow
 + "answers" represent the list of annotated reasons (the ones labeled by the majority)
 + "reasons" represent the list of all candidate reasons.
 
-All the video clips can be downloaded from [Github](https://github.com/OanaIgnat/miniclips).
+[comment]: <> (All the video clips can be downloaded from [Github]&#40;https://github.com/OanaIgnat/miniclips&#41;.)
 
-====================================================================================
-4. Citation information
+## Experiments
++ Run baselines from [`baselines`](baselines)
++ Run multi-modal model from [`multimodal`](multimodal)
+
+## Citation information
 If you use this dataset or any ideas based on the associated research article, please cite the following:
-   
-TODO
-
+ 
 @inproceedings{,
     title="",
     author={},
@@ -99,7 +103,6 @@ TODO
     year=""
 }
 
-==================================================================
-5. Acknowledgements
+## Acknowledgements
 
-TODO
+We thank Pingxuan Huang for helping us with improving the annotation user interface.

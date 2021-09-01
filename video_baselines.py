@@ -1,6 +1,5 @@
 import json
 
-
 def results_object_detection():
     with open('data/video_baselines/detectron_results.json') as json_file:
         detectron_results = json.load(json_file)
@@ -22,6 +21,7 @@ def get_all_captions(captions, video):
         if dict["sentence"] not in captions:
             list_captions.append(dict["sentence"])
     return ". ".join(list_captions)
+
 
 def results_captions(file_in1, file_in2, file_out):
     with open(file_in1) as json_file:
@@ -48,6 +48,7 @@ def results_captions(file_in1, file_in2, file_out):
     with open(file_out, 'w+') as fp:
         json.dump(dict_pipeline_captions, fp)
 
+
 def get_all_objects(objects, video):
     list_objects = []
     for dict in objects[video]:
@@ -55,6 +56,7 @@ def get_all_objects(objects, video):
             if object not in list_objects:
                 list_objects.append(object)
     return ". ".join(list_objects)
+
 
 def results_objects(file_in1, file_in2, file_out):
     with open(file_in1) as json_file:
@@ -81,6 +83,7 @@ def results_objects(file_in1, file_in2, file_out):
     with open(file_out, 'w+') as fp:
         json.dump(dict_pipeline_objects, fp)
 
+
 def get_all_objects_captions(captions, objects, video):
     list_objects = []
     list_captions = []
@@ -93,6 +96,7 @@ def get_all_objects_captions(captions, objects, video):
             list_captions.append(dict["sentence"])
 
     return ". ".join(list_captions) + ". " + ". ".join(list_objects)
+
 
 def results_objects_captions(file_in1, file_in2, file_in3, file_out):
     with open(file_in1) as json_file:
@@ -121,6 +125,7 @@ def results_objects_captions(file_in1, file_in2, file_in3, file_out):
     with open(file_out, 'w+') as fp:
         json.dump(dict_pipeline_objects, fp)
 
+
 def main():
     ## results_object_detection()
     results_captions(file_in1='data/video_baselines/captions.json',
@@ -135,6 +140,7 @@ def main():
     #                          file_in2='data/video_baselines/object_detections.json',
     #                 file_in3="data/AMT/output/for_spam_detect/final_output/pipeline_trial.json",
     #                 file_out='data/video_baselines/pipeline_objects_captions.json')
+
 
 if __name__ == '__main__':
     main()
