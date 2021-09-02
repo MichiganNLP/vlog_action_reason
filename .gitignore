@@ -1,4 +1,8 @@
-data/videos
+data
 .idea
  __pycache__
- params.py
+ params
+ process_other_datasets
+ analyse_actions
+ compute_stats.py
+ video_work_hanwen
