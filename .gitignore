@@ -1,7 +1,7 @@
 data
 .idea
  __pycache__
- params
+ params.py
  process_other_datasets
  analyse_actions
  compute_stats.py
