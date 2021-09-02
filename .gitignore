@@ -1,0 +1,12 @@
+*.py[cd]
+__pycache__
+.idea
+
+analyse_actions.py
+compute_stats.py
+params.py
+
+/analyse_actions
+/data
+/process_other_datasets
+/video_work_hanwen
