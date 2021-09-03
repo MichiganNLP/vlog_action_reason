@@ -2,12 +2,7 @@
 __pycache__
 .idea
 
-analyse_actions.py
-compute_stats.py
-data_analysis.py
-params.py
 
-/analyse_actions
-/data
-/process_other_datasets
-/video_work_hanwen
+params.py
+images
+

@@ -47,8 +47,8 @@ For our experiments, we split the data across video-clips: 20% development and 8
 
 Other than this README file, the archive contains the data release in the following files:
 
-+ [`dev.json`](Data/dev.json) 
-+ [`test.json`](Data/test.json) 
++ [`dev.json`](data/test.json) 
++ [`test.json`](data/dev.json) 
 
 ```js
 {

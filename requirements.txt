@@ -17,15 +17,17 @@ catalogue==1.0.0
 certifi==2020.12.5
 cffi==1.14.4
 chardet==4.0.0
+charset-normalizer==2.0.4
 click==7.1.2
 configparser==5.0.1
+contextvars==2.4
 cycler==0.10.0
 cymem==2.0.5
 dataclasses==0.8
 decorator==4.4.2
 defusedxml==0.6.0
 docker-pycreds==0.4.0
-en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
+en-core-web-sm==2.3.1
 entrypoints==0.3
 filelock==3.0.12
 future==0.18.2
@@ -37,7 +39,9 @@ google-auth-oauthlib==0.4.2
 google-pasta==0.2.0
 grpcio==1.34.0
 h5py==2.10.0
+huggingface-hub==0.0.16
 idna==2.10
+immutables==0.16
 importlib-metadata==3.3.0
 inflect==4.1.0
 iniconfig==1.1.1
@@ -69,7 +73,7 @@ nbconvert==6.0.7
 nbformat==5.1.2
 nest-asyncio==1.5.1
 nltk==3.5
-notebook==6.4.1
+notebook==6.2.0
 numpy==1.18.5
 oauthlib==3.1.0
 opencv-python==4.5.1.48
@@ -80,9 +84,10 @@ pandas==1.1.5
 pandocfilters==1.4.3
 parso==0.8.1
 pathtools==0.1.2
+pathy==0.6.0
 pexpect==4.8.0
 pickleshare==0.7.5
-Pillow>=8.2.0
+Pillow==8.1.0
 plac==1.1.3
 plotly==4.14.3
 pluggy==0.13.1
@@ -98,6 +103,7 @@ pyarrow==3.0.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.20
+pydantic==1.8.2
 pydeck==0.5.0
 Pygments==2.7.4
 pyinflect==0.5.1
@@ -113,7 +119,7 @@ regex==2020.11.13
 requests==2.25.1
 requests-oauthlib==1.3.0
 retrying==1.3.3
-rsa==4.7
+rsa==4.6
 s3transfer==0.3.3
 sacremoses==0.0.43
 scikit-learn==0.24.0
@@ -127,8 +133,10 @@ seqeval==1.2.2
 shortuuid==1.0.1
 simpletransformers==0.60.4
 six==1.15.0
+smart-open==5.2.1
 smmap==3.0.5
 spacy==2.3.5
+spacy-legacy==3.0.8
 spacy-sentence-bert==0.0.4
 spacy-universal-sentence-encoder==0.3.4
 srsly==1.0.5
@@ -138,7 +146,7 @@ subprocess32==3.5.4
 tensorboard==2.4.0
 tensorboard-plugin-wit==1.7.0
 tensorboardX==2.1
-tensorflow==2.5.1
+tensorflow==2.3.0
 tensorflow-estimator==2.3.0
 tensorflow-hub==0.11.0
 termcolor==1.1.0
@@ -150,13 +158,15 @@ tokenizers==0.9.4
 toml==0.10.2
 toolz==0.11.1
 torch==1.7.1
+torchvision==0.10.0
 tornado==6.1
 tqdm==4.55.1
 traitlets==4.3.3
 transformers==4.2.2
+typer==0.3.2
 typing-extensions==3.7.4.3
 tzlocal==2.1
-urllib3>=1.26.5
+urllib3==1.26.2
 validators==0.18.2
 wandb==0.10.17
 wasabi==0.8.0

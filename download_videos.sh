@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 
-#input_file=data/dict_sentences_per_verb_MARKERS_for_annotation.json
-#input_file=data/dict_sentences_per_verb_MARKERS_for_annotation_trial1.json
-#input_file=data/dict_sentences_per_verb_MARKERS_for_annotation_check_others.json
-#input_file=data/dict_sentences_per_verb_MARKERS_for_annotation_all50_nocheck.json
-input_file=data/dict_sentences_per_verb_MARKERS_for_annotation_all50_nocheck_remain.json
-#output_folder=../miniclips/check_others
-#output_folder=../miniclips/no_check
+input_file=data/dict_sentences_per_verb_MARKERS_for_annotation_all50.json
 output_folder=../miniclips2
 
 mapfile -t video_ids < <(jq --raw-output '.[] | .[] | .video' "$input_file")
