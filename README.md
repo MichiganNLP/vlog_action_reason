@@ -89,7 +89,7 @@ Other than this README file, the archive contains the data release in the follow
 
 ## Experiments
 + Run baselines from [`baselines`](baselines) 
-+ Run multi-modal model from [`multimodal`](TODO)
++ Run multi-modal model from [`multimodal`](https://github.com/bryant1410/intention-fitb)
 
 ## Citation information
 If you use this dataset or any ideas based on the associated research article, please cite the following:
