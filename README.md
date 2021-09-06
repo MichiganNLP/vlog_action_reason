@@ -88,7 +88,7 @@ Other than this README file, the archive contains the data release in the follow
 + `"reasons"` represent the list of all candidate reasons.
 
 ## Experiments
-+ Run baselines from [`baselines`](baselines) 
++ Run baselines from [`baselines`](baselines.py) 
 + Run multi-modal model from [`multimodal`](https://github.com/bryant1410/intention-fitb)
 
 ## Citation information
