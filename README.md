@@ -6,7 +6,7 @@ Language and Information Technologies (LIT), University of Michigan
 
 This repository contains the dataset and code for our EMNLP 2021 paper:
 
-[WhyAct: Identifying Action Reasons in Lifestyle Vlogs](TODO) (the PDF will be posted soon)
+[WhyAct: Identifying Action Reasons in Lifestyle Vlogs](https://arxiv.org/abs/2109.02747)
 
 ## Task Description
 
