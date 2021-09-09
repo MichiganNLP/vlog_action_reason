@@ -95,12 +95,13 @@ Other than this README file, the archive contains the data release in the follow
 If you use this dataset or any ideas based on the associated research article, please cite the following:
 
 ```bibtex
-@inproceedings{,
-    title="",
-    author={},
-    booktitle="",
-    month="",
-    year=""
+@misc{ignat2021whyact,
+      title={WhyAct: Identifying Action Reasons in Lifestyle Vlogs}, 
+      author={Oana Ignat and Santiago Castro and Hanwen Miao and Weiji Li and Rada Mihalcea},
+      year={2021},
+      eprint={2109.02747},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
 
