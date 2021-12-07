@@ -89,7 +89,7 @@ Other than this README file, the archive contains the data release in the follow
 
 ## Experiments
 + Run baselines from [`baselines`](baselines.py) 
-+ Run multi-modal model from [`multimodal`](https://github.com/bryant1410/intention-fitb)
++ Run multi-modal model from [`multimodal`](https://github.com/MichiganNLP/vlog_action_reason_main_method)
 
 ## Citation information
 If you use this dataset or any ideas based on the associated research article, please cite the following:
