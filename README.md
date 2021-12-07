@@ -6,7 +6,7 @@ Language and Information Technologies (LIT), University of Michigan
 
 This repository contains the dataset and code for our EMNLP 2021 paper:
 
-[WhyAct: Identifying Action Reasons in Lifestyle Vlogs](https://arxiv.org/abs/2109.02747)
+[WhyAct: Identifying Action Reasons in Lifestyle Vlogs](https://aclanthology.org/2021.emnlp-main.392)
 
 ## Task Description
 
@@ -95,13 +95,21 @@ Other than this README file, the archive contains the data release in the follow
 If you use this dataset or any ideas based on the associated research article, please cite the following:
 
 ```bibtex
-@misc{ignat2021whyact,
-      title={WhyAct: Identifying Action Reasons in Lifestyle Vlogs}, 
-      author={Oana Ignat and Santiago Castro and Hanwen Miao and Weiji Li and Rada Mihalcea},
-      year={2021},
-      eprint={2109.02747},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@inproceedings{ignat-etal-2021-whyact,
+    title = "{W}hy{A}ct: Identifying Action Reasons in Lifestyle Vlogs",
+    author = "Ignat, Oana  and
+      Castro, Santiago  and
+      Miao, Hanwen  and
+      Li, Weiji  and
+      Mihalcea, Rada",
+    booktitle = "Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing",
+    month = nov,
+    year = "2021",
+    address = "Online and Punta Cana, Dominican Republic",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.emnlp-main.392",
+    pages = "4770--4785",
+    abstract = "We aim to automatically identify human action reasons in online videos. We focus on the widespread genre of lifestyle vlogs, in which people perform actions while verbally describing them. We introduce and make publicly available the WhyAct dataset, consisting of 1,077 visual actions manually annotated with their reasons. We describe a multimodal model that leverages visual and textual information to automatically infer the reasons corresponding to an action presented in the video.",
 }
 ```
 
